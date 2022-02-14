@@ -6,9 +6,9 @@ class Peer {
 
   constructor() {
     Peer.peers.push(this);
-    this.n = Peer.i;
+    this.n = Peer.i; //identifier
     Peer.i++;
-    this.t = 0;
+    this.t = 0; //cycle
   }
 
   init(){
@@ -99,7 +99,7 @@ class Peer {
 
 
 
-  //Metrique
+  //METRIQUE
   getMaliciousCountInView(){
     let m = 0;
     for (let peer of this.view) {
