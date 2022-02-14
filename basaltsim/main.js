@@ -7,6 +7,7 @@ let cyclesPerSecond = 10;
 let resetNumber = 2;
 
 //Parametres graphiques
+let target = 10; //noeud à analyser
 let graphMode = "circle";
 let graphEnabled = true;
 
@@ -60,7 +61,7 @@ function start(){
     //Malicous.tickAllMalicious();
     if(graphEnabled){
       //On affiche
-      Graph.edges = Peer.peers[10].getEdges();
+      Graph.edges = Peer.peers[target].getEdges();
       Graph.draw();
     } else {
       console.log(getMs() - t1); //On log le temps de tracé
