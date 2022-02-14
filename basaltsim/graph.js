@@ -1,11 +1,14 @@
-lowerY = window.innerHeight;
+//Pour tracer des graphs avec des noeuds et des liens
+
+lowerY = window.innerHeight; //hauteur du graph pour scroll
 class Graph {
   static canvas;
   static ctx;
-  static nodes = [];
-  static edges = [];
+  static nodes; //liste des sommets
+  static edges; //liste des aretes (orienté)
   static i = 0;
 
+  //Initialisation du graph
   static init() {
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
@@ -15,31 +18,56 @@ class Graph {
     this.i = 0;
   }
 
+  //Rajout d'un noeud
   static createNode(){
-    let i = this.i;
-    let pasX = 40;
-    let pasY = 40;
-    let maxX = window.innerWidth - 200;
-    let x = pasX * (i%parseInt(maxX/pasX));
-    let y = parseInt(i / parseInt(maxX/pasX) )*pasY;
-    let delta = ((y/pasY)%2)*pasX/2;
-    this.nodes.push({ 'x': x + delta, 'y': y });
-    this.i++;
+    let i = this.i++; //Numéro du noeud
 
-    lowerY = Math.max(lowerY, y);
+    //Position du noeud
+    let x;
+    let y;
+
+    //Modes graphiques
+    switch (graphMode) {
+
+      case "hexa": //hexagone
+        let pasX = 40; //espacement horizontal
+        let pasY = 40*0.7; //espacement vertical
+        let maxNodeOnLine = 20; //nb max de noeud en ligne
+
+        x = pasX * (i%maxNodeOnLine);
+        y = parseInt(i / maxNodeOnLine)*pasY;
+        let delta = ((y/pasY)%2)*pasX/2;
+        x = x + delta;
+        break;
+
+      case "circle": //cercle
+        let r = 300; //rayon du cercle
+        let alpha = Math.PI * 2 * (parseInt(i)-1)/nodeNumber;
+        let c = {'x':r, 'y': r}; //centre du cercle
+        x = Math.sin(alpha)*r + c.x;
+        y = Math.cos(alpha)*r + c.y;
+        break;
+
+    }
+
+    this.nodes.push({ 'x': x, 'y': y}); //On ajoute le noeud à la liste
+    lowerY = Math.max(lowerY, y); //Recalcul de la hauteur
   }
 
+  //Creation d'arete
   static createEdge(a,b){
     this.edges.push([a,b]);
   }
 
+  //Affichage d'une frame
   static draw(){
-    this.clear();
-    this.resize();
+    this.clear(); //On efface le graph
+    this.resize(); //On resize la fenetre de dessin
 
-    let orig = [];
-    let dest = [];
+    let orig = []; //liste des noeuds origine d'une arete
+    let dest = []; //liste des noeuds destination d'une arete
 
+    //Affichage des aretes
     for (let i in this.edges) {
       let edge = this.edges[i];
       let node1 = this.nodes[edge[0]];
@@ -54,6 +82,7 @@ class Graph {
 
     }
 
+    //Affichage des noeuds
     for (let i in this.nodes) {
       let node = this.nodes[i];
       this.ctx.beginPath();
@@ -67,8 +96,6 @@ class Graph {
       } else {
         this.ctx.fillStyle = "orange";
       }
-
-
       this.ctx.fill();
       this.ctx.stroke();
       this.ctx.fillStyle = "black";
@@ -76,6 +103,7 @@ class Graph {
     }
   }
 
+  //Redimensionnement de la fenetre de dessin
   static resize(){
     this.canvas.width = window.innerWidth;
     this.canvas.height = lowerY+200;
@@ -83,6 +111,7 @@ class Graph {
     this.ctx.translate(100, 100);
   }
 
+  //Effacement de la fenetre de dessin
   static clear(){
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }

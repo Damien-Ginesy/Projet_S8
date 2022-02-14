@@ -6,6 +6,8 @@ let resetCooldown = 10;
 let cyclesPerSecond = 10;
 let resetNumber = 2;
 
+let graphMode = "hexa";
+
 let l;
 let infectedNode = []; //liste des id des malicieux pour les plot en violet
 
@@ -81,6 +83,8 @@ function updateParam(){
   resetCooldown = parseInt(document.getElementById('resetCooldown').value);
   cyclesPerSecond = parseFloat(document.getElementById('cyclesPerSecond').value);
   resetNumber = parseInt(document.getElementById('resetNumber').value);
+
+  graphMode = document.getElementById('shape').value;
 }
 
 function setParamHTML(){
@@ -90,6 +94,8 @@ function setParamHTML(){
   document.getElementById('resetCooldown').value = resetCooldown;
   document.getElementById('cyclesPerSecond').value = cyclesPerSecond;
   document.getElementById('resetNumber').value = resetNumber;
+
+  document.getElementById('shape').value = graphMode;
 }
 
 function getMs(){

@@ -22,6 +22,10 @@
     <label>Nb de cycles avant reset: <input type=text value=10 id='resetCooldown'></label>
     <label>Nb de reset/vue: <input type=text value=1 id='resetNumber'></label>
     <label>Nb de cycles par seconde: <input type=text value=5 id='cyclesPerSecond'></label>
+    <select id="shape">
+      <option value="hexa">hexagone</option>
+      <option value="circle">cercle</option>
+    </select>
     <button onclick="updateParam();start();"> Start simulation </button>
 
     <canvas id="canvas"></canvas>
