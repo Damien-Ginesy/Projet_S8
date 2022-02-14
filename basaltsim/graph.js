@@ -1,6 +1,7 @@
 //Pour tracer des graphs avec des noeuds et des liens
 
-lowerY = window.innerHeight; //hauteur du graph pour scroll
+let lowerY = window.innerHeight; //hauteur du graph pour scroll
+let infectedNode = []; //liste des id des malicieux pour les afficher en violet
 class Graph {
   static canvas;
   static ctx;
