@@ -20,8 +20,8 @@ class Graph {
     let pasX = 40;
     let pasY = 40;
     let maxX = window.innerWidth - 200;
-    let x = pasX * (i%parseInt(maxX/pasX)) + Math.random()*pasX/2;
-    let y = parseInt(i / parseInt(maxX/pasX) )*pasY +  Math.random()*pasY/2;
+    let x = pasX * (i%parseInt(maxX/pasX));
+    let y = parseInt(i / parseInt(maxX/pasX) )*pasY;
     let delta = ((y/pasY)%2)*pasX/2;
     this.nodes.push({ 'x': x + delta, 'y': y });
     this.i++;
