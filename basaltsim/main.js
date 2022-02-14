@@ -1,4 +1,4 @@
-//Param
+//Parametres par defaut de la simulation
 let nodeNumber = 100;
 let maliciousNumber = 10;
 let viewSize = 6;
@@ -6,46 +6,43 @@ let resetCooldown = 10;
 let cyclesPerSecond = 10;
 let resetNumber = 2;
 
+//Parametres graphiques
 let graphMode = "circle";
+let graphEnabled = true;
 
-let l;
-let infectedNode = []; //liste des id des malicieux pour les plot en violet
+let l; //var global boucle
 
 let canvas_width;
 
+//Mise a jour interface parametres
 setParamHTML();
+
+//Lancement de la simulation
 start();
 
 
 
-
 function start(){
-
-  stop();
+  stop(); //On arrete si simulation en cours
   console.log("simulation started");
-
-  //On initie le canvas
+  //On initie le graph
   Graph.init();
-
-  //On cree les noeuds et les pairs
-  for (var i = 0; i < nodeNumber-maliciousNumber; i++) {
-    new Peer();
-    Graph.createNode();
-  }
-  for (var i = 0; i < maliciousNumber; i++) {
-    new Malicous();
-    Graph.createNode();
-  }
-
-  //On les inits
-  console.log("init starting... this may take time");
+  //On cree les noeuds du graph et les pairs
   for (var i = 0; i < nodeNumber; i++) {
-    Peer.peers[i].init();
-    if(i%100 == 0){
-      console.log("init " + (100*i/nodeNumber) + "%");
-    }
+    if(i<nodeNumber-maliciousNumber)
+      new Peer(); //Pair honnete
+    else
+      new Malicous(); //Pair malicieux
+
+    Graph.createNode();
   }
-  console.log("init finished !");
+
+  for (var i = 0; i < nodeNumber; i++) {
+    //Initialisation des pairs
+    Peer.peers[i].init();
+    //affichage de l'avancement si l'initialisation est longue
+    if(i%100 == 0) console.log("init " + (100*i/nodeNumber) + "%");
+  }
 
   document.getElementById('canvas').width   = canvas_width.toString();
   document.getElementById('canvas').height  = canvas_width.toString();
@@ -54,24 +51,25 @@ function start(){
   console.log("loop started");
   l = setInterval(loop, 1000/cyclesPerSecond);
 
-  graphEnabled = true;
+
+
+  //Fonction de la boucle
   function loop(){
     let t1 = getMs();
-
     Peer.tickAll();
     //Peer.peers[10].tick();
     //Malicous.tickAllMalicious();
-
-
     if(graphEnabled){
+      //On affiche
       Graph.edges = Peer.peers[10].getEdges();
       Graph.draw();
     } else {
-      console.log(getMs() - t1);
+      console.log(getMs() - t1); //On log le temps de tracé
     }
   }
 }
 
+//Stop la boucle et reinitialise la simulation
 function stop(){
   clearInterval(l);
   Peer.peers = [];
@@ -80,6 +78,10 @@ function stop(){
   Peer.i = 0;
   console.log("simulation stopped");
 }
+
+
+
+//Code relatif a l'interface HTML
 
 function updateParam(){
   nodeNumber = parseInt(document.getElementById('nodeNumber').value);

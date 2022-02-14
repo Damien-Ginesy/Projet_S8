@@ -1,6 +1,7 @@
+//Gestion des pairs dans la simulation
 class Peer {
-  static peers = [];
-  static i = 0;
+  static peers = []; //Liste de TOUTE les pairs
+  static i = 0; //compteur des pairs
   static isMalicious = false;
 
   constructor() {
@@ -11,12 +12,14 @@ class Peer {
   }
 
   init(){
-    this.seedGen();
-    this.bootstrap();
+    this.seedGen(); //Generation des seeds
+    this.bootstrap(); //Boot
     this.r = 1;
   }
 
-  //Algo
+  //ALGO
+
+  //Generation des seeds
   seedGen(){
     this.seed = [];
     for (var i = 0; i < viewSize; i++) {
@@ -24,6 +27,7 @@ class Peer {
     }
   }
 
+  //boot
   bootstrap(){
     this.view = [];
     this.hits = [];
@@ -38,7 +42,7 @@ class Peer {
 
   //Boucle
   tick(){
-    if(this.t % resetCooldown == 0) {this.reset()};
+    if(this.t % resetCooldown == 0) {this.reset()}; //reset
     this.pull(this.selectPeer());
     this.push(this.selectPeer());
     this.t++;
@@ -52,6 +56,7 @@ class Peer {
     this.updateSample(nv);
   }
 
+  //mise a jour des vues
   updateSample(v){
     for (let i = 0; i < viewSize; i++) {
       let h1 = MD5(this.seed[i].toString() + this.view[i].n.toString());
@@ -66,6 +71,7 @@ class Peer {
     }
   }
 
+  //reinitialisation
   reset(){
     for (let i = 0; i < resetNumber; i++) {
       this.r = (this.r%viewSize)+1;
@@ -76,6 +82,7 @@ class Peer {
 
   }
 
+  //choix des pairs
   selectPeer(){
     let index = [];
     let min = Math.min(...this.hits);
@@ -85,13 +92,14 @@ class Peer {
       }
     }
     let r = index[parseInt(Math.random()*index.length)];
-    
+
     this.hits[r]++;
     return this.view[r];
   }
 
-  //Metric
 
+
+  //Metrique
   getMaliciousCountInView(){
     let m = 0;
     for (let peer of this.view) {
@@ -100,7 +108,11 @@ class Peer {
     return m;
   }
 
-  //Technique
+
+
+  //TECHNIQUE
+
+  //generation des aretes pr le graph
   getEdges() {
     let e = [];
     for (let p of this.view) {
@@ -109,12 +121,14 @@ class Peer {
     return e;
   }
 
+  //tick all
   static tickAll(){
     for (let peer of this.peers) {
       peer.tick();
     }
   }
 
+  //Recuperation de tte les aretes pr le graph
   static getAllEdges(){
     let e = [];
     for (let p1 of this.peers) {
