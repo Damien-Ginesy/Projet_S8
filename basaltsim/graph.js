@@ -27,6 +27,8 @@ class Graph {
     let x;
     let y;
 
+    let offset = 20;
+
     //Modes graphiques
     switch (graphMode) {
 
@@ -39,7 +41,7 @@ class Graph {
         y = parseInt(i / maxNodeOnLine)*pasY;
         let delta = ((y/pasY)%2)*pasX/2;
         x = x + delta;
-        canvas_width = 1.1 * (maxNodeOnLine * pasX);
+        canvas_width = 1.1 * (maxNodeOnLine * pasX) + 1.5 * offset;
         break;
 
       case "circle": //cercle
@@ -59,12 +61,12 @@ class Graph {
           y = Math.cos(alpha)*r + c.y;
 
         }
-        canvas_width = 2.1 * (r);
+        canvas_width = 2.1 * (r) + 1.5 * offset;
         break;
 
     }
 
-    x+=20; y+=20;
+    x+=offset; y+=offset;
 
     this.nodes.push({ 'x': x, 'y': y}); //On ajoute le noeud à la liste
     lowerY = Math.max(lowerY, y); //Recalcul de la hauteur
