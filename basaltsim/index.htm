@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Simu basalt</title>
+    <style media="screen">
+      canvas {
+        width: 100vw;
+      }
+      body {margin: 0; overflow-x: hidden;}
+
+      input {width: 50px;margin-right: 10px;}
+
+    </style>
+
+    </head>
+  <body>
+    Simu basalt 1.1.4<br>
+    <label>Nb de noeud total: <input type=text value=80 id='nodeNumber'></label>
+    <label>Nb de noeud malin: <input type=text value=20 id='maliciousNumber'></label>
+    <label>Taille des vues: <input type=text value=5 id='viewSize'></label>
+    <label>Nb de cycles avant reset: <input type=text value=10 id='resetCooldown'></label>
+    <label>Nb de reset/vue: <input type=text value=1 id='resetNumber'></label>
+    <label>Nb de cycles par seconde: <input type=text value=5 id='cyclesPerSecond'></label>
+    <button onclick="updateParam();start();"> Start simulation </button>
+
+    <canvas id="canvas"></canvas>
+    <script src="graph.js" charset="utf-8"></script>
+    <script src="md5.js" charset="utf-8"></script>
+    <script src="peer.js" charset="utf-8"></script>
+    <script src="malicious_peer.js" charset="utf-8"></script>
+    <script src="main.js" charset="utf-8"></script>
+  </body>
+</html>
