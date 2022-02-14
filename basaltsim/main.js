@@ -46,7 +46,6 @@ function start(){
   l = setInterval(loop, 1000/cyclesPerSecond);
 
 
-
   //Fonction de la boucle
   function loop(){
     let t1 = getMs();

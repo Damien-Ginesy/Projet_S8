@@ -59,9 +59,9 @@ class Peer {
   //mise a jour des vues
   updateSample(v){
     for (let i = 0; i < viewSize; i++) {
-      let h1 = MD5(this.seed[i].toString() + this.view[i].n.toString());
+      let h1 = hash(this.seed[i].toString() + this.view[i].n.toString());
       for (let p of v) {
-        let h2 = MD5(this.seed[i].toString() + p.n.toString());
+        let h2 = hash(this.seed[i].toString() + p.n.toString());
         if(p.n == this.view[i].n){
           this.hits[i]++;
         } else if(this.view[i].n == -1 || h2 < h1) {
