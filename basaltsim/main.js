@@ -6,10 +6,12 @@ let resetCooldown = 10;
 let cyclesPerSecond = 10;
 let resetNumber = 2;
 
-let graphMode = "hexa";
+let graphMode = "circle";
 
 let l;
 let infectedNode = []; //liste des id des malicieux pour les plot en violet
+
+let canvas_width;
 
 setParamHTML();
 start();
@@ -44,6 +46,9 @@ function start(){
     }
   }
   console.log("init finished !");
+
+  document.getElementById('canvas').width   = canvas_width.toString();
+  document.getElementById('canvas').height  = canvas_width.toString();
 
   //On boucle
   console.log("loop started");
