@@ -27,6 +27,8 @@ class Graph {
     let x;
     let y;
 
+    let offset = 20;
+
     //Modes graphiques
     switch (graphMode) {
 
@@ -39,17 +41,32 @@ class Graph {
         y = parseInt(i / maxNodeOnLine)*pasY;
         let delta = ((y/pasY)%2)*pasX/2;
         x = x + delta;
+        canvas_width = 1.1 * (maxNodeOnLine * pasX) + 1.5 * offset;
         break;
 
       case "circle": //cercle
-        let r = 300; //rayon du cercle
-        let alpha = Math.PI * 2 * (parseInt(i)-1)/nodeNumber;
+        let r = 4*nodeNumber; //rayon du cercle
         let c = {'x':r, 'y': r}; //centre du cercle
-        x = Math.sin(alpha)*r + c.x;
-        y = Math.cos(alpha)*r + c.y;
+        
+        if(i==10){ // the target
+          x = c.x;
+          y = c.y;
+        }else{
+          let j = i;
+          if(i>10) j--;
+
+          let alpha = Math.PI * 2 * (parseInt(j)-1)/(nodeNumber-1);
+          let c = {'x':r, 'y': r}; //centre du cercle
+          x = Math.sin(alpha)*r + c.x;
+          y = Math.cos(alpha)*r + c.y;
+
+        }
+        canvas_width = 2.1 * (r) + 1.5 * offset;
         break;
 
     }
+
+    x+=offset; y+=offset;
 
     this.nodes.push({ 'x': x, 'y': y}); //On ajoute le noeud à la liste
     lowerY = Math.max(lowerY, y); //Recalcul de la hauteur
@@ -106,10 +123,10 @@ class Graph {
 
   //Redimensionnement de la fenetre de dessin
   static resize(){
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = lowerY+200;
-    this.canvas.style.height = this.canvas.height + "px;";
-    this.ctx.translate(100, 100);
+    //this.canvas.width = window.innerWidth;
+    //this.canvas.height = lowerY+200;
+    //this.canvas.style.height = this.canvas.height + "px;";
+    //this.ctx.translate(100, 100);
   }
 
   //Effacement de la fenetre de dessin

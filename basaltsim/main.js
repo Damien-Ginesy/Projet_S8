@@ -7,12 +7,15 @@ let cyclesPerSecond = 10;
 let resetNumber = 2;
 
 //Parametres graphiques
-let graphMode = "hexa";
+let graphMode = "circle";
 let graphEnabled = true;
 
 let l; //var global boucle
 
-setParamHTML(); //Mise a jour interface parametres
+let canvas_width;
+
+//Mise a jour interface parametres
+setParamHTML();
 
 //Lancement de la simulation
 start();
@@ -40,6 +43,9 @@ function start(){
     //affichage de l'avancement si l'initialisation est longue
     if(i%100 == 0) console.log("init " + (100*i/nodeNumber) + "%");
   }
+
+  document.getElementById('canvas').width   = canvas_width.toString();
+  document.getElementById('canvas').height  = canvas_width.toString();
 
   //On boucle
   console.log("loop started");

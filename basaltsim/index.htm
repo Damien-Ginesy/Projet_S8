@@ -5,9 +5,10 @@
     <title>Simu basalt</title>
     <style media="screen">
       canvas {
-        width: 100vw;
+        /*width: 100vw;*/
+        margin: auto;
       }
-      body {margin: 0; overflow-x: hidden;}
+      body {margin: auto; padding: 40px; width: 80%; overflow-x: hidden;}
 
       input {width: 50px;margin-right: 10px;}
 
@@ -15,7 +16,8 @@
 
     </head>
   <body>
-    Simu basalt 1.2<br>
+    Simu basalt 1.2
+    <hr>
     <label>Nb de noeud total: <input type=text value=80 id='nodeNumber'></label>
     <label>Nb de noeud malin: <input type=text value=20 id='maliciousNumber'></label>
     <label>Taille des vues: <input type=text value=5 id='viewSize'></label>
@@ -27,7 +29,7 @@
       <option value="circle">cercle</option>
     </select>
     <button onclick="updateParam();start();"> Start simulation </button>
-
+    <hr>
     <canvas id="canvas"></canvas>
     <script src="graph.js" charset="utf-8"></script>
     <script src="hash.js" charset="utf-8"></script>
