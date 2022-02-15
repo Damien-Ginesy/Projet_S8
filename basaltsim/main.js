@@ -8,7 +8,7 @@ let cyclesPerSecond = 4;
 let resetNumber = 3;
 
 //Parametres graphiques
-let target = 20; //noeud à analyser
+let target = 0; //noeud à analyser
 let graphMode = "circle";
 let graphEnabled = true;
 
@@ -60,7 +60,7 @@ function start(){
     //Mise a jour etat de la simulation
     simulationAgeHTML.textContent = Peer.peers[target].t.toString()+" cycles";
     targetViewInfection = Peer.peers[target].getMaliciousCountInView()/viewSize;
-    targetViewInfectionHTML.textContent = parseInt(100*targetViewInfection + "%");
+    targetViewInfectionHTML.textContent = parseInt(100*targetViewInfection) + "%";
     if(targetViewInfection == 1){pause();}
 
 

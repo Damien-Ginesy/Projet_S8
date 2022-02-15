@@ -21,7 +21,7 @@ class Malicous extends Peer {
   }
 
   tick(){
-    let spam = 4;
+    let spam = 1;
     for (var i = 0; i < spam; i++) {
         this.push(this.selectPeer());
     }
