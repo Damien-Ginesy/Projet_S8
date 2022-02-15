@@ -41,7 +41,7 @@ class Graph {
         y = parseInt(i / maxNodeOnLine)*pasY;
         let delta = ((y/pasY)%2)*pasX/2;
         x = x + delta;
-        canvas_width = 1.1 * (maxNodeOnLine * pasX) + 1.5 * offset;
+        canvas_width = maxNodeOnLine * pasX + 2 * offset;
         break;
 
       case "circle": //cercle
@@ -61,7 +61,7 @@ class Graph {
           y = Math.cos(alpha)*r + c.y;
 
         }
-        canvas_width = 2.1 * (r) + 1.5 * offset;
+        canvas_width = 2 * (r) + 2 * offset;
         break;
 
     }

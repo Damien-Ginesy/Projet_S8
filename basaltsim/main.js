@@ -1,10 +1,10 @@
 //Parametres par defaut de la simulation
-let nodeNumber = 100;
-let maliciousNumber = 10;
-let viewSize = 6;
-let resetCooldown = 10;
-let cyclesPerSecond = 10;
-let resetNumber = 2;
+let nodeNumber = 400;
+let maliciousNumber = 130;
+let viewSize = 24;
+let resetCooldown = 6;
+let cyclesPerSecond = 4;
+let resetNumber = 3;
 
 //Parametres graphiques
 let graphMode = "circle";
@@ -12,7 +12,10 @@ let graphEnabled = true;
 
 let l; //var global boucle
 
-let canvas_width;
+let time_units = 0;
+
+let canvas_wanted_width = 700;
+let canvas_width; // real with
 
 //Mise a jour interface parametres
 setParamHTML();
@@ -46,6 +49,7 @@ function start(){
 
   document.getElementById('canvas').width   = canvas_width.toString();
   document.getElementById('canvas').height  = canvas_width.toString();
+  document.getElementById('canvas').style  = "transform:scale("+(canvas_wanted_width/canvas_width).toString()+("); position:relative; top:-"+((canvas_width-canvas_wanted_width)/2).toString()+"px; left:-"+((canvas_width-canvas_wanted_width)/2).toString()+"px;");
 
   //On boucle
   console.log("loop started");
@@ -55,6 +59,11 @@ function start(){
 
   //Fonction de la boucle
   function loop(){
+    
+    time_units++;
+    document.getElementById('state_time').textContent = time_units.toString()+" units";
+
+
     let t1 = getMs();
     Peer.tickAll();
     //Peer.peers[10].tick();
@@ -95,6 +104,7 @@ function updateParam(){
 }
 
 function setParamHTML(){
+
   document.getElementById('nodeNumber').value = nodeNumber;
   document.getElementById('maliciousNumber').value = maliciousNumber;
   document.getElementById('viewSize').value = viewSize;
@@ -103,6 +113,9 @@ function setParamHTML(){
   document.getElementById('resetNumber').value = resetNumber;
 
   document.getElementById('shape').value = graphMode;
+
+  document.getElementById('canvas_containner').style  = "height:"+canvas_wanted_width.toString()+"px; width:"+canvas_wanted_width.toString()+"px;";
+  
 }
 
 function getMs(){

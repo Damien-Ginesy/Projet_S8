@@ -42,7 +42,7 @@ class Peer {
 
   //Boucle
   tick(){
-    if(this.t % resetCooldown == 0) {this.reset()}; //reset
+    if(this.t % (resetNumber*resetCooldown) == 0) {this.reset()}; //reset
     this.pull(this.selectPeer());
     this.push(this.selectPeer());
     this.t++;
