@@ -16,6 +16,9 @@
 
     </head>
   <body>
+    <button onclick="preset(0)">n=100</button>
+    <button onclick="preset(1)">n=1000</button>
+
     <header>
       <h1>BASALT Simulation v.1.4<h1>
     </header>
@@ -73,6 +76,10 @@
               <td id="targetViewInfection"></td>
             </tr>
             <tr>
+              <td> Nb de reset/de sample : </td>
+              <td id="sampleLength"></td>
+            </tr>
+            <tr>
               <td> Infection des samples : </td>
               <td id="samplesInfection"></td>
             </tr>
@@ -91,5 +98,6 @@
     <script src="peer.js" charset="utf-8"></script>
     <script src="malicious_peer.js" charset="utf-8"></script>
     <script src="main.js" charset="utf-8"></script>
+    <script src="preset.js" charset="utf-8"></script>
   </body>
 </html>

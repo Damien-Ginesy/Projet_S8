@@ -5,7 +5,7 @@ class Malicous extends Peer {
   constructor() {
     super();
     Malicous.maliciousPeers.push(this);
-    infectedNode.push(this.n);
+    infectedNode.push(this.identifier);
   }
 
   init(){

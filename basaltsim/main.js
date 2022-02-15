@@ -62,6 +62,7 @@ function start(){
     if(targetViewInfection == 1){pause();}
     sampledInfection = Peer.getSamplesInfection();
     samplesInfectionHTML.textContent = parseInt(100*sampledInfection) + "%";
+    sampleLengthHTML.textContent = parseInt(samples.length/resetNumber) + " / " + samples.length;
 
 
     let t1 = getMs();
@@ -99,7 +100,7 @@ function unpause() {l = setInterval(loop, 1000/cyclesPerSecond);}
 simulationAgeHTML = document.getElementById('simulationAge');
 targetViewInfectionHTML = document.getElementById('targetViewInfection');
 samplesInfectionHTML = document.getElementById('samplesInfection');
-
+sampleLengthHTML = document.getElementById('sampleLength');
 
 function updateParam(){
   nodeNumber = parseInt(document.getElementById('nodeNumber').value);
