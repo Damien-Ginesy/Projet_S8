@@ -1,13 +1,14 @@
 //Parametres par defaut de la simulation
-let nodeNumber = 400;
-let maliciousNumber = 130;
+let nodeNumber = 100; //400 crash sur petit pc dès le chargement de la page
+let maliciousRatio = 0.1;
+let maliciousNumber = parseInt(maliciousRatio*nodeNumber);
 let viewSize = 24;
 let resetCooldown = 6;
 let cyclesPerSecond = 4;
 let resetNumber = 3;
 
 //Parametres graphiques
-let target = 10; //noeud à analyser
+let target = 20; //noeud à analyser
 let graphMode = "circle";
 let graphEnabled = true;
 
@@ -48,10 +49,6 @@ function start(){
     if(i%100 == 0) console.log("init " + (100*i/nodeNumber) + "%");
   }
 
-  document.getElementById('canvas').width   = canvas_width.toString();
-  document.getElementById('canvas').height  = canvas_width.toString();
-  document.getElementById('canvas').style  = "transform:scale("+(canvas_wanted_width/canvas_width).toString()+("); position:relative; top:-"+((canvas_width-canvas_wanted_width)/2).toString()+"px; left:-"+((canvas_width-canvas_wanted_width)/2).toString()+"px;");
-
   //On boucle
   console.log("loop started");
   l = setInterval(loop, 1000/cyclesPerSecond);
@@ -59,9 +56,12 @@ function start(){
 
   //Fonction de la boucle
   function loop(){
-    
-    time_units++;
-    document.getElementById('state_time').textContent = time_units.toString()+" units";
+
+    //Mise a jour etat de la simulation
+    simulationAgeHTML.textContent = Peer.peers[target].t.toString()+" cycles";
+    targetViewInfection = Peer.peers[target].getMaliciousCountInView()/viewSize;
+    targetViewInfectionHTML.textContent = parseInt(100*targetViewInfection + "%");
+    if(targetViewInfection == 1){pause();}
 
 
     let t1 = getMs();
@@ -88,13 +88,21 @@ function stop(){
   console.log("simulation stopped");
 }
 
+function pause(){clearInterval(l);}
+function unpause() {l = setInterval(loop, 1000/cyclesPerSecond);}
+
+
 
 
 //Code relatif a l'interface HTML
+simulationAgeHTML = document.getElementById('simulationAge');
+targetViewInfectionHTML = document.getElementById('targetViewInfection');
+
 
 function updateParam(){
   nodeNumber = parseInt(document.getElementById('nodeNumber').value);
-  maliciousNumber = parseInt(document.getElementById('maliciousNumber').value);
+  maliciousRatio = parseFloat(document.getElementById('maliciousRatio').value);
+  maliciousNumber = parseInt(maliciousRatio*nodeNumber);
   viewSize = parseInt(document.getElementById('viewSize').value);
   resetCooldown = parseInt(document.getElementById('resetCooldown').value);
   cyclesPerSecond = parseFloat(document.getElementById('cyclesPerSecond').value);
@@ -106,16 +114,15 @@ function updateParam(){
 function setParamHTML(){
 
   document.getElementById('nodeNumber').value = nodeNumber;
-  document.getElementById('maliciousNumber').value = maliciousNumber;
+  document.getElementById('maliciousRatio').value = maliciousRatio;
   document.getElementById('viewSize').value = viewSize;
   document.getElementById('resetCooldown').value = resetCooldown;
   document.getElementById('cyclesPerSecond').value = cyclesPerSecond;
   document.getElementById('resetNumber').value = resetNumber;
 
   document.getElementById('shape').value = graphMode;
-
   document.getElementById('canvas_containner').style  = "height:"+canvas_wanted_width.toString()+"px; width:"+canvas_wanted_width.toString()+"px;";
-  
+
 }
 
 function getMs(){

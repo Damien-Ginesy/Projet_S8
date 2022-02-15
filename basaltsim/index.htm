@@ -17,7 +17,7 @@
     </head>
   <body>
     <header>
-      <h1>BASALT Simulation v.1.3<h1>
+      <h1>BASALT Simulation v.1.4<h1>
     </header>
     <table>
       <tr>
@@ -25,28 +25,28 @@
           <h3>Simulation parameters</h3>
           <table style="margin-right: 80px;">
             <tr>
-              <td> Nb de noeud total </td>
-              <td><input type=text value=80 id='nodeNumber'></td>
+              <td> Nb de noeud du réseau </td>
+              <td><input type=text id='nodeNumber'></td>
             </tr>
             <tr>
-              <td> Nb de noeud malins </td>
-              <td><input type=text value=20 id='maliciousNumber'></td>
+              <td> % malicieux </td>
+              <td><input type=text id='maliciousRatio'></td>
             </tr>
             <tr>
               <td> Taille des vues </td>
-              <td><input type=text value=5 id='viewSize'></td>
+              <td><input type=text id='viewSize'></td>
             </tr>
             <tr>
               <td> Nb de cycles avant reset</td>
-              <td><input type=text value=10 id='resetCooldown'></td>
+              <td><input type=text id='resetCooldown'></td>
             </tr>
             <tr>
               <td> Nb de reset/vue </td>
-              <td><input type=text value=1 id='resetNumber'></td>
+              <td><input type=text id='resetNumber'></td>
             </tr>
             <tr>
               <td>Nb de cycles par seconde </td>
-              <td><input type=text value=5 id='cyclesPerSecond'></td>
+              <td><input type=text id='cyclesPerSecond'></td>
             </tr>
             <tr>
               <td> Type d'affichage </td>
@@ -66,7 +66,11 @@
           <table>
             <tr>
               <td> Simulation time : </td>
-              <td id="state_time"></td>
+              <td id="simulationAge"></td>
+            </tr>
+            <tr>
+              <td> Infection de la target : </td>
+              <td id="targetViewInfection"></td>
             </tr>
           </table>
         </td>
