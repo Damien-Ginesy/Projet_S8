@@ -14,8 +14,6 @@ let graphEnabled = true;
 
 let l; //var global boucle
 
-let time_units = 0;
-
 let canvas_wanted_width = 700;
 let canvas_width; // real with
 
@@ -62,6 +60,8 @@ function start(){
     targetViewInfection = Peer.peers[target].getMaliciousCountInView()/viewSize;
     targetViewInfectionHTML.textContent = parseInt(100*targetViewInfection) + "%";
     if(targetViewInfection == 1){pause();}
+    sampledInfection = Peer.getSamplesInfection();
+    samplesInfectionHTML.textContent = parseInt(100*sampledInfection) + "%";
 
 
     let t1 = getMs();
@@ -84,6 +84,7 @@ function stop(){
   Peer.peers = [];
   Malicous.maliciousPeers = [];
   infectedNode = [];
+  samples = [];
   Peer.i = 0;
   console.log("simulation stopped");
 }
@@ -97,6 +98,7 @@ function unpause() {l = setInterval(loop, 1000/cyclesPerSecond);}
 //Code relatif a l'interface HTML
 simulationAgeHTML = document.getElementById('simulationAge');
 targetViewInfectionHTML = document.getElementById('targetViewInfection');
+samplesInfectionHTML = document.getElementById('samplesInfection');
 
 
 function updateParam(){
