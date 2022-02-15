@@ -6,9 +6,9 @@ class Peer {
 
   constructor() {
     Peer.peers.push(this);
-    this.n = Peer.i;
+    this.n = Peer.i; //identifier
     Peer.i++;
-    this.t = 0;
+    this.t = 0; //cycle
   }
 
   init(){
@@ -37,7 +37,7 @@ class Peer {
       this.hits.push(0);
       bs.push(Peer.peers[parseInt(Math.random()*nodeNumber)]);
     }
-    this.updateSample(bs);
+    this.updateSamples(bs);
   }
 
   //Boucle
@@ -53,15 +53,15 @@ class Peer {
   push(p){p.onpush(this, this.view);}
   onpush(p, v){
     let nv = [...v]; nv.push(p);
-    this.updateSample(nv);
+    this.updateSamples(nv);
   }
 
   //mise a jour des vues
-  updateSample(v){
+  updateSamples(v){
     for (let i = 0; i < viewSize; i++) {
-      let h1 = MD5(this.seed[i].toString() + this.view[i].n.toString());
+      let h1 = hash(this.seed[i].toString() + this.view[i].n.toString());
       for (let p of v) {
-        let h2 = MD5(this.seed[i].toString() + p.n.toString());
+        let h2 = hash(this.seed[i].toString() + p.n.toString());
         if(p.n == this.view[i].n){
           this.hits[i]++;
         } else if(this.view[i].n == -1 || h2 < h1) {
@@ -78,7 +78,7 @@ class Peer {
       //this.view[this.r-1] = this.view[parseInt(Math.random()*viewSize)]; //sample
       this.seed[this.r-1] = parseInt(Math.random()*10000);
     }
-    this.updateSample(this.view);
+    this.updateSamples(this.view);
 
   }
 
@@ -99,7 +99,7 @@ class Peer {
 
 
 
-  //Metrique
+  //METRIQUE
   getMaliciousCountInView(){
     let m = 0;
     for (let peer of this.view) {

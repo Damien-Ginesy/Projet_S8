@@ -47,11 +47,11 @@ class Graph {
       case "circle": //cercle
         let r = 4*nodeNumber; //rayon du cercle
         let c = {'x':r, 'y': r}; //centre du cercle
-        
-        if(i==10){ // the target
+
+        if(i == target){ // the target
           x = c.x;
           y = c.y;
-        }else{
+        } else {
           let j = i;
           if(i>10) j--;
 

@@ -33,7 +33,7 @@ class Malicous extends Peer {
     }
   }
 
-  updateSample(v){/* rien */}
+  updateSamples(v){/* rien */}
   reset(){ /* rien */}
   onpush(p, v){ /* rien */}
 }
