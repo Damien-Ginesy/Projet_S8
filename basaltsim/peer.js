@@ -1,3 +1,5 @@
+let samples = []; //pairs envoyé à la couche applicative
+
 //Gestion des pairs dans la simulation
 class Peer {
   static peers = []; //Liste de TOUTE les pairs
@@ -75,7 +77,7 @@ class Peer {
   reset(){
     for (let i = 0; i < resetNumber; i++) {
       this.r = (this.r%viewSize)+1;
-      //this.view[this.r-1] = this.view[parseInt(Math.random()*viewSize)]; //sample
+      samples.push(this.view[this.r-1]);
       this.seed[this.r-1] = parseInt(Math.random()*10000);
     }
     this.updateSamples(this.view);
@@ -108,7 +110,13 @@ class Peer {
     return m;
   }
 
-
+  static getSamplesInfection(){
+    let m = 0;
+    for (var peer of samples) {
+      if(peer.isMalicious) m++;
+    }
+    return m/samples.length;
+  }
 
   //TECHNIQUE
 
