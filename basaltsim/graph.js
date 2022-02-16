@@ -1,6 +1,5 @@
 //Pour tracer des graphs avec des noeuds et des liens
 
-let lowerY = window.innerHeight; //hauteur du graph pour scroll
 let infectedNode = []; //liste des id des malicieux pour les afficher en violet
 class Graph {
   static canvas;
@@ -73,7 +72,6 @@ class Graph {
     x+=this.offset; y+=this.offset;
 
     this.nodes.push({ 'x': x, 'y': y}); //On ajoute le noeud à la liste
-    lowerY = Math.max(lowerY, y); //Recalcul de la hauteur
   }
 
   //Creation d'arete

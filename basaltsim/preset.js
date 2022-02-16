@@ -1,6 +1,7 @@
 function preset(x){
+  stop();
   switch (x) {
-    case 0:
+    case 'light':
       nodeNumber = 100;
       maliciousRatio = 0.1;
       maliciousNumber = parseInt(maliciousRatio*nodeNumber);
@@ -9,15 +10,15 @@ function preset(x){
       cyclesPerSecond = 4;
       resetNumber = 3;
       break;
-    case 1:
+    case 'heavy':
       nodeNumber = 1000;
       maliciousRatio = 0.1;
       maliciousNumber = parseInt(maliciousRatio*nodeNumber);
       viewSize = 50;
       resetCooldown = 22;
-      cyclesPerSecond = 4;
+      cyclesPerSecond = 1;
       resetNumber = 22;
       break;
   }
-  updateParam();
+  setParamHTML();
 }

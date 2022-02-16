@@ -118,6 +118,15 @@ class Peer {
     return m/samples.length;
   }
 
+  getView(){
+    let str = "[ ";
+    for (let peer of this.view) {
+      str+= peer.identifier+" ";
+    }
+    str += "]";
+    return str;
+  }
+
   //TECHNIQUE
 
   //generation des aretes pr le graph

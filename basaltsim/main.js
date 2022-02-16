@@ -44,7 +44,7 @@ function start(){
     //Initialisation des pairs
     Peer.peers[i].init();
     //affichage de l'avancement si l'initialisation est longue
-    if(i%100 == 0) console.log("init " + (100*i/nodeNumber) + "%");
+    if(i%100 == 0 && i>0) console.log("init " + (100*i/nodeNumber) + "%");
   }
 
   //On boucle
