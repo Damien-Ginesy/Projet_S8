@@ -16,8 +16,12 @@ namespace rps{
         const ref_t operator[] (size_t i) const { return _start[i]; }
         ptr_t begin() { return _start; }
         ptr_t end() { return _end; }
+        const ptr_t begin() const { return _start; }
+        const ptr_t end() const { return _end; }
         size_t size() const { return _end - _start; }
         ptr_t at(size_t n) { return _start + n; }
+        const ptr_t at(size_t n) const { return _start + n; }
+        ArrayView<T> sub(size_t start) { return ArrayView<T>(_start+start, _end); }
         ArrayView<T> sub(size_t start, size_t size) { return ArrayView<T>(_start+start, _start+size); }
     };
 
@@ -42,15 +46,11 @@ namespace rps{
             for(size_t i=0; i<size; ++i)
                 _data[i] = data[i];
         }
-        template<typename... Arg_t>
-        Array(size_t size, Arg_t&... values){
-            _data = new val_t[size]{ std::forward<Arg_t>(values)... };
+        Array(size_t size, const val_t& val){
+            _data = new val_t[size];
             _end = _data + size;
-        }
-        template<typename... Arg_t>
-        Array(size_t size, Arg_t&&... values){
-            _data = new val_t[size]{ std::forward<Arg_t>(values)... };
-            _end = _data + size;
+            for(ptr_t p=_data; p<_end; ++p)
+                *p = val;
         }
         Array(const Array<T>& other){
             size_t size = other._end - other._data;
@@ -88,7 +88,10 @@ namespace rps{
         const ptr_t end() const { return _end; }
         size_t size() const { return _end - _data; }
         ptr_t at(size_t n) { return _data + n; }
+        ArrayView<val_t> view() { return ArrayView<val_t>(_data, _end); }
+        const ArrayView<val_t> view() const { return ArrayView<val_t>(_data, _end); }
         ArrayView<T> sub(size_t start, size_t size) { return ArrayView<T>(_data+start, _data+start+size); }
+        ArrayView<T> sub(size_t start) { return ArrayView<T>(_data+start, _end); }
         virtual ~Array() { delete[] _data;  }
     };
     
