@@ -52,13 +52,14 @@ int main(int argc, char const *argv[])
             n.step(nodes.view());
             maliciousProp += n.maliciousCount();
         }
-        for(auto& m: maliciousNodes)
-            m.step(honestNodes, 10);
+        if(i>=attackStart)
+            for(auto& m: maliciousNodes)
+                m.step(honestNodes, 10);
         if(i%resetRate == 0){
             for(auto& n: nodes)
                 n.reset(V>>1);
         }
-        std::cout << (double)maliciousProp/(V*N) << std::endl;
+        std::cout << maliciousProp/hCount << std::endl;
     }
     
 }
