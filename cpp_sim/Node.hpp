@@ -6,7 +6,7 @@
 #include "Hash.hpp"
 
 #define SEED_MAX        UINT32_MAX
-#define ID_INVALID      UINT32_MAX
+#define ID_INVALID      (uint32_t)-1
 
 namespace rps
 {
@@ -18,23 +18,23 @@ namespace rps
         uint32_t _r=0;
         uint32_t _viewSize;
         Array<uint32_t> _view;
-        uint32_t* _seeds;
-        uint32_t* _hits;
-        bool(*_rankingFunction)(uint32_t, uint32_t, uint32_t);
+        uint32_t* _seeds = nullptr;
+        uint32_t* _hits = nullptr;
+        uint32_t _maliciousCount = 0;
+        uint32_t(*_rankingFunction)(uint32_t, uint32_t);
         std::random_device _rng;
-
         
         /* private methods */
         uint32_t genSeed();
-        void updateView(const ArrayView<uint32_t>& candidates, const Node* sender=nullptr);
         ArrayView<uint32_t> pull() const;
-        void push(const ArrayView<uint32_t>& view, Node* sender);
-        uint32_t selectPeer();
+        void push(ArrayView<uint32_t> view, const Node* sender);
+        uint32_t selectPeer() const;
     public:
+        void updateView(ArrayView<uint32_t> candidates, const Node* sender=nullptr);
         uint32_t id;
-        bool isByzantine;
+        bool isByzantine = false;
         /* Constructors and assignement operators */
-        Node(uint32_t viewSize, bool(*rankingFunction)(uint32_t, uint32_t, uint32_t)); 
+        Node(uint32_t viewSize, uint32_t(*rankingFunction)(uint32_t, uint32_t)); 
         Node(){}
         Node(const Node&) = delete;
         Node(Node&&);
@@ -42,8 +42,7 @@ namespace rps
         Node& operator=(const Node&) = delete;
         Node& operator=(Node&&);
 
-        /* init method for honest nodes */
-        void init(uint32_t id, bool isByzatine, const Array<uint32_t>& bootstrap);
+        void init(uint32_t id, bool isByzatine, ArrayView<uint32_t> bootstrap);
         void step(ArrayView<Node> nodes);
         /* step method for malicious nodes */
         void step(ArrayView<Node> honestNodes, unsigned F);
