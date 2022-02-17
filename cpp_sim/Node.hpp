@@ -42,7 +42,7 @@ namespace rps
         Node& operator=(const Node&) = delete;
         Node& operator=(Node&&);
 
-        void init(uint32_t id, bool isByzatine, ArrayView<uint32_t> bootstrap);
+        void init(ArrayView<uint32_t> bootstrap);
         void step(ArrayView<Node> nodes);
         /* step method for malicious nodes */
         void step(ArrayView<Node> honestNodes, unsigned F);
@@ -52,6 +52,7 @@ namespace rps
         uint32_t seeds(size_t i) const;
         uint32_t operator[] (size_t i) const;
         uint32_t viewSize() const;
+        uint32_t maliciousCount() const;
     };
     Array<uint32_t> sample_n(size_t n, const rps::ArrayView<rps::Node>& nodes);
 } // namespace basalt

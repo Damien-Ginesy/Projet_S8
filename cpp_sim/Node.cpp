@@ -48,19 +48,28 @@ namespace rps
         uint32_t p=0;
         for(uint32_t i=1; i<_viewSize; ++i)
             p = _hits[p]<_hits[i]? p:i;
+        _hits[p]++;
         return _view[p];
     }
     /* public methods */
-    void Node::init(uint32_t id, bool isByzatine, ArrayView<uint32_t> bootstrap){
-        this->id = id; this->isByzantine = isByzantine;
+    void Node::init(ArrayView<uint32_t> bootstrap){
         updateView(bootstrap);
     }
     void Node::step(ArrayView<Node> nodes){
-
+        _maliciousCount = 0;
+        uint32_t p = selectPeer();
+        ArrayView<uint32_t> candidates = nodes[p].pull();
+        updateView(candidates, nodes.at(p));
+        uint32_t q = selectPeer();
+        nodes[q].push(_view.view(), this);
+        for(uint32_t n: _view)
+            _maliciousCount += nodes[n].isByzantine;
     }
     /* step method for malicious nodes */
     void Node::step(ArrayView<Node> honestNodes, unsigned F){
-
+        Array<uint32_t> targets = sample_n(F, honestNodes);
+        for (uint32_t t: targets)
+            honestNodes[t].push(_view.view(), this);
     }
     void Node::reset(uint32_t k){
         for (uint32_t i = 0; i < k; i++)
@@ -101,6 +110,7 @@ namespace rps
     uint32_t Node::seeds(size_t i) const { return _seeds[i]; }
     uint32_t Node::operator[] (size_t i) const { return _view[i]; }
     uint32_t Node::viewSize() const { return _viewSize; }
+    uint32_t Node::maliciousCount() const { return _maliciousCount; }
 
 
 } // namespace basalt
