@@ -77,7 +77,7 @@ class Peer {
   reset(){
     for (let i = 0; i < resetNumber; i++) {
       this.r = (this.r%viewSize)+1;
-      if(this.identifier == target) samples.push(this.view[this.r-1]);
+      samples.push(this.view[this.r-1]);
       this.seed[this.r-1] = parseInt(Math.random()*10000);
     }
     this.updateSamples(this.view);
