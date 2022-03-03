@@ -21,6 +21,9 @@ apt-get install -y python3-pip;
 # --- ansible
 RUN pip3 install ansible paramiko argcomplete;
 
+# --- ansible conf file (ansible.cfg)
+ADD ansible.cfg /etc/ansible/ansible.cfg
+
 # CMD is the default command that is going to be executed in the startup of every exection.
 # Only the last one is considered. So use it once.
 CMD \
