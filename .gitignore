@@ -35,4 +35,4 @@
 **.vs*
 **build
 
-**bin/
+/serveur/node_modules/
