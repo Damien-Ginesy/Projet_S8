@@ -18,3 +18,5 @@ docker run -it \
 -v "$(pwd):/home/dev" \
 ansible \
 bash;
+
+./stop_virtual_network.sh
