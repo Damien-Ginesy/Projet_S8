@@ -32,7 +32,7 @@ namespace Basalt
 
     public:
         Node(const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset,bool isByzantine=false, bool isSGX=false);
-        void reset();
+        Array<NodeId> reset();
         template<uint32_t HashSize>
         void update(Hash<HashSize> (*h)(const NodeId&, uint32_t seed));
     };
