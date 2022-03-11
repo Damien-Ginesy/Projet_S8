@@ -6,7 +6,7 @@ const port = 3000;
 app.set('views','./views');
 app.set('view engine','pug');
 
-const db = new DatabaseAccess("Damien", "N3cozwDA20fg");
+const db = new DatabaseAccess("user", "password");
 db.addInfo(["P8","P7","P5"]);
 
 app.get('/acceuil',(req, res) => {
