@@ -22,12 +22,13 @@ namespace Basalt
         bool _isSGX = false;
         uint32_t _r = 0;
         uint32_t _k;
-        void updateSample();
-        void updateSamples();
-        void pull(NodeId);
-        void push(NodeId);
-        NodeId selectPeer();
-        uint32_t generateSeed();
+        void updateSamples(const Array<NodeId>& candidates); // update our view
+        /* leave empty for now */
+        void pull(NodeId); // pull the view from another node
+        void push(NodeId); // push our view to someone else
+        /* =================== */
+        NodeId selectPeer(); // select someone in our view based on its hit counter
+        uint32_t generateSeed(); // gen a pseudo random seed
 
     public:
         Node(const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset,bool isByzantine=false, bool isSGX=false);
