@@ -9,7 +9,6 @@ namespace Basalt
         NodeId id;
         uint32_t seed;
         uint16_t hits;
-        void deserialize(uint8_t* out) const;
     };
 
     class Node
