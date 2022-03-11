@@ -7,13 +7,13 @@ rm -f hosts
 # host 1
 docker run -itd \
 -v "$(pwd):/home/dev" \
-ansible;
+ansible_host;
 echo "172.17.0.2" >> hosts
 
 # host 2
 docker run -itd \
 -v "$(pwd):/home/dev" \
-ansible;
+ansible_host;
 echo "172.17.0.3" >> hosts
 
 # main machine
