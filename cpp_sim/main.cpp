@@ -59,7 +59,7 @@ int main(int argc, char const *argv[])
             for(auto& n: nodes)
                 n.reset(V>>1);
         }
-        std::cout << maliciousProp/hCount << std::endl;
+        std::cout << maliciousProp << std::endl;
     }
     
 }
