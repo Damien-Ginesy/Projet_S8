@@ -1,5 +1,5 @@
 #include "basalt.hpp"
-#include <JOAATHash.hpp>
+#include "JOAATHash.hpp"
 
 namespace Basalt
 {
@@ -39,16 +39,17 @@ namespace Basalt
         return (Hash<4>)JOAATHash(data, sizeof(id)+4);
     }
     void update(){
-        node->update(hashFunc);
+        std::cout << JOAATHash((byte*)&iterCount, 4) << '\n';
+        iterCount++;
     }
     void reset(){
-        node->reset();
+        std::cout << "Reset\n";
     }
     void basalt_init(duration<double> updateDelay, duration<double> resetDelay){
         /* init node here 
         
         */
-       // init main update loop
+        // init main update loop
         mainLoop = new LoopedFunction<>(update, updateDelay);
         resetLoop = new LoopedFunction<>(reset, resetDelay);
     }
@@ -57,6 +58,6 @@ namespace Basalt
         resetLoop->finish();
         delete mainLoop;
         delete resetLoop;
-        delete node;
+        // delete node;
     }
 } // namespace Basalt

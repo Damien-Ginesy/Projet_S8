@@ -2,6 +2,7 @@
 #include "NodeId.hpp"
 #include "Array.hpp"
 #include "Hash.hpp"
+#include <random>
 
 namespace Basalt
 {
@@ -19,8 +20,11 @@ namespace Basalt
         
         bool _isByzantine = false;
         bool _isSGX = false;
+        Hash<4> (_rankingFunc) (const NodeId&, uint32_t);
         uint32_t _r = 0;
         uint32_t _k;
+        std::random_device _rng;
+
         void updateSamples(const Array<NodeId>& candidates); // update our view
         /* leave empty for now */
         void pull(NodeId); // pull the view from another node
@@ -30,10 +34,10 @@ namespace Basalt
         uint32_t generateSeed(); // gen a pseudo random seed
 
     public:
-        Node(const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset,bool isByzantine=false, bool isSGX=false);
+        Node(const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset, Hash<4> (*)(NodeId, uint32_t),
+            bool isByzantine=false, bool isSGX=false);
         Array<NodeId> reset();
-        template<uint32_t HashSize>
-        void update(Hash<HashSize> (*h)(const NodeId&, uint32_t seed));
+        void update();
     };
     
 } // namespace Basalt
