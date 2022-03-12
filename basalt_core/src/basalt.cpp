@@ -1,22 +1,25 @@
 #include "basalt.hpp"
+#include <JOAATHash.hpp>
 
 namespace Basalt
 {
+    using std::chrono::duration;
+
     template<typename... Arg_t>
     class LoopedFunction{
         std::thread _thread;
-        std::chrono::duration<double> _period;
+        duration<double> _period;
         void (*_cbk)(Arg_t... args);
         bool _keepGoing = true;
 
         public:
-        LoopedFunction(void (*f)(Arg_t...), std::chrono::duration<double> period, Arg_t... args):
+        LoopedFunction(void (*f)(Arg_t...), duration<double> period, Arg_t... args):
             _cbk(f), _period(period)
         {
             auto threadFunc = [this](Arg_t... args){
                 while(this->_keepGoing){
-                    this->_cbk(std::forward<Arg_t>(args)...);
                     std::this_thread::sleep_for(this->_period);
+                    this->_cbk(std::forward<Arg_t>(args)...);
                 }
             };
             _thread = std::thread(threadFunc, std::forward<Arg_t>(args)...);
@@ -24,18 +27,36 @@ namespace Basalt
         void finish() { _keepGoing = false; }
         ~LoopedFunction() { _thread.join(); }
     };
+    Node *node;
+    LoopedFunction<> *mainLoop, *resetLoop;
 
-    static bool keepGoing = true;
     uint32_t iterCount = 0;
-    LoopedFunction<> *loop;
 
-
-    void basalt_init(std::chrono::duration<double> updateDelay, std::chrono::duration<double> resetDelay){
-        void (*foo)() = [](){ std::cout << iterCount++ << std::endl; };
-        loop = new LoopedFunction(foo, updateDelay);
+    Hash<4> hashFunc(const NodeId& id, uint32_t seed) {
+        byte data[sizeof(id)+4] = {0};
+        toLittleEndian(seed, 4, data);
+        id.deserialize(data+4);
+        return (Hash<4>)JOAATHash(data, sizeof(id)+4);
+    }
+    void update(){
+        node->update(hashFunc);
+    }
+    void reset(){
+        node->reset();
+    }
+    void basalt_init(duration<double> updateDelay, duration<double> resetDelay){
+        /* init node here 
+        
+        */
+       // init main update loop
+        mainLoop = new LoopedFunction<>(update, updateDelay);
+        resetLoop = new LoopedFunction<>(reset, resetDelay);
     }
     void basalt_stop(){
-        loop->finish();
-        delete loop;
+        mainLoop->finish();
+        resetLoop->finish();
+        delete mainLoop;
+        delete resetLoop;
+        delete node;
     }
 } // namespace Basalt
