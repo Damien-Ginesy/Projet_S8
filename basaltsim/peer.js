@@ -1,3 +1,5 @@
+let samples = []; //pairs envoyé à la couche applicative
+
 //Gestion des pairs dans la simulation
 class Peer {
   static peers = []; //Liste de TOUTE les pairs
@@ -6,7 +8,7 @@ class Peer {
 
   constructor() {
     Peer.peers.push(this);
-    this.n = Peer.i; //identifier
+    this.identifier = Peer.i; //identifier
     Peer.i++;
     this.t = 0; //cycle
   }
@@ -33,7 +35,7 @@ class Peer {
     this.hits = [];
     let bs = [];
     for (let j = 0; j < viewSize; j++) {
-      this.view.push({'n':-1});
+      this.view.push({'identifier':-1});
       this.hits.push(0);
       bs.push(Peer.peers[parseInt(Math.random()*nodeNumber)]);
     }
@@ -42,7 +44,7 @@ class Peer {
 
   //Boucle
   tick(){
-    if(this.t % resetCooldown == 0) {this.reset()}; //reset
+    if(this.t % (resetCooldown) == 0) {this.reset()}; //reset
     this.pull(this.selectPeer());
     this.push(this.selectPeer());
     this.t++;
@@ -59,12 +61,12 @@ class Peer {
   //mise a jour des vues
   updateSamples(v){
     for (let i = 0; i < viewSize; i++) {
-      let h1 = hash(this.seed[i].toString() + this.view[i].n.toString());
+      let h1 = hash(this.seed[i].toString() + this.view[i].identifier.toString());
       for (let p of v) {
-        let h2 = hash(this.seed[i].toString() + p.n.toString());
-        if(p.n == this.view[i].n){
+        let h2 = hash(this.seed[i].toString() + p.identifier.toString());
+        if(p.identifier == this.view[i].identifier){
           this.hits[i]++;
-        } else if(this.view[i].n == -1 || h2 < h1) {
+        } else if(this.view[i].identifier == -1 || h2 < h1) {
            this.view[i] = p; this.hits[i] = 1;
         }
       }
@@ -75,7 +77,7 @@ class Peer {
   reset(){
     for (let i = 0; i < resetNumber; i++) {
       this.r = (this.r%viewSize)+1;
-      //this.view[this.r-1] = this.view[parseInt(Math.random()*viewSize)]; //sample
+      if(this.identifier == target) samples.push(this.view[this.r-1]);
       this.seed[this.r-1] = parseInt(Math.random()*10000);
     }
     this.updateSamples(this.view);
@@ -108,7 +110,22 @@ class Peer {
     return m;
   }
 
+  static getSamplesInfection(){
+    let m = 0;
+    for (var peer of samples) {
+      if(peer.isMalicious) m++;
+    }
+    return m/samples.length;
+  }
 
+  getView(){
+    let str = "[ ";
+    for (let peer of this.view) {
+      str+= peer.identifier+" ";
+    }
+    str += "]";
+    return str;
+  }
 
   //TECHNIQUE
 
@@ -116,7 +133,7 @@ class Peer {
   getEdges() {
     let e = [];
     for (let p of this.view) {
-        e.push([this.n,p.n]);
+        e.push([this.identifier,p.identifier]);
     }
     return e;
   }
@@ -133,7 +150,7 @@ class Peer {
     let e = [];
     for (let p1 of this.peers) {
       for (let p2 of p1.view) {
-          e.push([p1.n, p2.n]);
+          e.push([p1.identifier, p2.identifier]);
       }
     }
     return e;

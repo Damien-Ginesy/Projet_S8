@@ -1,6 +1,5 @@
 //Pour tracer des graphs avec des noeuds et des liens
 
-let lowerY = window.innerHeight; //hauteur du graph pour scroll
 let infectedNode = []; //liste des id des malicieux pour les afficher en violet
 class Graph {
   static canvas;
@@ -13,7 +12,16 @@ class Graph {
   static init() {
     this.canvas = document.getElementById('canvas');
     this.ctx = this.canvas.getContext('2d');
+
+    this.canvas.width = 700;
+    this.canvas.height  = 700;
+
+    //parametre graphiques
+    this.radius = 4*nodeNumber; //rayon du cercle
+    this.offset = 20;
+
     this.resize();
+
     this.nodes = [];
     this.edges = [];
     this.i = 0;
@@ -27,8 +35,6 @@ class Graph {
     let x;
     let y;
 
-    let offset = 20;
-
     //Modes graphiques
     switch (graphMode) {
 
@@ -41,19 +47,17 @@ class Graph {
         y = parseInt(i / maxNodeOnLine)*pasY;
         let delta = ((y/pasY)%2)*pasX/2;
         x = x + delta;
-        canvas_width = 1.1 * (maxNodeOnLine * pasX) + 1.5 * offset;
         break;
 
       case "circle": //cercle
-        let r = 4*nodeNumber; //rayon du cercle
+        let r = this.radius;
         let c = {'x':r, 'y': r}; //centre du cercle
 
         if(i == target){ // the target
           x = c.x;
           y = c.y;
         } else {
-          let j = i;
-          if(i>10) j--;
+          let j = i; if(i>target) j--;
 
           let alpha = Math.PI * 2 * (parseInt(j)-1)/(nodeNumber-1);
           let c = {'x':r, 'y': r}; //centre du cercle
@@ -61,15 +65,13 @@ class Graph {
           y = Math.cos(alpha)*r + c.y;
 
         }
-        canvas_width = 2.1 * (r) + 1.5 * offset;
         break;
 
     }
 
-    x+=offset; y+=offset;
+    x+=this.offset; y+=this.offset;
 
     this.nodes.push({ 'x': x, 'y': y}); //On ajoute le noeud à la liste
-    lowerY = Math.max(lowerY, y); //Recalcul de la hauteur
   }
 
   //Creation d'arete
@@ -80,7 +82,6 @@ class Graph {
   //Affichage d'une frame
   static draw(){
     this.clear(); //On efface le graph
-    this.resize(); //On resize la fenetre de dessin
 
     let orig = []; //liste des noeuds origine d'une arete
     let dest = []; //liste des noeuds destination d'une arete
@@ -123,14 +124,14 @@ class Graph {
 
   //Redimensionnement de la fenetre de dessin
   static resize(){
-    //this.canvas.width = window.innerWidth;
-    //this.canvas.height = lowerY+200;
-    //this.canvas.style.height = this.canvas.height + "px;";
-    //this.ctx.translate(100, 100);
+    this.scale = 700/(2*this.radius + 2*this.offset);
+    let s = this.scale;
+    this.ctx.resetTransform();
+    this.ctx.scale(s, s);
   }
 
   //Effacement de la fenetre de dessin
   static clear(){
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.canvas.width/this.scale, this.canvas.height/this.scale);
   }
 }

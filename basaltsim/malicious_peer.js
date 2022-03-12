@@ -5,7 +5,7 @@ class Malicous extends Peer {
   constructor() {
     super();
     Malicous.maliciousPeers.push(this);
-    infectedNode.push(this.n);
+    infectedNode.push(this.identifier);
   }
 
   init(){
@@ -21,7 +21,7 @@ class Malicous extends Peer {
   }
 
   tick(){
-    let spam = 10;
+    let spam = 1;
     for (var i = 0; i < spam; i++) {
         this.push(this.selectPeer());
     }
@@ -32,7 +32,12 @@ class Malicous extends Peer {
       peer.tick();
     }
   }
+  pull(p){
+    p.onpull(this);
 
+    //Pour compatibilité avec les naifs
+    return this.view[parseInt(Math.random()*viewSize)];
+  }
   updateSamples(v){/* rien */}
   reset(){ /* rien */}
   onpush(p, v){ /* rien */}
