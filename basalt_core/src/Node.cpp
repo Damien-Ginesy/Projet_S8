@@ -2,8 +2,7 @@
 
 namespace Basalt
 {
-
-    void Node::updateSamples(const Array<NodeId>& candidates){
+      void Node::updateSamples(const Array<NodeId>& candidates){
          for(uint32_t i=0; i<_view.size() ; ++i){
               uint32_t currentHash = RankFunc(_view[i].seed, _view[i].id);
              for (NodeId p : candidates) {
@@ -28,7 +27,6 @@ namespace Basalt
         return _view[p].id;
     }  
 
-    
     void Node::update(Hash<HashSize> (*h)(const NodeId&, uint32_t seed)) {
       NodeId p = selectPeer();
       NodeId q = selectPeer();
