@@ -105,6 +105,7 @@ function setParamHTML(){
   document.getElementById('shape').value = graphMode;
 }
 
+//Autre trucs utile
 function getMs(){
   return (new Date).getSeconds()*1e3 + (new Date).getMilliseconds();
 }
