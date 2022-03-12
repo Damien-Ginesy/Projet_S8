@@ -17,7 +17,7 @@ struct Hash
     Hash(byte* hash){
         for(uint32_t i=0; i<S; i++) _data[i] = hash[i];
     }
-    static Hash<S> compute(void (*func)(byte* in, uintmax_t len, byte* out), byte* in, uintmax_t len){
+    static Hash<S> compute(void (*func)(const void* in, uintmax_t len, byte* out), const void* in, uintmax_t len){
         Hash<S> h;
         func(in, len, h._data);
         return h;
