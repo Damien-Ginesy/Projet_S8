@@ -18,3 +18,9 @@ bool JOAATHash::operator<(const Hash<4>& other) const {
 bool JOAATHash::operator==(const JOAATHash& other) const {
     return _hash == other._hash;
 }
+void JOAATHash::toString(char* output) const {
+    const char* hexSym = "0123456789abcdef";
+    uint32_t x = _hash;
+    for(int i=7; i>=0; --i, x>>=4)
+        output[i] = hexSym[x & 15];
+}

@@ -15,11 +15,5 @@ struct JOAATHash: public Hash<4>
     void fillFromBuffer(const byte* data) = delete;
     bool operator==(const JOAATHash& other) const;
 
-    friend std::ostream& operator<<(std::ostream& s, const JOAATHash& h)
-    {
-        const char* sym = "0123456789abcdef";
-        for(int i=24; i>=0; i-=8)
-            s << sym[(h._hash>>(i+4)) & 15] << sym[(h._hash >> i) & 15];
-        return s;
-    }
+    void toString(char* output) const override;
 };

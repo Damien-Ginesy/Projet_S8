@@ -41,11 +41,19 @@ struct Hash
     bool operator>=(const Hash_t& other) const {
         return (*this > other) || (*this == other);
     }
+    virtual void toString(char* output) const {
+        const char* hexSymbols = "0123456789abcdef";
+        for(int i=0; i<S; ++i)
+        {
+            output[2*i] = hexSymbols[_data[i] >> 4];
+            output[2*i+1] = hexSymbols[_data[i] & 15];
+        }
+    }
 };
 template<uint32_t S>
 std::ostream& operator<<(std::ostream& s, const Hash<S>& h){
-    const char* hexSym = "0123456789abcdef";
-    for(uint8_t x: h)
-        s << hexSym[x>>4] << hexSym[x&15];
+    char hex[2*S+1] = {};
+    h.toString(hex);
+    s << hex;
     return s;
 }
