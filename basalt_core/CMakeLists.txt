@@ -14,8 +14,8 @@ set(sources
     ${src_dir}/basalt.cpp
     ${src_dir}/misc.cpp
     ${src_dir}/JOAATHash.cpp
+    ${src_dir}/sha256.cpp
     ${src_dir}/SHA256Hash.cpp
-    lib/sha256.o
 )
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
