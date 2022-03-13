@@ -346,9 +346,10 @@ void spooky_hash_context::Final(uint64 *hash1, uint64 *hash2)
     *hash2 = h1;
 }
 
-SpookyHash::SpookyHash(const void* data, size_t len, uint64 s1, uint64 s2):
-    _hash_1(s1), _hash_2(s2)
+SpookyHash::SpookyHash(const void* data, size_t len, uint64 s1, uint64 s2)
 {
+    _hash_1 = s1;
+    _hash_2 = s2;
     spooky_hash_context::Hash128(data, len, &_hash_1, &_hash_2);
 }
 

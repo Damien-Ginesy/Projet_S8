@@ -5,8 +5,8 @@
 class SpookyHash: public Hash<16>
 {
 private:
-    uint64_t& _hash_1 = ((uint64_t*)_data)[0];
-    uint64_t& _hash_2 = ((uint64_t*)_data)[1];
+    uint64_t& _hash_1 = *(uint64_t*)_data;
+    uint64_t& _hash_2 = *(uint64_t*)(_data+8);
 
     void hex(uint64_t x, char* s) const {
         const char *hexSymbols = "0123456789abcdef";
