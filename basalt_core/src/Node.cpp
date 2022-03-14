@@ -6,7 +6,7 @@ namespace Basalt
 		for(uint32_t i=0; i<_view.size() ; ++i){
 			Hash<16>&& currentHash = _rankingFunc(_view[i].id, _view[i].seed);
 			for (const NodeId& p : candidates) {
-				if(_view[i].id == p){ _view[i].hits++; return; }
+				if(_view[i].id == p){ _view[i].hits++; continue; }
 				Hash<16>&& P_Hash = _rankingFunc(_view[i].id, _view[i].seed);
 				if(_view[i].id == NodeId::null() || P_Hash < currentHash){
 					currentHash = P_Hash;
