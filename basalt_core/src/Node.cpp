@@ -4,10 +4,10 @@ namespace Basalt
 {
 	void Node::updateSamples(const Array<NodeId>& candidates){
 		for(uint32_t i=0; i<_view.size() ; ++i){
-			Hash<4>&& currentHash = _rankingFunc(_view[i].id, _view[i].seed);
+			Hash<16>&& currentHash = _rankingFunc(_view[i].id, _view[i].seed);
 			for (const NodeId& p : candidates) {
 				if(_view[i].id == p){ _view[i].hits++; return; }
-				Hash<4>&& P_Hash = _rankingFunc(_view[i].id, _view[i].seed);
+				Hash<16>&& P_Hash = _rankingFunc(_view[i].id, _view[i].seed);
 				if(_view[i].id == NodeId::null() || P_Hash < currentHash){
 					currentHash = P_Hash;
 					_view[i].hits = 1;

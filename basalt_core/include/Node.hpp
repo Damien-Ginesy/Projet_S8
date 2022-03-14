@@ -20,7 +20,7 @@ namespace Basalt
         
         bool _isByzantine = false;
         bool _isSGX = false;
-        Hash<4> (_rankingFunc) (const NodeId&, uint32_t);
+        Hash<16> (*_rankingFunc) (const NodeId&, uint32_t);
         uint32_t _r = 0;
         uint32_t _k;
         std::random_device _rng;

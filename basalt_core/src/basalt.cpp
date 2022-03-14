@@ -1,5 +1,5 @@
 #include "basalt.hpp"
-#include "JOAATHash.hpp"
+#include "SpookyHash.h"
 
 namespace Basalt
 {
@@ -32,14 +32,13 @@ namespace Basalt
 
     uint32_t iterCount = 0;
 
-    Hash<4> hashFunc(const NodeId& id, uint32_t seed) {
-        byte data[sizeof(id)+4] = {0};
-        toLittleEndian(seed, 4, data);
-        id.deserialize(data+4);
-        return (Hash<4>)JOAATHash(data, sizeof(id)+4);
+    Hash<16> hashFunc(const NodeId& id, uint32_t seed) {
+        byte data[sizeof(id)] = {0};
+        size_t len = id.deserialize(data);
+
+        return SpookyHash(data, len, seed);
     }
     void update(){
-        std::cout << JOAATHash((byte*)&iterCount, 4) << '\n';
         iterCount++;
     }
     void reset(){
