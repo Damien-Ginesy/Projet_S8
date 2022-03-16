@@ -11,6 +11,7 @@ FROM ubuntu
 ENV TZ=Europe/Paris
 ENV DEBIAN_FRONTEND=noninteractive
 
+# creating user
 RUN \
 USER_NAME=peer; \
 USER_PASS=basalt; \
@@ -38,4 +39,14 @@ RUN apt-get install -y openssh-server > /dev/null;
 # Only the last one is considered. So use it once.
 CMD \
 /etc/init.d/ssh start; \
-sleep 100;
+sleep infinity;
+
+
+# touch /home/dev/pub_keys; \
+# chmod uga+rwx /home/dev/pub_keys; \
+# su peer -c '\
+#     ssh-keygen -t rsa -f "~/.ssh/id_rsa.pub" -q -P "" < ~/test ; \
+#     ls -a;\
+# '; \
+
+#cat ~/.ssh/id_rsa.pub >> /home/dev/pub_keys; \
