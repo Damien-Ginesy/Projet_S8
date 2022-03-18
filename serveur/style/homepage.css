@@ -1,10 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
 
-body {
+
+body{
     overflow-y: hidden; /* Hide vertical scrollbar */
     overflow-x: hidden; /* Hide horizontal scrollbar */
     margin: 0; /* pour éviter les marges */
     padding: 0;
+    background-image: url(../images/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 
@@ -14,9 +18,15 @@ h1, h2, h3, p{
     margin: 0;
 }   
 
+
+
 /* style for center-text */
 
 
+.line{
+    background-color: black;
+    width: 50%;
+}
 #center-text{
     position: absolute; /* postulat de départ */
     top: 50%; left: 50%; /* à 50%/50% du parent référent */
@@ -33,5 +43,100 @@ h1, h2, h3, p{
 }
 
 #stats{
-    margin-right: 40px;
+    margin-right: 60px;
+    font-size: 280%;
 }
+
+#reseaux{
+    margin-left: 20px;
+    font-size: 280%;
+}
+
+#enseirb{
+    font-size: 130%;
+}
+
+/* left side */
+
+#basalt_left{
+    position: absolute; /* postulat de départ */
+    top: 40%; left: -15%;
+    transform: rotate(-90deg);
+    font-size: 500%;
+    border: 7px solid black;
+    padding-left: 2%;
+    letter-spacing: 10px;
+    padding-right: 2%;
+}
+
+#basalt_right{
+    position: absolute; /* postulat de départ */
+    top: 40%; right: -15%;
+    transform: rotate(90deg);
+    font-size: 500%;
+    padding-left: 2%;
+    letter-spacing: 10px;
+    padding-right: 2%;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+    transition: color 0.3s ease-in-out;
+}
+
+a:hover{
+    color: grey;
+}
+
+
+#triangle-code{
+    position: absolute;
+    z-index: -2;
+    display : inline-block;
+    height : 0;
+    width : 0;
+    border-top : 300px solid #B0C3F8;
+    border-right : 300px solid transparent;
+    border-left : 700px solid transparent;
+    top: 222px;
+    left: 150px;
+}
+
+#brush{
+    position: absolute;
+    z-index: -1;
+    top: 80px;
+    left: 500px;
+}
+
+#moon1{
+    position: absolute;
+    opacity: 31%;
+    left: 100px;
+    top: -100px;
+    width: 20%
+}
+
+#moon2{
+    position: absolute;
+    opacity: 31%;
+    top: 400px;
+    left: 1200px;
+    width: 20%
+}
+
+#rectangle {
+    z-index: -3;
+    position: relative;
+    width: 97%;
+    height: 696px;
+    top: 20px;
+    left: 20px;
+
+    background: white;
+    background-image: url(../images/vintage.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+   
