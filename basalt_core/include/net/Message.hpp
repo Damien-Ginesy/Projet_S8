@@ -27,7 +27,20 @@ namespace Basalt
             Header _header;
             std::vector<uint8_t> _payload;
         public:
+            Message(MessageType type);
+            // shift operator for numbers
+            Message& operator<<(uint8_t b);
+            Message& operator<<(uint16_t b);
+            Message& operator<<(uint32_t b);
+            Message& operator<<(uint64_t b);
+            Message& operator>>(uint8_t& b);
+            Message& operator>>(uint16_t& b);
+            Message& operator>>(uint32_t& b);
+            Message& operator>>(uint64_t& b);
+
             uint32_t size() const { return _payload.size()+sizeof(_header); }
+            auto begin() { return _payload.begin(); }
+            auto end() { return _payload.end(); }
         };
     } // namespace net
 } // namespace Basalt

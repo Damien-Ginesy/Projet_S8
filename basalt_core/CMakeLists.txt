@@ -3,7 +3,8 @@ project(basalt_core VERSION 0.1.0)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(CMAKE_CXX_STANDARD 17)
-include_directories("./include")
+
+include_directories(include)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
@@ -20,6 +21,7 @@ set(core_sources
 )
 set(net_sources
     ${src_dir}/net/basalt_net.cpp
+    ${src_dir}/net/Message.cpp
 )
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
@@ -27,4 +29,7 @@ add_library(basalt_core ${core_sources})
 add_library(basalt_net ${net_sources})
 
 add_executable(test test.cpp)
-target_link_libraries(test core)
+target_link_libraries(test basalt_core)
+
+add_executable(net_test net_test.cpp)
+target_link_libraries(net_test basalt_net)
