@@ -8,7 +8,7 @@ include_directories("./include")
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(src_dir "${CMAKE_SOURCE_DIR}/src")
-set(sources
+set(core_sources
     ${src_dir}/NodeId.cpp
     ${src_dir}/Node.cpp
     ${src_dir}/basalt.cpp
@@ -18,9 +18,13 @@ set(sources
     ${src_dir}/SHA256Hash.cpp
     ${src_dir}/SpookyHash.cpp
 )
+set(net_sources
+    ${src_dir}/net/basalt_net.cpp
+)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
-add_library(basalt_core ${sources})
+add_library(basalt_core ${core_sources})
+add_library(basalt_net ${net_sources})
 
 add_executable(test test.cpp)
-target_link_libraries(test basalt_core)
+target_link_libraries(test core)

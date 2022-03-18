@@ -1,6 +1,6 @@
 #include <iostream>
 #include <asio.hpp>
-#include <basalt_net.hpp>
+#include <net/basalt_net.hpp>
 
 
 void Basalt::net::say_hello(){

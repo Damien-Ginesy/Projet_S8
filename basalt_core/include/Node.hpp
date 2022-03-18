@@ -25,10 +25,8 @@ namespace Basalt
         uint32_t _k;
         std::random_device _rng;
 
-        void updateSamples(const Array<NodeId>& candidates); // update our view
         /* leave empty for now */
         void pull(NodeId); // pull the view from another node
-        void push(NodeId); // push our view to someone else
         /* =================== */
         NodeId selectPeer(); // select someone in our view based on its hit counter
         uint32_t generateSeed(); // gen a pseudo random seed
@@ -37,6 +35,8 @@ namespace Basalt
         Node(const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset, Hash<4> (*)(NodeId, uint32_t),
             bool isByzantine=false, bool isSGX=false);
         Array<NodeId> reset();
+        void updateSamples(const Array<NodeId>& candidates); // update our view
+        void push(NodeId); // push our view to someone else
         void update();
     };
     
