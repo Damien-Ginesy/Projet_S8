@@ -34,9 +34,9 @@ namespace Basalt
 
     Hash<16> hashFunc(const NodeId& id, uint32_t seed) {
         byte data[sizeof(id)] = {0};
-        size_t len = id.deserialize(data);
+        id.serialize(data);
 
-        return SpookyHash(data, len, seed);
+        return SpookyHash(data, NodeId::dataSize, seed);
     }
     void update(){
         iterCount++;

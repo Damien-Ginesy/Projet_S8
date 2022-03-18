@@ -32,4 +32,4 @@ add_executable(test test.cpp)
 target_link_libraries(test basalt_core)
 
 add_executable(net_test net_test.cpp)
-target_link_libraries(net_test basalt_net)
+target_link_libraries(net_test basalt_net basalt_core)
