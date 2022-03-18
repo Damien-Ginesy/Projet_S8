@@ -6,9 +6,10 @@ namespace Basalt
     struct NodeId
     {
         uint32_t id;
-        size_t deserialize(uint8_t* output) const;
+        void serialize(uint8_t* output) const;
+        static NodeId deserialize(const uint8_t* input);
         bool operator==(const NodeId& other) const;
-        constexpr size_t dataSize() const { return 4; }
+        static constexpr size_t dataSize = 4;
         static NodeId null() { return NodeId{0}; }
     };
     
