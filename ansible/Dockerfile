@@ -26,7 +26,7 @@ rm password.txt;
 RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
 
 # --- basic tools
-RUN apt-get install -y build-essential python3 python curl grep net-tools iputils-ping > /dev/null;
+RUN apt-get install -y build-essential python3 python curl grep net-tools iputils-ping zip > /dev/null;
 
 # --- pip
 RUN \
@@ -52,9 +52,15 @@ CMD \
 cd ~;\
 echo "basalt" > password.txt; \
 mkdir .ssh; \
-ssh-keygen -t rsa -f "/home/peer/.ssh/id_rsa" -q -P ""; \
-sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.2; \
-sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.3; \
+ssh-keygen -t rsa -f "/home/peer/.ssh/id_rsa" -q -P "" > /dev/null; \
+sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.2 > /dev/null 2> /dev/null; \
+sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.3 > /dev/null 2> /dev/null; \
+mkdir /home/peer/basalt_project; \
+cp  /home/dev/project_example.c project_example.c; \
+cp  /home/dev/Makefile Makefile; \
+zip /home/peer/basalt_project/src.zip project_example.c Makefile > /dev/null; \
+ansible-playbook /home/dev/send_src.yaml; \
+ansible all -a "bash -c '/home/peer/basalt_project/prog;'"; \
 bash
 
 # echo "yes" > ~/password; \
