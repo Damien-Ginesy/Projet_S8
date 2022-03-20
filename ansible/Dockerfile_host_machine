@@ -1,0 +1,52 @@
+# Dockfile documentation
+# https://docs.docker.com/engine/reference/builder/
+
+# Ansible documentation
+# https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+
+# It must be the first command (except for ARG)
+FROM ubuntu
+
+# environment
+ENV TZ=Europe/Paris
+ENV DEBIAN_FRONTEND=noninteractive
+
+# creating user
+RUN \
+USER_NAME=peer; \
+USER_PASS=basalt; \
+echo "$USER_PASS" > password.txt; \
+echo "$USER_PASS" >> password.txt; \
+useradd -m "$USER_NAME"; \
+passwd peer < password.txt > /dev/null; 2> /dev/null;\
+rm password.txt;
+
+# Installing
+# --- update & upgrade
+RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
+
+# --- basic tools
+RUN apt-get install -y build-essential python3 python curl grep net-tools iputils-ping zip > /dev/null;
+
+# --- pip
+RUN \
+apt-get install -y python3-pip;
+
+# --- ssh server
+RUN apt-get install -y openssh-server > /dev/null;
+
+# CMD is the default command that is going to be executed in the startup of every exection.
+# Only the last one is considered. So use it once.
+CMD \
+/etc/init.d/ssh start; \
+sleep infinity;
+
+
+# touch /home/dev/pub_keys; \
+# chmod uga+rwx /home/dev/pub_keys; \
+# su peer -c '\
+#     ssh-keygen -t rsa -f "~/.ssh/id_rsa.pub" -q -P "" < ~/test ; \
+#     ls -a;\
+# '; \
+
+#cat ~/.ssh/id_rsa.pub >> /home/dev/pub_keys; \

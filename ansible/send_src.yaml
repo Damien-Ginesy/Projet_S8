@@ -1,0 +1,13 @@
+---
+- name : deploy
+  hosts : all
+  tasks :
+    - name: Send src to all hosts
+      ansible.builtin.copy:
+        src: /home/peer/basalt_project/src.zip
+        dest: /home/peer/src.zip
+        mode: 0644
+
+    - name : compile
+      command : "bash -c 'cd /home/peer; rm -rf basalt_project; mkdir basalt_project; mv src.zip basalt_project/src.zip; cd basalt_project; unzip src.zip; make;./prog;' "
+
