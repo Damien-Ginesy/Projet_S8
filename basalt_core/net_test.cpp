@@ -1,18 +1,19 @@
+#include <asio.hpp>
+#include <NodeId.hpp>
 #include <net/Message.hpp>
-#include <iostream>
-#include <stdio.h>
+#include <thread>
+#include <list>
+
 
 int main(int argc, char const *argv[])
 {
-    Basalt::NodeId i = {0xAABBCCDD};
-    Basalt::net::Message m(Basalt::net::PULL_REQ);
-    m << i;
-    for(uint8_t b: m) printf("%x", b);
-    std::cout << '\n'; 
-    Basalt::NodeId i2;
-    m >> i2;
-    printf("%x\n", i2.id);
-    std::cout << m.payloadSize() << '\n';
+    std::list<int> L;
+    L.push_back(0);
+    auto i = L.begin();
+    L.push_front(1);
+    auto j = L.begin();
+    L.erase(j);
 
+    printf("%d\n", *i);
     return 0;
 }
