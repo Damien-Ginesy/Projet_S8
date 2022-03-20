@@ -45,18 +45,6 @@ namespace Basalt
             out = ((uint64_t)a << 32) | b;
             return *this;
         }
-        Message& Message::operator<<(const NodeId& id){
-            _payload.resize(_header.size+NodeId::dataSize);
-            id.serialize(_payload.data() + _header.size);
-            _header.size = _payload.size();
-            return *this;
-        }
-        Message& Message::operator>>(NodeId& id){
-            _header.size -= NodeId::dataSize;
-            id = NodeId::deserialize(_payload.data()+_header.size);
-            _payload.resize(_header.size);
-            return *this;
-        }
 
     } // namespace net
     

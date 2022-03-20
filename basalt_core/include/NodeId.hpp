@@ -1,5 +1,6 @@
 #pragma 
 #include "misc.h"
+#include <net/Message.hpp>
 
 namespace Basalt
 {
@@ -12,6 +13,10 @@ namespace Basalt
         static constexpr size_t dataSize = 4;
         static NodeId null() { return NodeId{0}; }
     };
-    
+
+    net::Message& operator<<(net::Message& m, const NodeId& id){
+        m << id.id;
+        return m;
+    }    
 } // namespace Basalt
 
