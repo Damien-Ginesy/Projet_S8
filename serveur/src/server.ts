@@ -5,6 +5,7 @@ const fs = require('fs')
 const port = 3000;
 
 app.set('views','./views');
+app.use(express.static(__dirname + '/../public'));
 app.set('view engine','pug');
 
 if(process.argv.length !== 4){

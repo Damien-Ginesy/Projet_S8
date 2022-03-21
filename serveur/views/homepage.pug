@@ -1,14 +1,22 @@
 extends layout
 
+
+block head
+    link(href='../style/homepage.css' rel="stylesheet")
 block title
     title Basalt Serveur Supervision
-
+    
 block body
-    nav.navbar.navbar-expand-lg
-        .container-fluid
-            a.navbar-brand
-            a.position.navbar-brand Network Supervisor
+    div
+        img#background(src="/images/background.jpg")
+        img#rectangle(src="/images/vintage.png")
 
-            button.navbar-toggler(type='button', data-bs-toggle='collapse', data-bs-target='#navbarNavAltMarkup', aria-controls='navbarNavAltMarkup', aria-expanded='false', aria-label='Toggle navigation')
-                span.navbar-toggler-icon
-            #navbarNavAltMarkup.collapse.navbar-collapse
+    #center-text
+        #menu
+            a(href="#")
+                h1#stats Statistiques
+            a(href="#")
+                h1#reseaux Réseau
+        hr.line
+        h2#enseirb ENSEIRB-MATMECA
+    // #triangle-code
