@@ -1,27 +1,45 @@
-import {Schema, model, Model, Document} from "mongoose";
+import {Schema, model, Model} from "mongoose";
 import mongoose from "mongoose";
-
-
-interface InfoNoeuds extends Document{
-    vue: Array<string>;
-}
+import {InfoNoeud} from "./Interface/InfoNoeud";
 
  export class DatabaseAccess {
 
     private noeudSchema:Schema = new Schema({
-        vue: [{type: String, required: true}]
+        nodeID:{
+            port:{type:String, required:true},
+            adresseReelle:{type:String, required:true},
+            adresseVirtuelle:{type:String, required:true},
+        },
+        vue:[{
+            nodeID:{
+                port:{type:String, required:true},
+                adresseReelle:{type:String, required:true},
+                adresseVirtuelle:{type:String, required:true},
+            },
+            seed:{type:Number, required: true},
+            hitCount:{type:Number, required:true},
+        }],
+        age:{type:Number, required:true},
+        malicieux:{type:Boolean, required:true},
     });
 
-    private noeudModel:Model<InfoNoeuds> = model<InfoNoeuds>('Info_Noeuds', this.noeudSchema);
+    private noeudModel:Model<InfoNoeud> = model<InfoNoeud>('Info_Noeuds', this.noeudSchema);
 
     constructor(user:string, password:string) {
         const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
         this.openDb(urlmongo);
     }
 
-    addInfo(vue:Array<string>){
-        const noeud:InfoNoeuds = new this.noeudModel({
-            vue:vue
+    addInfo(infoNoeud:string){
+        const infoNoeudData = JSON.parse(infoNoeud);
+        const noeud:InfoNoeud = new this.noeudModel({
+            nodeID:{
+                port: infoNoeudData.nodeID.port,
+                adresseReelle:infoNoeudData.nodeID.adresseReelle,
+                adresseVirtuelle:infoNoeudData.nodeID.adresseVirtuelle,
+            },
+            age:infoNoeudData.age,
+            malicieux: infoNoeudData.malicieux,
         });
         noeud.save();
     }
