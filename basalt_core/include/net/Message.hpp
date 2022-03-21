@@ -15,7 +15,7 @@ namespace Basalt
         typedef enum {
             PULL_REQ,
             PUSH_REQ,
-            PULL_RESP=0x10, // the left hex digit indicates it's a response
+            PULL_RESP, // the left hex digit indicates it's a response
             PUSH_RESP
         } MessageType;
 
@@ -70,7 +70,7 @@ namespace Basalt
             auto begin() { return _payload.begin(); }
             auto end() { return _payload.end(); }
             uint8_t* data() { return _payload.data(); }
-            friend asio::ip::tcp::socket& operator<<(asio::ip::tcp::socket&, Message&);
+            friend asio::ip::tcp::socket& operator<<(asio::ip::tcp::socket&, const Message&);
         };
     } // namespace net
 } // namespace Basalt

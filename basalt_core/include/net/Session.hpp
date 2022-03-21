@@ -30,9 +30,6 @@ namespace Basalt
                 return ec;
             }
             void on_message(){
-                for(uint8_t x: _msg)
-                    std::cout << x;
-                std::cout << '\n';
                 // call the callback (if defined)
                 MessageType t = _msg.get_type();
                 bool respond = _handlers[t] &&
@@ -42,28 +39,26 @@ namespace Basalt
                     this->_peer << this->_msg;
                 close();
             }
+            void async_wait(){
+                auto waitHandler = [this](asio::error_code ec){
+                    if(!ec){
+                        this->_msg << this->_peer;
+                        this->on_message();
+                    }
+                    else
+                    throw ec.message();
+                };
+                _peer.async_wait(_peer.wait_read, waitHandler);
+            }
         public:
             Session(asio::ip::tcp::socket&& peer, bool (**f)(Message&)): _peer(std::move(peer))
             {
                 for(int i=0; i<N_MSG_TYPES; ++i)
                     _handlers[i] = f[i];
-                auto waitHandler = [this](asio::error_code ec){
-                    if(ec) {
-                        std::cerr << "Wait: " << ec.message() << std::endl;
-                        return;
-                    }
-                    try
-                    {
-                        this->_msg << this->_peer;
-                        this->on_message();
-                    }
-                    catch(const std::string& e)
-                    {
-                        std::cerr << "Error reading message: " << e << '\n';
-                    }
-                    
-                };
-                _peer.async_wait(_peer.wait_read, waitHandler);
+                async_wait(); // async wait for data to arrive on the socket
+            }
+            void send_message(const Message& msg){
+                this->_peer << msg;
             }
             // void* operator new(size_t) { return std::malloc(sizeof(Session)); }
             ~Session() { }

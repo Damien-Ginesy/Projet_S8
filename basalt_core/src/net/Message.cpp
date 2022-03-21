@@ -84,7 +84,7 @@ namespace Basalt
             _header.size += len;
             return *this;
         }
-        tcp::socket& operator<<(asio::ip::tcp::socket& sock, Message& msg){
+        tcp::socket& operator<<(asio::ip::tcp::socket& sock, const Message& msg){
             asio::error_code ec;
             uint8_t buffer[sizeof(Header)];
             size_t headerSize =  msg._header.toBytes(buffer);

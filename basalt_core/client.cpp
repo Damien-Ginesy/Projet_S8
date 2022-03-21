@@ -1,5 +1,12 @@
 #include <net/Message.hpp>
+#include <net/Session.hpp>
 #include <iostream>
+
+bool on_resp(Basalt::net::Message& resp){
+    for(char b: resp) std::cout << b;
+    std::cout << '\n';
+    return false;
+}
 
 int main(int argc, char const *argv[])
 {
@@ -17,10 +24,32 @@ int main(int argc, char const *argv[])
         std::cerr << ec.message() << std::endl;
         return EXIT_FAILURE;
     }
+    bool (*f[N_MSG_TYPES])(net::Message&) = {nullptr};
+    f[net::PULL_RESP] = on_resp;
     std::cout << "Connected" << '\n';
-    sock << msg;
-    net::Message resp;
-    resp << sock;
-    std::cout << (char*)resp.data() << '\n';
+    net::Session *session;
+    try
+    {
+        session = new net::Session(std::move(sock), f); 
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    std::thread t([&ctx](){ ctx.run(); });
+    try
+    {
+        session->send_message(msg);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    std::getchar();
+    ctx.stop();
+    t.join();
+    
     return 0;
 }
