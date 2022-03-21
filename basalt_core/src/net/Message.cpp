@@ -4,6 +4,28 @@ namespace Basalt
 {
     namespace net
     {
+        using namespace asio::ip;
+        static asio::error_code read_n(tcp::socket& sock, size_t n, uint8_t* out){
+            uint32_t nRead=0;
+            asio::error_code ec;
+            while(nRead<n){
+                sock.wait(sock.wait_read);
+                nRead += sock.read_some(asio::buffer(out+nRead, n-nRead), ec);
+                if(ec) break;
+            }
+            return ec;
+        }
+        static asio::error_code write_n(tcp::socket& sock, size_t n, const uint8_t* in){
+            uint32_t nWritten=0;
+            asio::error_code ec;
+            while(nWritten<n){
+                sock.wait(sock.wait_write);
+                nWritten += sock.write_some(asio::buffer(in+nWritten, n-nWritten), ec);
+                if(ec) break;
+            }
+            return ec;
+        }
+        Message::Message() { _header.size=0; }
         Message::Message(MessageType t): _header({t, 0}) {}
         Message& Message::operator<<(uint8_t b){
             _payload.push_back(b);
@@ -44,6 +66,31 @@ namespace Basalt
             *this >> a >> b;
             out = ((uint64_t)a << 32) | b;
             return *this;
+        }
+        Message& Message::operator<<(tcp::socket& sock){
+            asio::error_code ec;
+            uint8_t buffer[sizeof(Header)];
+            if(ec = read_n(sock, Header::dataSize, buffer)) throw ec.message();
+            _header = Header::fromBytes(buffer);
+            _payload.resize(_header.size);
+            if(ec = read_n(sock, _header.size, _payload.data()))
+                throw ec.message();
+            return *this;
+        }
+        Message& Message::operator<<(const char* str){
+            unsigned len = strlen(str);
+            _payload.resize(_header.size + len);
+            std::memcpy(_payload.data()+_header.size, str, len);
+            _header.size += len;
+            return *this;
+        }
+        tcp::socket& operator<<(asio::ip::tcp::socket& sock, Message& msg){
+            asio::error_code ec;
+            uint8_t buffer[sizeof(Header)];
+            size_t headerSize =  msg._header.toBytes(buffer);
+            if(ec = write_n(sock, headerSize, buffer)) throw ec.message();
+            if(ec = write_n(sock, msg._header.size, msg._payload.data()));
+            return sock;
         }
 
     } // namespace net

@@ -3,6 +3,7 @@
 #include <net/basalt_net.hpp>
 #include <list>
 #include <mutex>
+#include <net/Session.hpp>
 
 namespace Basalt
 {

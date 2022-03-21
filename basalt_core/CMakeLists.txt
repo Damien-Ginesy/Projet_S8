@@ -32,5 +32,8 @@ target_link_libraries(basalt_core basalt_net)
 add_executable(test test.cpp)
 target_link_libraries(test basalt_core)
 
-add_executable(net_test net_test.cpp)
-target_link_libraries(net_test basalt_net basalt_core)
+add_executable(server server.cpp)
+target_link_libraries(server basalt_core)
+
+add_executable(client client.cpp)
+target_link_libraries(client basalt_core)
