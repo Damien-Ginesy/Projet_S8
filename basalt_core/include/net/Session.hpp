@@ -12,6 +12,7 @@ namespace Basalt
         private:
             asio::ip::tcp::socket _peer;
             Message _msg;
+            bool (*_handlers[N_MSG_TYPES])(Message&) = {nullptr};
             void close(){
                 _peer.close();
                 delete this;
@@ -32,13 +33,20 @@ namespace Basalt
                 for(uint8_t x: _msg)
                     std::cout << x;
                 std::cout << '\n';
-                // write the received message back into the socket
-                this->_peer << this->_msg;
+                // call the callback (if defined)
+                MessageType t = _msg.get_type();
+                bool respond = _handlers[t] &&
+                    _handlers[t](_msg);
+                // depending on the message type, send back a response
+                if(respond)
+                    this->_peer << this->_msg;
                 close();
             }
         public:
-            Session(asio::ip::tcp::socket&& peer): _peer(std::move(peer))
+            Session(asio::ip::tcp::socket&& peer, bool (**f)(Message&)): _peer(std::move(peer))
             {
+                for(int i=0; i<N_MSG_TYPES; ++i)
+                    _handlers[i] = f[i];
                 auto waitHandler = [this](asio::error_code ec){
                     if(ec) {
                         std::cerr << "Wait: " << ec.message() << std::endl;

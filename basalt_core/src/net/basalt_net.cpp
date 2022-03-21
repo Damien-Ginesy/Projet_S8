@@ -11,7 +11,7 @@ namespace Basalt
     {
         using namespace asio::ip;
 
-        static void (*handlers[4])(Message&) = {nullptr}; // callback functions to call on incoming messages        
+        static bool (*handlers[4])(Message&) = {nullptr}; // callback functions to call on incoming messages        
         static std::atomic_bool keepGoing = true;
         static uint16_t port;
         static std::mutex mutex;
@@ -30,8 +30,7 @@ namespace Basalt
         /* Handle new connected peer */
         void on_connect(asio::error_code ec, tcp::socket peer){
             /* Handle incoming request here */
-            std::thread reqHandler(on_message, std::move(peer));
-            reqHandler.detach();
+            new Session(std::move(peer), handlers);
             /* Accept next connections, if any */
             if(keepGoing) accept_connections();
         }
@@ -41,7 +40,7 @@ namespace Basalt
         }
 
 
-        void net_init(void (**f)(Message&), uint16_t lPort){
+        void net_init(bool (**f)(Message&), uint16_t lPort){
             for(int i=0; i<N_MSG_TYPES; i++) handlers[i] = f[i];
             port = lPort;
             tcp::endpoint ep(tcp::v4(), port);

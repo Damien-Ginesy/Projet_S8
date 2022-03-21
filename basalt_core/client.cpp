@@ -5,7 +5,7 @@ int main(int argc, char const *argv[])
 {
     using namespace Basalt;
     net::Message msg(net::PULL_REQ);
-    msg << "Hello there\n";
+    msg << "Hello there";
 
     asio::io_context ctx;
     using namespace asio::ip;
@@ -19,8 +19,8 @@ int main(int argc, char const *argv[])
     }
     std::cout << "Connected" << '\n';
     sock << msg;
-    net::Message msg2;
-    msg2 << sock;
-    std::cout << (char*)msg2.data() << '\n';
+    net::Message resp;
+    resp << sock;
+    std::cout << (char*)resp.data() << '\n';
     return 0;
 }
