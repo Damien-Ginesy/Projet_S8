@@ -3,6 +3,7 @@
 #include <iostream>
 #include <net/Message.hpp>
 #include <map>
+#include <list>
 
 namespace Basalt
 {
@@ -15,21 +16,23 @@ namespace Basalt
         private:
             Message _msg;
             CallbackMap _callbacks;
+            bool _isOpen = true;
             void close();
             void on_message();
             void async_wait();
         public:
             asio::ip::tcp::socket _peer;
-            // static void* operator new(size_t s) { 
-            //     std::cout << "Alloc" << '\n';
-            //     return std::malloc(s); }
-            // static void operator delete(void *p){
-            //     std::cout << "Dealloc" << '\n';
-            //     std::free(p);
-            // }
             Session(asio::ip::tcp::socket&& peer, CallbackMap& callbacks);
             asio::error_code send_message(const Message& msg);
+            bool isOpen() const { return _isOpen; }
             ~Session();
+        };
+        struct SessionManager{
+        private:
+            std::list<Session> _sessions;
+            void clean();
+        public:
+            std::list<Session>::iterator open_new(asio::ip::tcp::socket&&, CallbackMap& callbacks);
         };
     } // namespace net
     

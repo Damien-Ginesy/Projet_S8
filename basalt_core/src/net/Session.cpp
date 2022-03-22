@@ -3,13 +3,12 @@
 namespace Basalt{
     namespace net
     {
-        void Session::close(){
-            _peer.close();
-            delete this;
-        }
         void Session::on_message(){
             MessageType t = _msg.get_type();
-            if(t==SESSION_END){ close(); return; }
+            if(t==SESSION_END){ 
+                _isOpen = false;
+                return;
+            }
             auto handler = _callbacks.find(t);
             if(handler != _callbacks.end())
                 handler->second(_msg);
@@ -28,7 +27,8 @@ namespace Basalt{
                     catch(const asio::error_code& e)
                     {
                         if(e.value() == 2){ // eof error: socket closed on the other end
-                            close(); return;
+                            this->_isOpen = false;
+                            return;
                         }
                         else throw e;
                     }
@@ -48,7 +48,22 @@ namespace Basalt{
         asio::error_code Session::send_message(const Message& msg){
             return _msg.writeTo(_peer);
         }
-        Session::~Session() { }
+        Session::~Session() { _peer.close(); }
+
+        using namespace asio::ip;
+        /* Session manager */
+        std::list<Session>::iterator SessionManager::open_new(tcp::socket&& sock, CallbackMap& callbacks){
+            clean();
+            _sessions.emplace_front(std::move(sock), callbacks);
+            return _sessions.begin();
+        }
+        void SessionManager::clean(){
+            for(auto it=_sessions.begin(); it!=_sessions.end(); )
+            {
+                if(it->isOpen()) it++;
+                else it = _sessions.erase(it);
+            }
+        }
     } // namespace net
     
 }
