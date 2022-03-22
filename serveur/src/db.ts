@@ -16,6 +16,7 @@ interface InfoNoeuds extends Document{
 
     constructor(user:string, password:string) {
         const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
+        /*const urlmongo = 'mongodb+srv://thomas:9jqtaEAfBloSTSam@cluster0.tr1ew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';*/
         this.openDb(urlmongo);
     }
 
