@@ -101,11 +101,11 @@ a:hover{
     display : inline-block;
     height : 0;
     width : 0;
-    border-top : 300px solid #B0C3F8;
-    border-right : 300px solid transparent;
-    border-left : 700px solid transparent;
-    top: 222px;
-    left: 180px;
+    border-top : 30vh solid #B0C3F8;
+    border-right : 15vw solid transparent;
+    border-left : 53vw solid transparent;
+    top: 40vh;
+    left: 8vw;
 }
 
 #brush{
