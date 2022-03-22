@@ -7,26 +7,15 @@ namespace Basalt{
             _peer.close();
             delete this;
         }
-        asio::error_code Session::read_n(size_t n, uint8_t* dest){
-            uint32_t nRead = 0;
-            asio::error_code ec;
-            while (nRead < n)
-            {
-                _peer.wait(_peer.wait_read);
-                nRead += _peer.read_some(
-                    asio::buffer(dest+nRead, n-nRead), ec);
-                if(ec) break;
-            }
-            return ec;
-        }
         void Session::on_message(){
             MessageType t = _msg.get_type();
             if(t==SESSION_END){ close(); return; }
             auto handler = _callbacks.find(t);
             if(handler != _callbacks.end())
                 handler->second(_msg);
+            asio::error_code ec;
             if(_msg.get_type() & 0xf0) /* if _msg is a reponse message */
-                _peer << _msg;
+                if(ec = _msg.writeTo(_peer)) throw ec;
             async_wait();
         }
         void Session::async_wait(){
@@ -34,7 +23,7 @@ namespace Basalt{
                 if(!ec){
                     try
                     {
-                        this->_msg << this->_peer;
+                        this->_msg.readFrom(this->_peer);
                     }
                     catch(const asio::error_code& e)
                     {
@@ -56,8 +45,8 @@ namespace Basalt{
         {
             async_wait(); // async wait for data to arrive on the socket
         }
-        void Session::send_message(const Message& msg){
-            this->_peer << msg;
+        asio::error_code Session::send_message(const Message& msg){
+            return _msg.writeTo(_peer);
         }
         Session::~Session() { }
     } // namespace net

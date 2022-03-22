@@ -1,24 +1,20 @@
+#include <asio.hpp>
+#include <thread>
 #include <iostream>
-#include <basalt.hpp>
-#include <SHA256Hash.hpp>
-#include <JOAATHash.hpp>
-#include <SpookyHash.h>
-#include <random>
-
-void a(){
-    throw "error";
-}
-void b(){ a(); }
-
 int main(int argc, char const *argv[])
 {
-    try
-    {
-        b();
-    }
-    catch(const char* e)
-    {
-        std::cerr << e << '\n';
-    }
-    
+    using namespace asio::ip;
+    asio::io_context ctx;
+    tcp::acceptor a(ctx, tcp::endpoint(tcp::v4(), 2000));
+    std::thread t([&](){
+        a.accept();
+    });
+    std::thread t2([&]() { ctx.run(); });
+
+    std::getchar();
+    ctx.stop();
+    a.~basic_socket_acceptor();
+    t2.join();
+    std::cout << "Stopping" << '\n';
+    t.join();
 }

@@ -1,5 +1,4 @@
-#include <net/Message.hpp>
-#include <net/Session.hpp>
+#include <net/basalt_net.hpp>
 #include <iostream>
 
 void on_resp(Basalt::net::Message& resp){
@@ -12,45 +11,16 @@ int main(int argc, char const *argv[])
 {
     using namespace Basalt;
     net::Message msg(net::PULL_REQ);
-    std::string s;
-    std::getline(std::cin, s);
-    msg << s;
+    msg << "Hello";
 
-    asio::io_context ctx;
-    using namespace asio::ip;
-    tcp::endpoint ep(address_v4(0x7f000001), 1337);
-    tcp::socket sock(ctx);
-    asio::error_code ec;
-    sock.connect(ep, ec);
-    if(ec){
-        std::cerr << ec.message() << std::endl;
-        return EXIT_FAILURE;
-    }
-    net::CallbackMap callbacks({{net::PULL_RESP, on_resp}});
-    std::cout << "Connected" << '\n';
-    net::Session *session;
-    try
-    {
-        session = new net::Session(std::move(sock), callbacks);
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+    net::CallbackMap callbacks {{net::PULL_RESP, on_resp}};
+    net::net_init(callbacks, 2112);
     
-    std::thread t([&ctx](){ ctx.run(); });
-    try
-    {
-        session->send_message(msg);
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
+    using namespace asio::ip;
+    net::send_request(tcp::endpoint(address_v4(0x7f000001), 1337), msg);
     
     std::getchar();
-    ctx.stop();
-    t.join();
+    net::net_finish();
     std::cout << "\033[A";
     
     return 0;

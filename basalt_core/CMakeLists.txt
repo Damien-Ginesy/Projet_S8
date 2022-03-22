@@ -26,9 +26,13 @@ set(net_sources
 )
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
+# LIBS
+
 add_library(basalt_core ${core_sources})
 add_library(basalt_net ${net_sources})
 target_link_libraries(basalt_core basalt_net)
+
+# EXEC
 
 add_executable(test test.cpp)
 target_link_libraries(test basalt_core)
@@ -38,3 +42,6 @@ target_link_libraries(server basalt_core)
 
 add_executable(client client.cpp)
 target_link_libraries(client basalt_core)
+
+add_executable(p2p_test p2p_test.cpp)
+target_link_libraries(p2p_test basalt_core)

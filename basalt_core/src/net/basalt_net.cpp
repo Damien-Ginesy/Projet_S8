@@ -17,28 +17,29 @@ namespace Basalt
         static std::mutex mutex;
         static asio::io_context context;
 
+        static std::thread contextRunner;
+        static std::thread connectionAcceptor;
         static tcp::acceptor* acceptor;
-        
 
-        static void accept_connections();
-
-
-        static void on_message(tcp::socket&& peer){
-            /* handle incoming message here */
+        tcp::socket& operator<<(tcp::socket& sock, const Message& msg){
+            asio::error_code ec = msg.writeTo(sock);
+            if(ec) throw ec;
+            return sock;
+        }
+        asio::ip::tcp::socket& operator>>(asio::ip::tcp::socket& sock, Message& msg){
+            asio::error_code ec = msg.readFrom(sock);
+            if(ec) throw ec;
+            return sock;
         }
 
-        /* Handle new connected peer */
-        void on_connect(asio::error_code ec, tcp::socket peer){
-            /* Handle incoming request here */
-            new Session(std::move(peer), handlers);
-            /* Accept next connections, if any */
-            if(keepGoing) accept_connections();
-        }
-        static void accept_connections(){
-            tcp::endpoint ep;
-            acceptor->async_accept(context, ep, on_connect);
-        }
 
+        static void accept_connections(tcp::acceptor& ac){
+            auto handler = [&](asio::error_code ec, tcp::socket peer){
+                new Session(std::move(peer), handlers);
+                if(keepGoing) accept_connections(ac);
+            };
+            ac.async_accept(handler);
+        }
 
         void net_init(CallbackMap& callbacks, uint16_t lPort){
             handlers = callbacks;
@@ -46,17 +47,24 @@ namespace Basalt
             tcp::endpoint ep(tcp::v4(), port);
             acceptor = new tcp::acceptor(context, ep);
 
-            accept_connections();
-
-            std::thread t([]() { context.run(); });
-            t.detach();
+            accept_connections(*acceptor);
+            contextRunner = std::thread([]() { context.run(); });
         }
         void net_finish(){
-            context.stop();
             keepGoing = false;
+            context.stop();
+            // acceptor->
+            contextRunner.join();
             delete acceptor;
         }
-        
+        asio::error_code send_request(const tcp::endpoint& remote, const Message& msg){
+            tcp::socket sock(context);
+            asio::error_code ec;
+            sock.connect(remote, ec);
+            if(ec) return ec;
+            Session *s = new Session(std::move(sock), handlers);
+            return msg.writeTo(s->_peer);
+        }
     } // namespace net
     
 } // namespace Basalt

@@ -13,16 +13,22 @@ namespace Basalt
         struct Session final
         {
         private:
-            asio::ip::tcp::socket _peer;
             Message _msg;
             CallbackMap _callbacks;
             void close();
-            asio::error_code read_n(size_t n, uint8_t* dest);
             void on_message();
             void async_wait();
         public:
+            asio::ip::tcp::socket _peer;
+            // static void* operator new(size_t s) { 
+            //     std::cout << "Alloc" << '\n';
+            //     return std::malloc(s); }
+            // static void operator delete(void *p){
+            //     std::cout << "Dealloc" << '\n';
+            //     std::free(p);
+            // }
             Session(asio::ip::tcp::socket&& peer, CallbackMap& callbacks);
-            void send_message(const Message& msg);
+            asio::error_code send_message(const Message& msg);
             ~Session();
         };
     } // namespace net

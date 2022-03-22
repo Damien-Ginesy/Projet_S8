@@ -19,7 +19,7 @@ namespace Basalt
             PUSH_RESP,
             SESSION_END     = 0x80
         } MessageType;
-
+        
         struct Header
         {
             MessageType type;
@@ -29,16 +29,14 @@ namespace Basalt
                     .type = (MessageType)in[0],
                     .size = (uint32_t)(in[1] | (in[2] << 8) | (in[3] << 16) | (in[4]<<24))
                 };
-            }            
+            }       
             static constexpr size_t dataSize = 5;
-
-            size_t toBytes(uint8_t* out) const {
-                out[0] = (uint8_t)type;
-                out[1] = size & 0xff;
-                out[2] = (size >> 8) & 0xff;
-                out[3] = (size >> 16) & 0xff;
-                out[4] = (size >> 24) & 0xff;
-                return Header::dataSize;
+            void toBytes(uint8_t out[]) const {
+                out[0] = (uint8_t)      type;
+                out[1] = (uint8_t)      (size & 0xff);
+                out[2] = (uint8_t)(     (size >> 8) & 0xff);
+                out[3] = (uint8_t)(     (size >> 16) & 0xff);
+                out[4] = (uint8_t)(     (size >> 24) & 0xff);
             }
         };
 
@@ -74,7 +72,9 @@ namespace Basalt
             auto begin() { return _payload.begin(); }
             auto end() { return _payload.end(); }
             uint8_t* data() { return _payload.data(); }
-            friend asio::ip::tcp::socket& operator<<(asio::ip::tcp::socket&, const Message&);
+            asio::error_code writeTo(asio::ip::tcp::socket&) const;
+            asio::error_code readFrom(asio::ip::tcp::socket&);
+
         };
     } // namespace net
 } // namespace Basalt

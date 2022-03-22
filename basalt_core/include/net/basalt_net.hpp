@@ -1,15 +1,16 @@
 #pragma once
-#include <asio.hpp>
-#include <net/Message.hpp>
-#include <NodeId.hpp>
+#include <net/Session.hpp>
 
 namespace Basalt{
     namespace net
     {
-        void net_init(void (*callbacks[])(Message&), uint16_t port);
+        void net_init(CallbackMap& callbacks, uint16_t port);
         void net_finish();
 
-        void send_request(NodeId& dest, const Message& req);
+        asio::error_code send_request(const asio::ip::tcp::endpoint& remote, const Message& req);
+        asio::ip::tcp::socket& operator<<(asio::ip::tcp::socket&, const Message&);
+        asio::ip::tcp::socket& operator>>(asio::ip::tcp::socket&, Message&);
+
     } // namespace net
     
 }

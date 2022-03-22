@@ -77,13 +77,6 @@ namespace Basalt
             _payload.resize(_header.size = 0);
         }
         Message& Message::operator<<(tcp::socket& sock){
-            asio::error_code ec;
-            uint8_t buffer[sizeof(Header)];
-            if(ec = read_n(sock, Header::dataSize, buffer)) throw ec;
-            _header = Header::fromBytes(buffer);
-            _payload.resize(_header.size);
-            if(ec = read_n(sock, _header.size, _payload.data()))
-                throw ec;
             return *this;
         }
         Message& Message::operator<<(const char* str){
@@ -96,15 +89,21 @@ namespace Basalt
         Message& Message::operator<<(const std::string& str){
             return *this << str.c_str();
         }
-        tcp::socket& operator<<(asio::ip::tcp::socket& sock, const Message& msg){
+        asio::error_code Message::writeTo(tcp::socket& sock) const{
+            asio::error_code ec;
+            uint8_t buf[Header::dataSize];
+            _header.toBytes(buf);
+            if(ec = write_n(sock, Header::dataSize, buf)) return ec;
+            return write_n(sock, _header.size, _payload.data());
+        }
+        asio::error_code Message::readFrom(asio::ip::tcp::socket& sock){
             asio::error_code ec;
             uint8_t buffer[sizeof(Header)];
-            size_t headerSize =  msg._header.toBytes(buffer);
-            if(ec = write_n(sock, headerSize, buffer)) throw ec;
-            if(ec = write_n(sock, msg._header.size, msg._payload.data()));
-            return sock;
+            if(ec = read_n(sock, Header::dataSize, buffer)) return ec;
+            _header = Header::fromBytes(buffer);
+            _payload.resize(_header.size);
+            return read_n(sock, _header.size, _payload.data());
         }
-
     } // namespace net
     
 } // namespace Basalt
