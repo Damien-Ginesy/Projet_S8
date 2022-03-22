@@ -22,6 +22,7 @@ set(core_sources
 set(net_sources
     ${src_dir}/net/basalt_net.cpp
     ${src_dir}/net/Message.cpp
+    ${src_dir}/net/Session.cpp
 )
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 

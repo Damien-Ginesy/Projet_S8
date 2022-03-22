@@ -11,7 +11,7 @@ namespace Basalt
     {
         using namespace asio::ip;
 
-        static bool (*handlers[4])(Message&) = {nullptr}; // callback functions to call on incoming messages        
+        static CallbackMap handlers; // callback functions to call on incoming messages        
         static std::atomic_bool keepGoing = true;
         static uint16_t port;
         static std::mutex mutex;
@@ -40,8 +40,8 @@ namespace Basalt
         }
 
 
-        void net_init(bool (**f)(Message&), uint16_t lPort){
-            for(int i=0; i<N_MSG_TYPES; i++) handlers[i] = f[i];
+        void net_init(CallbackMap& callbacks, uint16_t lPort){
+            handlers = callbacks;
             port = lPort;
             tcp::endpoint ep(tcp::v4(), port);
             acceptor = new tcp::acceptor(context, ep);

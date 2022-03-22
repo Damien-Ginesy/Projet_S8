@@ -15,8 +15,9 @@ namespace Basalt
         typedef enum {
             PULL_REQ,
             PUSH_REQ,
-            PULL_RESP, // the left hex digit indicates it's a response
-            PUSH_RESP
+            PULL_RESP       = 0x10, // the left hex digit indicates it's a response
+            PUSH_RESP,
+            SESSION_END     = 0x80
         } MessageType;
 
         struct Header
@@ -55,11 +56,14 @@ namespace Basalt
             Message& operator<<(uint32_t b);
             Message& operator<<(uint64_t b);
             Message& operator<<(const char* str);
+            Message& operator<<(const std::string& str);
                
             Message& operator>>(uint8_t& b);
             Message& operator>>(uint16_t& b);
             Message& operator>>(uint32_t& b);
             Message& operator>>(uint64_t& b);
+            void operator>>(char* out);
+            void operator>>(std::string& out);
 
             Message& operator<<(asio::ip::tcp::socket& sock);
 

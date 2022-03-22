@@ -2,17 +2,19 @@
 #include <net/Session.hpp>
 #include <iostream>
 
-bool on_resp(Basalt::net::Message& resp){
+void on_resp(Basalt::net::Message& resp){
     for(char b: resp) std::cout << b;
     std::cout << '\n';
-    return false;
+    resp = Basalt::net::Message(Basalt::net::SESSION_END);
 }
 
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
     net::Message msg(net::PULL_REQ);
-    msg << "Hello there";
+    std::string s;
+    std::getline(std::cin, s);
+    msg << s;
 
     asio::io_context ctx;
     using namespace asio::ip;
@@ -24,13 +26,12 @@ int main(int argc, char const *argv[])
         std::cerr << ec.message() << std::endl;
         return EXIT_FAILURE;
     }
-    bool (*f[N_MSG_TYPES])(net::Message&) = {nullptr};
-    f[net::PULL_RESP] = on_resp;
+    net::CallbackMap callbacks({{net::PULL_RESP, on_resp}});
     std::cout << "Connected" << '\n';
     net::Session *session;
     try
     {
-        session = new net::Session(std::move(sock), f); 
+        session = new net::Session(std::move(sock), callbacks);
     }
     catch(const std::exception& e)
     {
@@ -50,6 +51,7 @@ int main(int argc, char const *argv[])
     std::getchar();
     ctx.stop();
     t.join();
+    std::cout << "\033[A";
     
     return 0;
 }
