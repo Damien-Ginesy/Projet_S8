@@ -105,7 +105,7 @@ a:hover{
     border-right : 15vw solid transparent;
     border-left : 53vw solid transparent;
     top: 40vh;
-    left: 8vw;
+    left: 10vw;
 }
 
 #brush{
@@ -118,16 +118,17 @@ a:hover{
 #moon1{
     position: absolute;
     opacity: 31%;
-    left: 100px;
-    top: -100px;
-    width: 20%
+    left: 10vw;
+    top:  -10%;
+    width: 20%;
+    height: auto;
 }
 
 #moon2{
     position: absolute;
     opacity: 31%;
-    top: 400px;
-    left: 1200px;
+    bottom: 2.5vh;
+    right: 2.2vw;
     width: 20%
 }
 
