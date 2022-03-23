@@ -12,7 +12,7 @@ namespace Basalt
 
         static CallbackMap handlers; // callback functions to call on incoming messages        
         static std::atomic_bool keepGoing = true;
-        static uint16_t port;
+        static tcp::endpoint listeningEndpoint;
         static std::mutex mutex;
         static asio::io_context context;
 
@@ -40,10 +40,9 @@ namespace Basalt
             ac.async_accept(handler);
         }
 
-        void net_init(CallbackMap& callbacks, uint16_t lPort){
+        void net_init(CallbackMap& callbacks, const tcp::endpoint& ep){
+            listeningEndpoint = ep;
             handlers = callbacks;
-            port = lPort;
-            tcp::endpoint ep(tcp::v4(), port);
             acceptor = new tcp::acceptor(context, ep);
 
             accept_connections(*acceptor);

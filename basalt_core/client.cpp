@@ -10,14 +10,15 @@ void on_resp(Basalt::net::Message& resp){
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
+    using namespace asio::ip;
     net::Message msg(net::PULL_REQ);
     msg << "Hello";
 
     net::CallbackMap callbacks {{net::PULL_RESP, on_resp}};
-    net::net_init(callbacks, 2112);
+    tcp::endpoint ep(address_v4(0x7f000001), 1337);
+    net::net_init(callbacks, tcp::endpoint(address_v4(0x7F000001), 16000));
     
-    using namespace asio::ip;
-    net::send_request(tcp::endpoint(address_v4(0x7f000001), 1337), msg);
+    net::send_request(ep, msg);
     
     std::getchar();
     net::net_finish();

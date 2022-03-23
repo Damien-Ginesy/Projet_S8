@@ -4,7 +4,7 @@
 namespace Basalt{
     namespace net
     {
-        void net_init(CallbackMap& callbacks, uint16_t port);
+        void net_init(CallbackMap& callbacks, const asio::ip::tcp::endpoint& port);
         void net_finish();
 
         asio::error_code send_request(const asio::ip::tcp::endpoint& remote, const Message& req);

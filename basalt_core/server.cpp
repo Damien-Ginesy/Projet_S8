@@ -15,7 +15,11 @@ net::CallbackMap callbacks = {{net::PULL_REQ, on_pull}};
 
 int main(int argc, char const *argv[])
 {
-    net::net_init(callbacks, 1337);
+    using namespace asio::ip;
+    tcp::endpoint ep(tcp::v4(), 1337);
+    net::net_init(callbacks, ep);
+    std::cout << "Listening on " << ep << '\n';
+
     std::getchar();
     net::net_finish();
     return 0;

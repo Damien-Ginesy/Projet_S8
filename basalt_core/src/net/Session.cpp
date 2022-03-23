@@ -7,6 +7,7 @@ namespace Basalt{
             MessageType t = _msg.get_type();
             if(t==SESSION_END){ 
                 _isOpen = false;
+                _peer.close();
                 return;
             }
             auto handler = _callbacks.find(t);
@@ -14,7 +15,7 @@ namespace Basalt{
                 handler->second(_msg);
             asio::error_code ec;
             if(_msg.get_type() & 0xf0) /* if _msg is a reponse message */
-                if(ec = _msg.writeTo(_peer)) throw ec;
+                 _msg.writeTo(_peer);
             async_wait();
         }
         void Session::async_wait(){
@@ -48,7 +49,12 @@ namespace Basalt{
         asio::error_code Session::send_message(const Message& msg){
             return _msg.writeTo(_peer);
         }
-        Session::~Session() { _peer.close(); }
+        Session::~Session() { 
+            if(_peer.is_open()){
+                _peer.cancel();
+                _peer.close(); 
+            }
+        }
 
         using namespace asio::ip;
         /* Session manager */
