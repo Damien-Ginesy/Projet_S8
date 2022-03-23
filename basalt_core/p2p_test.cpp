@@ -22,7 +22,7 @@ void update_peers(uint16_t candidate){
 void on_push_req(Basalt::net::Message& req){
     uint16_t p;
     req >> p;
-    std::cout << "PUSH from " << p << '\n';
+    std::cout << "PUSH \033[32mfrom\033[0m " << p << '\n';
     update_peers(p);
     if(req.payloadSize()){
         req >> p;
@@ -54,12 +54,12 @@ void loop_cbk(){
             break;
         case 1:
             p = selectPeer();
-            std::cout << "PUSH to " << peers[p] << '\n';            
+            std::cout << "PUSH \033[34mto\033[0m " << peers[p] << '\n';            
             Basalt::net::send_request(tcp::endpoint(addr, peers[p]), msg);
             break;
         default: 
             p = selectPeer(); q = selectPeer();
-            std::cout << "PUSH to " << peers[p] << '\n';
+            std::cout << "PUSH \033[34mto\033[0m " << peers[p] << '\n';
             msg << peers[q];
             Basalt::net::send_request(tcp::endpoint(addr, peers[p]), msg);
             break;
@@ -85,6 +85,7 @@ int main(int argc, char const *argv[])
     keepGoing = false;
     mainLoop.join();
     net::net_finish();
-    std::cout << "Stopping now" << '\n';
+    std::cout << "Stopping now. View: " << '\n';
+    for(uint16_t p: peers) std::cout << p << '\n';
     return 0;
 }

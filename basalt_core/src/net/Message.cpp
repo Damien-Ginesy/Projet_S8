@@ -76,9 +76,6 @@ namespace Basalt
             memcpy(out.data(), _payload.data(), _header.size);
             _payload.resize(_header.size = 0);
         }
-        Message& Message::operator<<(tcp::socket& sock){
-            return *this;
-        }
         Message& Message::operator<<(const char* str){
             unsigned len = strlen(str);
             _payload.resize(_header.size + len);

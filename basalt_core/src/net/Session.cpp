@@ -6,7 +6,6 @@ namespace Basalt{
         void Session::on_message(){
             MessageType t = _msg.get_type();
             if(t==SESSION_END){ 
-                _isOpen = false;
                 _peer.close();
                 return;
             }
@@ -28,16 +27,13 @@ namespace Basalt{
                     catch(const asio::error_code& e)
                     {
                         if(e.value() == 2){ // eof error: socket closed on the other end
-                            this->_isOpen = false;
+                            _peer.close();
                             return;
                         }
                         else throw e;
                     }
-                    
                     this->on_message();
                 }
-                else
-                throw ec;
             };
             _peer.async_wait(_peer.wait_read, waitHandler);
         }
