@@ -73,7 +73,6 @@ namespace Basalt
             Message& operator>>(uint64_t& b);
             void operator>>(char* out);
             void operator>>(std::string& out);
-
             /* Returns the total size of the message (header included) */
             uint32_t size() const { return _payload.size() + Header::dataSize; }
             /* Returns the size of the payload */

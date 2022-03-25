@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15.0)
-project(basalt_core VERSION 0.1.0)
+project(basalt VERSION 0.1.0)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 set(CMAKE_CXX_STANDARD 17)
@@ -28,20 +28,20 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
 # LIBS
 
-add_library(basalt_core ${core_sources})
+add_library(basalt ${core_sources})
 add_library(basalt_net ${net_sources})
-target_link_libraries(basalt_core basalt_net)
+target_link_libraries(basalt basalt_net)
 
 # EXEC
 
 add_executable(test test.cpp)
-target_link_libraries(test basalt_core)
+target_link_libraries(test basalt)
 
 add_executable(server server.cpp)
-target_link_libraries(server basalt_core)
+target_link_libraries(server basalt)
 
 add_executable(client client.cpp)
-target_link_libraries(client basalt_core)
+target_link_libraries(client basalt)
 
 add_executable(p2p_test p2p_test.cpp)
-target_link_libraries(p2p_test basalt_core)
+target_link_libraries(p2p_test basalt)

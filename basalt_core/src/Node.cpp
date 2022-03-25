@@ -47,6 +47,23 @@ namespace Basalt
 		updateSamples(candidates);
 		return samples;
 	}
-
+	void Node::on_pull(net::Message& req){
+		// put our view in the response
+	}
+	void Node::on_push(net::Message& req){
+		// update our view, and make a PULL_RESP respoonse
+	}
+	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, Hash<16> (*h)(const NodeId&, uint32_t),
+		bool isByzantine, bool isSgx): 
+		_id(id), _isByzantine(isByzantine), _isSGX(isSgx),_rankingFunc(h), _k(k)
+	{
+		_view = Array<ViewEntry>(bs.size());
+		for(ViewEntry& e: _view){
+			e.hits = 0;
+			e.seed = generateSeed();
+			e.id = NodeId::null();
+		}
+		updateSamples(bs);
+	}
 		
 } // namespace Basalt

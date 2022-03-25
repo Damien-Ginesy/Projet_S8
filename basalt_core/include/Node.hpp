@@ -3,6 +3,7 @@
 #include "Array.hpp"
 #include "Hash.hpp"
 #include <random>
+#include <net/Message.hpp>
 
 namespace Basalt
 {
@@ -30,17 +31,20 @@ namespace Basalt
         NodeId selectPeer(); // selects someone in our view based on its hit counter
         uint32_t generateSeed(); // gen a pseudo random seed
 
+        void pull(NodeId); // pulls the view from another node
+        void push(NodeId); // pushes our view to someone else
+
     public:
         /* Constructs the node */
-        Node(const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset, Hash<16> (*)(NodeId, uint32_t),
+        Node(NodeId id, const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset, Hash<16> (*)(const NodeId&, uint32_t),
             bool isByzantine=false, bool isSGX=false);
         /* Resets this->_k nodes seeds in the view */
         Array<NodeId> reset();
         /* Updates the current view with the candidates */
         void updateSamples(const Array<NodeId>& candidates); // update our view
-        void pull(NodeId); // pulls the view from another node
-        void push(NodeId); // pushes our view to someone else
         void update(); // performs a Basalt pull/push update round
+        void on_pull(net::Message&); /* pull request handler */
+        void on_push(net::Message&); /* push request handler */
     };
     
 } // namespace Basalt

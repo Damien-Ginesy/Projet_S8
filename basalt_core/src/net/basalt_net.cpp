@@ -30,11 +30,32 @@ namespace Basalt
             if(ec) throw ec;
             return sock;
         }
+        Message& operator<<(net::Message& m, const asio::ip::address_v4& addr){
+            address_v4::bytes_type bytes = addr.to_bytes();
+            m << bytes[0] << bytes[1] << bytes[2] << bytes[3];
+            return m;
+        }
+        Message& operator>>(net::Message& m, asio::ip::address_v4& addr){
+            address_v4::bytes_type bytes;
+            m >> bytes[3] >> bytes[2] >> bytes[1] >> bytes[0];
+            addr = make_address_v4(bytes);
+            return m;
+        }
 
+        Message& operator<<(net::Message& m, const NodeId& id){
+            m << id._addr << id._port << id.id;
+            return m;
+        }    
+        net::Message& operator>>(net::Message& m, NodeId& id){
+            m >> id.id >> id._port >> id._addr;
+            return m;
+        }
 
         static void accept_connections(tcp::acceptor& ac){
             auto handler = [&](asio::error_code ec, tcp::socket peer){
+                mutex.lock();
                 manager.open_new(std::move(peer), handlers);
+                mutex.unlock();
                 if(keepGoing) accept_connections(ac);
             };
             ac.async_accept(handler);
@@ -60,7 +81,9 @@ namespace Basalt
             asio::error_code ec;
             sock.connect(remote, ec);
             if(ec) return ec;
+            mutex.lock();
             auto s = manager.open_new(std::move(sock), handlers);
+            mutex.unlock();
             return msg.writeTo(s->_peer);
         }
     } // namespace net
