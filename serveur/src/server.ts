@@ -1,7 +1,7 @@
 import express from 'express';
 import {DatabaseAccess} from './db'
 const app = express();
-const fs = require('fs')
+//const fs = require('fs')
 const port = 3000;
 
 app.set('views','./views');
@@ -13,10 +13,10 @@ if(process.argv.length !== 4){
     process.exit();
 }
 
-const fichier = fs.readFileSync('noeud.json');
+// const fichier = fs.readFileSync('noeud.json');
 
 const db = new DatabaseAccess(process.argv[2], process.argv[3]);
-db.addInfo(fichier);
+// db.addInfo(fichier);
 
 app.get('/accueil',(req, res) => {
     res.render('homepage');
