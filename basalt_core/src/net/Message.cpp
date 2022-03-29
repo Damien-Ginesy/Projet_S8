@@ -101,6 +101,16 @@ namespace Basalt
             _payload.resize(_header.size);
             return read_n(sock, _header.size, _payload.data());
         }
+        void Message::append(const uint8_t *input, size_t n){
+            _payload.resize(_header.size + n);
+            std::memcpy(_payload.data() + _header.size, input, n);
+            _header.size += n;
+        }
+        void Message::pop(uint8_t *output, size_t n){
+            _header.size -= n;
+            std::memcpy(output, _payload.data()+_header.size, n);
+            _payload.resize(_header.size);
+        }
     } // namespace net
     
 } // namespace Basalt

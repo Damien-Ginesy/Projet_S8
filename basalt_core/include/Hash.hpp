@@ -34,9 +34,10 @@ struct Hash
         return true;
     }
     virtual bool operator<(const Hash_t& other) const {
-        for(uint32_t i=0; i<S; ++i)
-            if(_data[i] < other._data[i]) return true;
-        return false;
+        size_t i=0;
+        while(i<S && _data[i] == other._data[i]) ++i;
+        return (i<S && _data[i] < other._data[i]);
+
     }
     bool operator<=(const Hash_t& other) const{
         return (*this < other) || (*this == other);

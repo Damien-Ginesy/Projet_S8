@@ -27,6 +27,6 @@ public:
     /* Comparison operators */
     bool operator==(const SpookyHash&) const;
     bool operator<(const SpookyHash&) const;
-
+    SpookyHash& operator=(const SpookyHash&);
 };
 std::ostream& operator<<(std::ostream& s, const SpookyHash& h);

@@ -43,8 +43,10 @@ namespace Basalt
         /* Updates the current view with the candidates */
         void updateSamples(const Array<NodeId>& candidates); // update our view
         void update(); // performs a Basalt pull/push update round
-        void on_pull(net::Message&); /* pull request handler */
-        void on_push(net::Message&); /* push request handler */
+        /* Message handlers */
+        void on_pull_req(net::Message&); /* pull request handler */
+        void on_pull_resp(net::Message&); /* pull response handler */
+        void on_push_req(net::Message&); /* push request handler */
     };
     
 } // namespace Basalt

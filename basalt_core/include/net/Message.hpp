@@ -92,6 +92,9 @@ namespace Basalt
             /* Attempts to write the message data from the socket */
             asio::error_code readFrom(asio::ip::tcp::socket&);
 
+            void append(const uint8_t *input, size_t n);
+            void pop(uint8_t *output, size_t n);
+
         };
     } // namespace net
 } // namespace Basalt

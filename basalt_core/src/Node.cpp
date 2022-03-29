@@ -1,4 +1,5 @@
 #include <Node.hpp>
+#include <net/basalt_net.hpp>
 
 namespace Basalt
 {
@@ -19,7 +20,7 @@ namespace Basalt
 	NodeId Node::selectPeer(){
 		uint32_t p=0;
 		for(uint32_t i=1; i<_view.size(); ++i)
-			p = _view[p].hits<_view[i].hits? p:i;
+			p = _view[i].hits<_view[p].hits? i:p;
 		_view[p].hits++;
 		return _view[p].id;
 	}  
@@ -35,9 +36,8 @@ namespace Basalt
 	}
 	Array<NodeId> Node::reset() {
 		Array<NodeId> samples(_k);
-		size_t v = _view.size();
 		for (size_t i = 0; i < _k; i++) {
-			_r = (_r + 1) % v; // get the next index and wrap around
+			_r = (_r + 1) % _view.size(); // get the next index and wrap around
 			samples[i] = _view[_r].id;
 			_view[_r].seed = generateSeed();
 		}
@@ -47,11 +47,47 @@ namespace Basalt
 		updateSamples(candidates);
 		return samples;
 	}
-	void Node::on_pull(net::Message& req){
-		// put our view in the response
+	void Node::pull(NodeId dest){
+		net::Message req(net::PULL_REQ);
+		using namespace asio::ip;
+		tcp::endpoint ep(dest._addr, dest._port);
+		std::cout << "Attempting pull to " << dest.to_string() << '\n';
+		net::send_request(ep, req);
 	}
-	void Node::on_push(net::Message& req){
+	void Node::push(NodeId dest){
+		net::Message req(net::PUSH_REQ);
+		for(const ViewEntry& e: _view)
+			req << e.id;
+		req << _id;
+		asio::ip::tcp::endpoint ep(dest._addr, dest._port);
+		std::cout << "Attempting push to " << dest.to_string() << '\n';
+		net::send_request(ep, req);
+	}
+	void Node::on_pull_req(net::Message& req){
+		// put our view in the response
+		for(const ViewEntry& e: _view)
+			req << e.id;
+		// add our own id
+		req << _id;
+		std::cout << "Received pull" << '\n';
+		req.set_type(net::PULL_RESP);
+	}
+	void Node::on_push_req(net::Message& req){
 		// update our view, and make a PULL_RESP respoonse
+		Array<NodeId> candidates(_view.size() + 1);
+		for (int i = candidates.size() - 1; i >= 0; i--)
+			req >> candidates[i];
+		std::cout << "Received push from" << (candidates.end()-1)->to_string() << '\n';
+		updateSamples(candidates);
+		req.set_type(net::PUSH_RESP);		
+	}
+	void Node::on_pull_resp(net::Message& resp){
+		// read the view from the message and update
+		Array<NodeId> candidates(_view.size() + 1);
+		for (int i = candidates.size() - 1; i >= 0; i--)
+			resp >> candidates[i];
+		updateSamples(candidates);
+		resp.set_type(net::SESSION_END);
 	}
 	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, Hash<16> (*h)(const NodeId&, uint32_t),
 		bool isByzantine, bool isSgx): 
@@ -65,5 +101,5 @@ namespace Basalt
 		}
 		updateSamples(bs);
 	}
-		
+	
 } // namespace Basalt

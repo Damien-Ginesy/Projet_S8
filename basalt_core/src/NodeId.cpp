@@ -23,8 +23,8 @@ namespace Basalt
     std::string NodeId::to_string() const {
         std::stringstream s;
         s << "{\"ip\": \"" << _addr.to_string() << 
-            "\", \"port\": \"" << _port << 
-            "\", \"virtual_id\": \"" << id << "\"}";
+            "\", \"port\": " << _port << 
+            ", \"virtual_id\": " << id << "}";
         return s.str();
     }
 } // namespace Basalt

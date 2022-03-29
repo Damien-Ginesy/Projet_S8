@@ -45,3 +45,6 @@ target_link_libraries(client basalt)
 
 add_executable(p2p_test p2p_test.cpp)
 target_link_libraries(p2p_test basalt)
+
+add_executable(ranking_tests ranking_tests.cpp)
+target_link_libraries(ranking_tests basalt)
