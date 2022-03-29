@@ -1,11 +1,12 @@
 import express from 'express';
 import {DatabaseAccess} from './db'
+
 const app = express();
-//const fs = require('fs')
 const port = 3000;
 
 app.set('views','./views');
 app.use(express.static(__dirname + '/../public'));
+app.use(express.json());
 app.set('view engine','pug');
 
 if(process.argv.length !== 4){
@@ -13,10 +14,13 @@ if(process.argv.length !== 4){
     process.exit();
 }
 
-// const fichier = fs.readFileSync('noeud.json');
 
 const db = new DatabaseAccess(process.argv[2], process.argv[3]);
-// db.addInfo(fichier);
+
+app.post('/infoNoeud',(req,res)=>{
+    db.addInfo(req.body);
+    res.sendStatus(200);
+})
 
 app.get('/accueil',(req, res) => {
     res.render('homepage');

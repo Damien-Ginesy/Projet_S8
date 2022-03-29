@@ -4,7 +4,8 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
 
  export class DatabaseAccess {
 
-    private noeudSchema:Schema = new Schema({
+    private noeudSchema:Schema = new Schema(
+    {
         nodeID:{
             port:{type:String, required:true},
             adresseReelle:{type:String, required:true},
@@ -21,7 +22,8 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
         }],
         age:{type:Number, required:true},
         malicieux:{type:Boolean, required:true},
-    });
+    },
+    );
 
     private noeudModel:Model<InfoNoeud> = model<InfoNoeud>('Info_Noeuds', this.noeudSchema);
 
@@ -31,16 +33,13 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
         this.openDb(urlmongo);
     }
 
-    addInfo(infoNoeud:string){
-        const infoNoeudData = JSON.parse(infoNoeud);
+    addInfo(infoNoeud:any){
         const noeud:InfoNoeud = new this.noeudModel({
-            nodeID:{
-                port: infoNoeudData.nodeID.port,
-                adresseReelle:infoNoeudData.nodeID.adresseReelle,
-                adresseVirtuelle:infoNoeudData.nodeID.adresseVirtuelle,
-            },
-            age:infoNoeudData.age,
-            malicieux: infoNoeudData.malicieux,
+            nodeID:infoNoeud.nodeID,
+            vue:infoNoeud.vue,
+            age:infoNoeud.age,
+            malicieux: infoNoeud.malicieux,
+        
         });
         noeud.save();
     }
