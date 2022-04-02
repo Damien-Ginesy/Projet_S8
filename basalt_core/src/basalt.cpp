@@ -11,7 +11,6 @@ namespace Basalt
         asio::chrono::milliseconds delay;
         void (*cbk)();
         asio::steady_timer t;
-        bool stopped = false;
         static void async_run(LoopedFunction* func){
             auto handler = [=](asio::error_code ec){
                 if(!ec){
@@ -29,11 +28,10 @@ namespace Basalt
             async_run(this);
         }
         void stop(){
-            stopped = true;
-            t.cancel();
+            this->~LoopedFunction();
         }
         ~LoopedFunction() {
-            if(!stopped) stop();
+            t.cancel();
         }
     };
 
@@ -41,7 +39,7 @@ namespace Basalt
     Node *node;
     LoopedFunction *mainLoop, *resetLoop;
     static std::thread runner;
-
+    std::mutex mutex;
     uint32_t iterCount = 0;
 
     Hash<16> hashFunc(const NodeId& id, uint32_t seed) {
@@ -51,20 +49,25 @@ namespace Basalt
         return SpookyHash(data, NodeId::dataSize, seed);
     }
     void update(){
+        std::lock_guard guard(mutex);
         iterCount++;
         node->update();
     }
     void reset(){
+        std::lock_guard guard(mutex);
         node->reset();
     }
     // message handlers
     void on_pull_req(net::Message& req){
+        std::lock_guard guard(mutex);
         node->on_pull_req(req);
     }
     void on_push_req(net::Message& req){
+        std::lock_guard guard(mutex);
         node->on_push_req(req);
     }
     void on_pull_resp(net::Message& resp){
+        std::lock_guard guard(mutex);
         node->on_pull_resp(resp);
     }
     void on_push_resp(net::Message& resp){

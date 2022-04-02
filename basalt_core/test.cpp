@@ -6,21 +6,18 @@
 #include <errno.h>
 #include <random>
 #include <algorithm>
+#include <HTTPLogger.hpp>
+#include <llhttp.h>
 
 #define ERROR_EXIT(x)   { std::cerr << x << '\n'; exit(EXIT_FAILURE); }
 
-int main(int argc, char const *argv[])
-{
-    using namespace asio::ip;
-    if(argc < 2) ERROR_EXIT("Usage: ./test <id> <init file>");
+void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>& bs){
     using namespace Basalt;
-    Basalt::NodeId id;
-    id.id = atoi(argv[1]);
-    std::ifstream inputFile(argv[2]);
+    std::ifstream inputFile(filename);
+    using namespace asio::ip;
     if(!inputFile.is_open()) {
-        perror(argv[2]); return 1;
+        perror(filename); exit(EXIT_FAILURE);
     }
-    NodeId localId;
     std::vector<NodeId> ids;
     while (!inputFile.eof())
     {
@@ -38,23 +35,23 @@ int main(int argc, char const *argv[])
             id._port = port;
         }
     }
-    size_t N = ids.size();
-    std::cout << "Read " << N << " IDs\n";
-    std::cout << "Local id: " << id.to_string() << '\n';
-
-    Array<NodeId> bs(N / 2);
+    inputFile.close();
     std::random_device rng;
     std::sample(ids.begin(), ids.end(), bs.begin(), bs.size(), rng);
+}
 
-    std::cout << "Chosen bootstrap: " << '\n';
-    for(auto& id: bs)
-        std::cout << id.to_string() << '\n';
-
-    inputFile.close();
-    std::cout << "Initalizing BASALT..." << '\n';
-    using namespace std::chrono_literals;
-    basalt_init(id, bs, 3s, 1h);
-
-    std::getchar();
-    basalt_stop();
+int main(int argc, char const *argv[])
+{
+    asio::io_context ctx;
+    try
+    {
+        Basalt::HTTPLogger logger(2, ctx, argv[1], argc>2? atoi(argv[2]):80);
+        std::cout << logger.endpoint() << '\n';
+        logger << "{\"foo\": \"bar\"}" << "{\"Hello\": \"world!\"}";
+        ctx.run();
+    }
+    catch(const std::runtime_error& ec)
+    {
+        std::cerr << ec.what() << '\n';
+    }
 }

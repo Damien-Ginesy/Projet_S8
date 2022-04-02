@@ -17,7 +17,7 @@ namespace Basalt
         /* The size of the actual data, once serialized to raw bytes */
         static constexpr size_t dataSize = 8;
         /* Represents a default invalid id */
-        static inline NodeId null() { return NodeId{asio::ip::address_v4(0), 0, 0}; }
+        static inline NodeId null() { return NodeId{asio::ip::address_v4(0), 0, 0xffff}; }
         /* Represents the NodeId object, in JSON format */
         std::string to_string() const;
     };

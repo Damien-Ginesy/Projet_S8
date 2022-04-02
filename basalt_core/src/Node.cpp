@@ -35,6 +35,7 @@ namespace Basalt
 		return dist(_rng);
 	}
 	Array<NodeId> Node::reset() {
+		std::cout << "Resetting " << _k << " nodes" << '\n';
 		Array<NodeId> samples(_k);
 		for (size_t i = 0; i < _k; i++) {
 			_r = (_r + 1) % _view.size(); // get the next index and wrap around
@@ -52,7 +53,10 @@ namespace Basalt
 		using namespace asio::ip;
 		tcp::endpoint ep(dest._addr, dest._port);
 		std::cout << "Attempting pull to " << dest.to_string() << '\n';
-		net::send_request(ep, req);
+		asio::error_code err = net::send_request(ep, req);
+		if(err){
+			std::cerr << "Coudln't send request: " << err.message() << '\n';
+		}
 	}
 	void Node::push(NodeId dest){
 		net::Message req(net::PUSH_REQ);
@@ -61,9 +65,12 @@ namespace Basalt
 		req << _id;
 		asio::ip::tcp::endpoint ep(dest._addr, dest._port);
 		std::cout << "Attempting push to " << dest.to_string() << '\n';
-		net::send_request(ep, req);
+		asio::error_code err = net::send_request(ep, req);
+		if(err){
+			std::cerr << "Coudln't send request: " << err.message() << '\n';
+		}
 	}
-	void Node::on_pull_req(net::Message& req){
+	void Node::on_pull_req(net::Message& req) const{
 		// put our view in the response
 		for(const ViewEntry& e: _view)
 			req << e.id;
