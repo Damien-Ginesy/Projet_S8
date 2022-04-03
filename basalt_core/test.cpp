@@ -8,9 +8,15 @@
 #include <algorithm>
 #include <HTTPLogger.hpp>
 #include <SpookyHash.h>
-
+#include <semaphore>
 
 #define ERROR_EXIT(x)   { std::cerr << x << '\n'; exit(EXIT_FAILURE); }
+
+#define ESC             "\033["
+#define STYLE_DEFAULT   ESC "0m"
+#define STYLE_BOLD      ESC "1m"
+#define STYLE_RED       ESC "31m"
+#define STYLE_GREEN     ESC "32m"
 
 void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>& bs){
     
@@ -42,17 +48,19 @@ void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>
     std::sample(ids.begin(), ids.end(), bs.begin(), bs.size(), rng);
 }
 
+
 Hash<16> hashFunc(const Basalt::NodeId& id, uint32_t seed) {
     byte data[Basalt::NodeId::dataSize] = {0};
     id.to_bytes(data);
 
     return SpookyHash(data, Basalt::NodeId::dataSize, seed);
 }
+
 int main(int argc, char const *argv[])
 {
-    asio::io_context ctx;
     using namespace Basalt;
     using namespace asio::ip;
+    asio::io_context ctx;
     NodeId id {address_v4(0x7F000001), 3000, 0};
     Array<NodeId> bs(2);
     bs[0] = NodeId {address_v4(0x7F000001), 3001, 1};
@@ -60,14 +68,22 @@ int main(int argc, char const *argv[])
     Node n(id, bs, 1, hashFunc, false, false);
     try
     {
-        Basalt::HTTPLogger logger(2, ctx, argv[1], argc>2? atoi(argv[2]):80);
+        Basalt::HTTPLogger logger(2, ctx, argv[1], argc>2? atoi(argv[2]):80, 
+            argc>3? argv[3]: "/");
         std::cout << logger.endpoint() << '\n';
         logger.setCallback([](llhttp_t* p) 
         { 
-            std::cout << "Received response with status " << p->status_code << '\n';
+            std::cout << "Received response with status " <<
+                STYLE_BOLD <<
+                (p->status_code==200? STYLE_GREEN:STYLE_RED) 
+             << p->status_code << STYLE_DEFAULT "\n";
             return 1; 
         });
-        logger << n.to_string() << n.to_string();
+        logger << "{\"foo\": 1}" << "{\"bar\": 2}";
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(3s);
+        logger << n.to_string() << "{\"test\": true}";
+
         ctx.run();
     }
     catch(const std::runtime_error& ec)

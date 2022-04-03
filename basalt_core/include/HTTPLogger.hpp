@@ -4,6 +4,9 @@
 #include <sstream>
 #include <llhttp.h>
 
+#define BUFFER_SIZE 1024
+
+
 namespace Basalt{
     class HTTPLogger
     {
@@ -13,8 +16,9 @@ namespace Basalt{
         std::string _apiEndpoint = "/";
         asio::ip::tcp::socket _sock;
         size_t _nRead = 0;
-        uint8_t _buffer[1024] = {};
+        uint8_t _buffer[BUFFER_SIZE] = {};
         llhttp_t _parser;
+        llhttp_cb _callback = nullptr;
         llhttp_settings_t _settings;
         
         void makeRequest(std::string& out);
