@@ -8,7 +8,7 @@ namespace Basalt
 {
     HTTPLogger::HTTPLogger(size_t bufferSize, asio::io_context& ctx, const std::string& hostName, uint16_t port,
         const std::string& apiEndpoint):
-        _sock(asio::ip::tcp::socket(ctx))
+        _sock(asio::ip::tcp::socket(ctx)), _apiEndpoint(apiEndpoint)
     {
         _start = _cur = new std::string[bufferSize];
         _end = _start + bufferSize;

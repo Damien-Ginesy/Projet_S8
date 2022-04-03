@@ -21,7 +21,7 @@ namespace Basalt{
         static void async_read_n(size_t, HTTPLogger*);
     public:
         HTTPLogger(size_t bufferSize, asio::io_context& ctx, const std::string& hostName, uint16_t port = 80,
-            const std::string& apiEndpoint = "");
+            const std::string& apiEndpoint = "/");
         const asio::ip::tcp::endpoint& endpoint() const { return _remote; }
         HTTPLogger& operator<<(const std::string& in);
         void setCallback(llhttp_cb callback);
