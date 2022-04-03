@@ -3,6 +3,24 @@
 
 namespace Basalt
 {
+	std::string Node::to_string() const{
+		std::stringstream out;
+		out << "{\"id\":" << _id.to_string()
+		<< ", \"is_byzantine\": " << _isByzantine 
+		<< ", \"is_sgx\": " << _isSGX 
+		<< ", \"view\": [";
+		for(size_t i=0; i<_view.size()-1; ++i)
+			out << _view[i].to_string() << ", ";
+		out << (_view.end()-1)->to_string() << "]}";
+		return out.str();
+	}
+	std::string ViewEntry::to_string() const{
+		std::stringstream out;
+		out << "{\"id\": " << id.to_string() << ", "
+		"\"seed\": " << seed << ", \"hits\": " << hits
+		<< '}';
+		return out.str();
+	}
 	void Node::updateSamples(const Array<NodeId>& candidates){
 		for(uint32_t i=0; i<_view.size() ; ++i){
 			Hash<16>&& currentHash = _rankingFunc(_view[i].id, _view[i].seed);

@@ -12,6 +12,7 @@ namespace Basalt
         NodeId id;
         uint32_t seed;
         uint16_t hits;
+        std::string to_string() const;
     };
     /* Represents a Basalt protocol Node */
     class Node
@@ -47,6 +48,7 @@ namespace Basalt
         void on_pull_req(net::Message&) const; /* pull request handler */
         void on_pull_resp(net::Message&); /* pull response handler */
         void on_push_req(net::Message&); /* push request handler */
+        std::string to_string() const;
     };
     
 } // namespace Basalt

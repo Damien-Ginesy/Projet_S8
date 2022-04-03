@@ -41,10 +41,10 @@ namespace Basalt
         "Content-Type: application/json" CRLF
         "Connection: close" CRLF;
         std::stringstream body;
-        body << "[" CRLF;
-        for(auto s=_start; s<_cur; ++s)
-            body << *s << (s<(_cur-1)? "," CRLF:CRLF);
-        body << "]" CRLF;
+        body << '[';
+        for(auto s=_start; s<_cur-1; ++s)
+            body << *s << ", ";
+        body << *(_cur-1) << "]" CRLF;
         size_t contentLength = body.str().size();
         header << "Content-Length: " << contentLength << CRLF CRLF;
         header << body.str();

@@ -7,11 +7,13 @@
 #include <random>
 #include <algorithm>
 #include <HTTPLogger.hpp>
-#include <llhttp.h>
+#include <SpookyHash.h>
+
 
 #define ERROR_EXIT(x)   { std::cerr << x << '\n'; exit(EXIT_FAILURE); }
 
 void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>& bs){
+    
     using namespace Basalt;
     std::ifstream inputFile(filename);
     using namespace asio::ip;
@@ -40,14 +42,27 @@ void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>
     std::sample(ids.begin(), ids.end(), bs.begin(), bs.size(), rng);
 }
 
+Hash<16> hashFunc(const Basalt::NodeId& id, uint32_t seed) {
+    byte data[Basalt::NodeId::dataSize] = {0};
+    id.to_bytes(data);
+
+    return SpookyHash(data, Basalt::NodeId::dataSize, seed);
+}
 int main(int argc, char const *argv[])
 {
     asio::io_context ctx;
+    using namespace Basalt;
+    using namespace asio::ip;
+    NodeId id {address_v4(0x7F000001), 3000, 0};
+    Array<NodeId> bs(2);
+    bs[0] = NodeId {address_v4(0x7F000001), 3001, 1};
+    bs[1] = NodeId {address_v4(0x7F000001), 3002, 2};
+    Node n(id, bs, 1, hashFunc, false, false);
     try
     {
         Basalt::HTTPLogger logger(2, ctx, argv[1], argc>2? atoi(argv[2]):80);
         std::cout << logger.endpoint() << '\n';
-        logger << "{\"foo\": \"bar\"}" << "{\"Hello\": \"world!\"}";
+        logger << n.to_string() << n.to_string();
         ctx.run();
     }
     catch(const std::runtime_error& ec)
