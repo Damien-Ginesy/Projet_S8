@@ -6,13 +6,6 @@
 
 namespace Basalt
 {
-
-    int on_headers_done(llhttp_t* parser){
-        if(parser->status_code != 200)
-            std::cout << "Received code " << parser->status_code << '\n';
-        return 1;
-    }
-
     HTTPLogger::HTTPLogger(size_t bufferSize, asio::io_context& ctx, const std::string& hostName, uint16_t port,
         const std::string& apiEndpoint):
         _sock(asio::ip::tcp::socket(ctx))
@@ -28,7 +21,11 @@ namespace Basalt
         if(ec) throw std::runtime_error(ec.message());
         _remote = res.begin()->endpoint();
         llhttp_settings_init(&_settings);
-        _settings.on_headers_complete = on_headers_done;
+        _settings.on_headers_complete = [](llhttp_t*){ return 1; };
+        llhttp_init(&_parser, HTTP_RESPONSE, &_settings);
+    }
+    void HTTPLogger::setCallback(llhttp_cb callback){
+        _settings.on_headers_complete = callback;
         llhttp_init(&_parser, HTTP_RESPONSE, &_settings);
     }
     HTTPLogger::~HTTPLogger()

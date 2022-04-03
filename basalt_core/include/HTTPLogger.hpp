@@ -14,7 +14,6 @@ namespace Basalt{
         asio::ip::tcp::socket _sock;
         size_t _nRead = 0;
         uint8_t _buffer[1024] = {};
-
         llhttp_t _parser;
         llhttp_settings_t _settings;
         
@@ -25,6 +24,7 @@ namespace Basalt{
             const std::string& apiEndpoint = "");
         const asio::ip::tcp::endpoint& endpoint() const { return _remote; }
         HTTPLogger& operator<<(const std::string& in);
+        void setCallback(llhttp_cb callback);
         ~HTTPLogger();
     };
 }

@@ -62,6 +62,11 @@ int main(int argc, char const *argv[])
     {
         Basalt::HTTPLogger logger(2, ctx, argv[1], argc>2? atoi(argv[2]):80);
         std::cout << logger.endpoint() << '\n';
+        logger.setCallback([](llhttp_t* p) 
+        { 
+            std::cout << "Received response with status " << p->status_code << '\n';
+            return 1; 
+        });
         logger << n.to_string() << n.to_string();
         ctx.run();
     }
