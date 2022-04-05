@@ -1,0 +1,39 @@
+doctype html
+html(lang="fr")
+    head
+        block head
+            meta(charset='utf-8')
+            meta(name='viewport', content='width=device-width, initial-scale=1') 
+            meta(name='description', content='')
+            style
+                include ../style/stats.css
+            
+        block title
+            title Basalt Serveur Supervision
+
+        block body
+
+            header 
+                a(href="accueil")
+                   h3 Accueil
+
+            h1#title Statistiques Basalt APP
+
+            h1#basalt_left BASALT APP
+
+            div#screen
+                canvas#graph1 
+            
+
+            div#but
+                button#next  noeud suivant
+                button#global Statistiques globales
+                button#prev noeud précédent
+
+
+
+        
+
+
+    script(src='https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js')
+    script(src='graphs.js')
