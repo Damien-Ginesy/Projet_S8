@@ -1,34 +1,29 @@
-doctype html
-html(lang="fr")
-    head
-        block head
-            meta(charset='utf-8')
-            meta(name='viewport', content='width=device-width, initial-scale=1') 
-            meta(name='description', content='')
-            style
-                include ../style/stats.css
-            
-        block title
-            title Basalt Serveur Supervision
+extends layout
 
-        block body
+block style
+    style
+        include ../style/stats.css        
+block title
+    title Basalt Serveur Supervision
 
-            header 
-                a(href="accueil")
-                   h3 Accueil
+block body
 
-            h1#title Statistiques Basalt APP
+    header 
+        a(href="accueil")
+            h3 Accueil
 
-            h1#basalt_left BASALT APP
+    h1#title Statistiques Basalt APP
 
-            div#screen
-                canvas#graph1 
-            
+    h1#basalt_left BASALT APP
 
-            div#but
-                button#next  noeud suivant
-                button#global Statistiques globales
-                button#prev noeud précédent
+    div#screen
+        canvas#graph1 
+    
+
+    div#but
+        button#next  noeud suivant
+        button#global Statistiques globales
+        button#prev noeud précédent
 
 
 
