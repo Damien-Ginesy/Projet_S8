@@ -9,6 +9,7 @@ app.use(express.static(__dirname + '/../public'));
 app.use(express.json());
 app.set('view engine','pug');
 
+
 if(process.argv.length !== 4){
     console.error("Le programme attend en argument un User et un password pour la base de donnée\n");
     process.exit();
@@ -24,6 +25,10 @@ app.post('/infoNoeud',(req,res)=>{
 
 app.get('/accueil',(req, res) => {
     res.render('homepage');
+})
+
+app.get('/stats',(req, res) => {
+    res.render('stats');
 })
 
 app.get('/',(req, res) =>{
