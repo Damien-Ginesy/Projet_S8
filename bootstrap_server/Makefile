@@ -9,5 +9,11 @@ bootstrap_server : bootstrap_server.c
 socket_IO.o : socket_IO.c socket_IO.h
 	gcc $(CFLAGS) -o socket_IO.o -c socket_IO.c
 
+ip.o : ip.c ip.h
+	gcc $(CFLAGS) -o ip.o -c ip.c
+
+test : test.c ip.o
+	gcc $(CFLAGS) -o test test.c ip.o
+
 clean :
-	rm -f bootstrap_server *.o
+	rm -f bootstrap_server test *.o
