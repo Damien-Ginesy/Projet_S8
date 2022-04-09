@@ -44,10 +44,10 @@ namespace Basalt
     HTTPLogger *logger = nullptr;
 
     Hash<16> hashFunc(const NodeId& id, uint32_t seed) {
-        byte data[NodeId::dataSize] = {0};
+        Basalt::NodeId::bytes_t data;
         id.to_bytes(data);
 
-        return SpookyHash(data, NodeId::dataSize, seed);
+        return SpookyHash(data.data(), NodeId::dataSize, seed);
     }
     void update(){
         std::lock_guard guard(mutex);

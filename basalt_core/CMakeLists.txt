@@ -49,12 +49,6 @@ target_link_libraries(basalt basalt_net)
 add_executable(test test.cpp)
 target_link_libraries(test basalt)
 
-add_executable(server server.cpp)
-target_link_libraries(server basalt)
-
-add_executable(client client.cpp)
-target_link_libraries(client basalt)
-
 add_executable(p2p_test p2p_test.cpp)
 target_link_libraries(p2p_test basalt)
 

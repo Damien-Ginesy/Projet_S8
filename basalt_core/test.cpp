@@ -49,10 +49,11 @@ void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>
 
 
 Hash<16> hashFunc(const Basalt::NodeId& id, uint32_t seed) {
-    byte data[Basalt::NodeId::dataSize] = {0};
+    using namespace Basalt;
+    NodeId::bytes_t data;
     id.to_bytes(data);
 
-    return SpookyHash(data, Basalt::NodeId::dataSize, seed);
+    return SpookyHash(data._M_elems, Basalt::NodeId::dataSize, seed);
 }
 
 int main(int argc, char const *argv[])
