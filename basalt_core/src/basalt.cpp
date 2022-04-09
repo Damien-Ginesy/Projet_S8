@@ -41,6 +41,7 @@ namespace Basalt
     static std::thread runner;
     std::mutex mutex;
     uint32_t iterCount = 0;
+    HTTPLogger *logger = nullptr;
 
     Hash<16> hashFunc(const NodeId& id, uint32_t seed) {
         byte data[NodeId::dataSize] = {0};
@@ -51,6 +52,8 @@ namespace Basalt
     void update(){
         std::lock_guard guard(mutex);
         iterCount++;
+        if(logger)
+            *logger << node->to_string();
         node->update();
     }
     void reset(){
@@ -92,6 +95,9 @@ namespace Basalt
         mainLoop = new LoopedFunction(ctx, duration_cast<milliseconds>(updateDelay), update);
         resetLoop = new LoopedFunction(ctx, duration_cast<milliseconds>(resetDelay), reset);
         runner = std::thread([](){ ctx.run(); });
+    }
+    void basalt_set_logger(HTTPLogger* log){
+        logger = log;
     }
     void basalt_stop(){
         net::net_finish();

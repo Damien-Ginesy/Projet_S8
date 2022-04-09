@@ -39,6 +39,7 @@ struct llhttp__internal_s {
   uint16_t flags;
   uint16_t status_code;
   void* settings;
+  void* arg;
 };
 
 int llhttp__internal_init(llhttp__internal_t* s);
@@ -372,7 +373,7 @@ struct llhttp_settings_s {
  */
 LLHTTP_EXPORT
 void llhttp_init(llhttp_t* parser, llhttp_type_t type,
-                 const llhttp_settings_t* settings);
+                 const llhttp_settings_t* settings, const void* arg);
 
 #if defined(__wasm__)
 

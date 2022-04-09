@@ -31,11 +31,12 @@
   } while (0)
 
 void llhttp_init(llhttp_t* parser, llhttp_type_t type,
-                 const llhttp_settings_t* settings) {
+                 const llhttp_settings_t* settings, const void* arg) {
   llhttp__internal_init(parser);
 
   parser->type = type;
   parser->settings = (void*) settings;
+  parser->arg = (void*)arg;
 }
 
 

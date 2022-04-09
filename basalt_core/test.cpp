@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <HTTPLogger.hpp>
 #include <SpookyHash.h>
-#include <semaphore>
 
 #define ERROR_EXIT(x)   { std::cerr << x << '\n'; exit(EXIT_FAILURE); }
 
@@ -68,23 +67,14 @@ int main(int argc, char const *argv[])
     Node n(id, bs, 1, hashFunc, false, false);
     try
     {
-        Basalt::HTTPLogger logger(2, ctx, argv[1], argc>2? atoi(argv[2]):80, 
-            argc>3? argv[3]: "/");
-        std::cout << logger.endpoint() << '\n';
-        logger.setCallback([](llhttp_t* p) 
-        { 
-            std::cout << "Received response with status " <<
-                STYLE_BOLD <<
-                (p->status_code==200? STYLE_GREEN:STYLE_RED) 
-             << p->status_code << STYLE_DEFAULT "\n";
-            return 1; 
+        HTTPLogger logger(1, "localhost", 3000, "/");
+        logger.setCallback([](const llhttp_t& parser, net::HTTPClient::BufferView body){
+            std::cout << "Received code " << parser.status_code << '\n';
+            for(char b: body)
+                std::cout << b;
         });
-        logger << "{\"foo\": 1}" << "{\"bar\": 2}";
-        using namespace std::chrono_literals;
-        std::this_thread::sleep_for(3s);
-        logger << n.to_string() << "{\"test\": true}";
-
-        ctx.run();
+        logger << n.to_string();
+        std::getchar();
     }
     catch(const std::runtime_error& ec)
     {
