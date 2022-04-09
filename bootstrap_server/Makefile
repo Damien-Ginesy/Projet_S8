@@ -14,6 +14,7 @@ ip.o : ip.c ip.h
 
 test : test.c ip.o
 	gcc $(CFLAGS) -o test test.c ip.o
+	./test
 
 clean :
 	rm -f bootstrap_server test *.o

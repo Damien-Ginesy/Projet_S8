@@ -2,6 +2,7 @@
 #define IP_H_
 
 void ip_int2ip(int ip_int, unsigned char *ip);
+int ip_ip2int(unsigned char *ip);
 
 void ip_print(unsigned char *ip);
 
