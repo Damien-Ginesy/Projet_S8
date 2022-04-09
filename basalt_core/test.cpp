@@ -7,7 +7,8 @@
 #include <random>
 #include <algorithm>
 #include <HTTPLogger.hpp>
-#include <SpookyHash.h>
+#include <SHA256Hash.hpp>
+#include <misc.h>
 
 #define ERROR_EXIT(x)   { std::cerr << x << '\n'; exit(EXIT_FAILURE); }
 
@@ -35,7 +36,6 @@ void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>
         if(idVal != id.id){
             NodeId id { make_address_v4(ip), port, idVal };
             ids.push_back(id);
-            std::cout << id.to_string() << '\n';
         }
         else{
             id._addr = make_address_v4(ip);
@@ -45,15 +45,16 @@ void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>
     inputFile.close();
     std::random_device rng;
     std::sample(ids.begin(), ids.end(), bs.begin(), bs.size(), rng);
+    for(const NodeId& id: bs)
+        std::cout << id.to_string() << '\n';
 }
 
 
-Hash<16> hashFunc(const Basalt::NodeId& id, uint32_t seed) {
-    using namespace Basalt;
-    NodeId::bytes_t data;
-    id.to_bytes(data);
-
-    return SpookyHash(data._M_elems, Basalt::NodeId::dataSize, seed);
+Basalt::Node::Hash_t hashFunc(const Basalt::NodeId& id, uint32_t seed) {
+        uint8_t data[8];
+        Basalt::toLittleEndian(id.id, 4, data);
+        Basalt::toLittleEndian(seed, 4, data+4);
+        return SHA256Hash(data, 8);
 }
 
 int main(int argc, char const *argv[])

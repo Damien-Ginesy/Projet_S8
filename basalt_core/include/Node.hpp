@@ -2,7 +2,6 @@
 #include "NodeId.hpp"
 #include "Array.hpp"
 #include "Hash.hpp"
-#include <random>
 #include <net/Message.hpp>
 
 namespace Basalt
@@ -17,16 +16,17 @@ namespace Basalt
     /* Represents a Basalt protocol Node */
     class Node
     {
+    public: using Hash_t = Hash<32>;
     private:
         Array<ViewEntry> _view; /* Local view of the network */
         NodeId _id; /* The node's id */
         
         bool _isByzantine = false; /* Whether or not the node is malicious */
         bool _isSGX = false; /* Whether or not the node is running in a trusted environment */
-        Hash<16> (*_rankingFunc) (const NodeId&, uint32_t); /* The function used to rank nodes */
+        Hash_t (*_rankingFunc) (const NodeId&, uint32_t); /* The function used to rank nodes */
         uint32_t _r = 0; /* Local round robin counter */
         uint32_t _k; 
-        std::random_device _rng;
+        uint64_t _lfsr;
 
         /* =================== */
         NodeId selectPeer(); // selects someone in our view based on its hit counter
@@ -37,7 +37,7 @@ namespace Basalt
 
     public:
         /* Constructs the node */
-        Node(NodeId id, const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset, Hash<16> (*)(const NodeId&, uint32_t),
+        Node(NodeId id, const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset, Hash_t (*)(const NodeId&, uint32_t),
             bool isByzantine=false, bool isSGX=false);
         /* Resets this->_k nodes seeds in the view */
         Array<NodeId> reset();

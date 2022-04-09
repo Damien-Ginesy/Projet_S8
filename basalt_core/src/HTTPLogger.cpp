@@ -36,9 +36,10 @@ namespace Basalt
             makeRequest(req);
             _cur = _start;
             using namespace asio::ip;
-            asio::error_code ec;
-            _cli.POST(_apiEndpoint, net::HTTPClient::BufferView(req.data(), req.size()), 
-            _on_resp, "application/json");
+            asio::error_code ec = _cli.POST(
+                _apiEndpoint, net::HTTPClient::BufferView(req.data(), req.size()), 
+                _on_resp, "application/json");
+            if(ec) throw ec;
         }
         return *this;
     }

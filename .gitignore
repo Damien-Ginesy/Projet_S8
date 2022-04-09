@@ -39,3 +39,7 @@
 
 *.log
 *.bs
+
+*.pyc
+*.zip
+*.json

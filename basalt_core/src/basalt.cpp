@@ -1,7 +1,8 @@
 #include "basalt.hpp"
-#include "SpookyHash.h"
+#include "SHA256Hash.hpp"
 #include <net/basalt_net.hpp>
 #include <asio/steady_timer.hpp>
+#include <misc.h>
 
 namespace Basalt
 {
@@ -43,18 +44,27 @@ namespace Basalt
     uint32_t iterCount = 0;
     HTTPLogger *logger = nullptr;
 
-    Hash<16> hashFunc(const NodeId& id, uint32_t seed) {
-        Basalt::NodeId::bytes_t data;
-        id.to_bytes(data);
-
-        return SpookyHash(data.data(), NodeId::dataSize, seed);
+    Node::Hash_t hashFunc(const NodeId& id, uint32_t seed) {
+        uint8_t data[8];
+        toLittleEndian(id.id, 4, data);
+        toLittleEndian(seed, 4, data+4);
+        return SHA256Hash(data, 8);
     }
     void update(){
         std::lock_guard guard(mutex);
         iterCount++;
-        if(logger)
-            *logger << node->to_string();
         node->update();
+        if(logger)
+        {
+            try
+            {
+                *logger << node->to_string();
+            }
+            catch(const asio::error_code& ec)
+            {
+                std::cerr << "[LOGGER ERROR] " << ec.message() << '\n';
+            }
+        }
     }
     void reset(){
         std::lock_guard guard(mutex);
@@ -79,7 +89,7 @@ namespace Basalt
 
     void basalt_init(NodeId id, const Array<NodeId>& bs, duration<double> updateDelay, duration<double> resetDelay){
         /* init node here */
-        node = new Node(id, bs, 1, hashFunc);
+        node = new Node(id, bs, bs.size()>>1, hashFunc);
         net::CallbackMap callbacks {
             {net::PULL_REQ, on_pull_req},
             {net::PUSH_REQ, on_push_req},

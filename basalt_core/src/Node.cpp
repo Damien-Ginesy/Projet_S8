@@ -1,5 +1,6 @@
 #include <Node.hpp>
 #include <net/basalt_net.hpp>
+#include <time.h>
 
 namespace Basalt
 {
@@ -23,11 +24,11 @@ namespace Basalt
 	}
 	void Node::updateSamples(const Array<NodeId>& candidates){
 		for(uint32_t i=0; i<_view.size() ; ++i){
-			Hash<16>&& currentHash = _rankingFunc(_view[i].id, _view[i].seed);
+			Hash_t&& currentHash = _rankingFunc(_view[i].id, _view[i].seed);
 			for (const NodeId& p : candidates) {
 				if(p == _id) continue;
 				if(_view[i].id == p){ _view[i].hits++; continue; }
-				Hash<16>&& P_Hash = _rankingFunc(_view[i].id, _view[i].seed);
+				Hash_t&& P_Hash = _rankingFunc(_view[i].id, _view[i].seed);
 				if(_view[i].id == NodeId::null() || P_Hash < currentHash){
 					currentHash = P_Hash;
 					_view[i].hits = 1;
@@ -39,7 +40,7 @@ namespace Basalt
 	NodeId Node::selectPeer(){
 		uint32_t p=0;
 		for(uint32_t i=1; i<_view.size(); ++i)
-			p = _view[i].hits<_view[p].hits? i:p;
+			p = _view[i].hits < _view[p].hits? i:p;
 		_view[p].hits++;
 		return _view[p].id;
 	}  
@@ -50,8 +51,10 @@ namespace Basalt
 		push(q);
 	}
 	uint32_t Node::generateSeed() {
-		std::uniform_int_distribution<uint32_t> dist;
-		return dist(_rng);
+		_lfsr ^= _lfsr >> 12;
+		_lfsr ^= _lfsr << 25;
+		_lfsr ^= _lfsr >> 27;
+		return (_lfsr * 0x2545F4914F6CDD1D) & UINT32_MAX;
 	}
 	Array<NodeId> Node::reset() {
 		std::cout << "Resetting " << _k << " nodes" << '\n';
@@ -69,6 +72,7 @@ namespace Basalt
 	}
 	void Node::pull(NodeId dest){
 		net::Message req(net::PULL_REQ);
+		req << _id;
 		using namespace asio::ip;
 		tcp::endpoint ep(dest._addr, dest._port);
 		std::cout << "Attempting pull to " << dest.to_string() << '\n';
@@ -79,9 +83,9 @@ namespace Basalt
 	}
 	void Node::push(NodeId dest){
 		net::Message req(net::PUSH_REQ);
+		req << _id;
 		for(const ViewEntry& e: _view)
 			req << e.id;
-		req << _id;
 		asio::ip::tcp::endpoint ep(dest._addr, dest._port);
 		std::cout << "Attempting push to " << dest.to_string() << '\n';
 		asio::error_code err = net::send_request(ep, req);
@@ -90,35 +94,40 @@ namespace Basalt
 		}
 	}
 	void Node::on_pull_req(net::Message& req) const{
+		// read sender
+		NodeId sender;
+		req >> sender;
+		std::cout << "Received pull from " << sender.to_string() << '\n';
 		// put our view in the response
+		req << _id;
 		for(const ViewEntry& e: _view)
 			req << e.id;
 		// add our own id
-		req << _id;
-		std::cout << "Received pull" << '\n';
 		req.set_type(net::PULL_RESP);
 	}
 	void Node::on_push_req(net::Message& req){
 		// update our view, and make a PULL_RESP respoonse
 		Array<NodeId> candidates(_view.size() + 1);
-		for (int i = candidates.size() - 1; i >= 0; i--)
-			req >> candidates[i];
-		std::cout << "Received push from" << (candidates.end()-1)->to_string() << '\n';
+		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--)
+			req >> (*c);
+		std::cout << "Received push from" << candidates[0].to_string() << '\n';
 		updateSamples(candidates);
 		req.set_type(net::PUSH_RESP);		
 	}
 	void Node::on_pull_resp(net::Message& resp){
 		// read the view from the message and update
 		Array<NodeId> candidates(_view.size() + 1);
-		for (int i = candidates.size() - 1; i >= 0; i--)
-			resp >> candidates[i];
+		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--)
+			resp >> (*c);
 		updateSamples(candidates);
 		resp.set_type(net::SESSION_END);
 	}
-	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, Hash<16> (*h)(const NodeId&, uint32_t),
+	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, Hash_t (*h)(const NodeId&, uint32_t),
 		bool isByzantine, bool isSgx): 
 		_id(id), _isByzantine(isByzantine), _isSGX(isSgx),_rankingFunc(h), _k(k)
 	{
+		_lfsr = time(NULL);
+		generateSeed();
 		_view = Array<ViewEntry>(bs.size());
 		for(ViewEntry& e: _view){
 			e.hits = 0;
@@ -126,6 +135,8 @@ namespace Basalt
 			e.id = NodeId::null();
 		}
 		updateSamples(bs);
+		for(const ViewEntry& e: _view)
+			std::cout << e.to_string() << '\n';
 	}
 	
 } // namespace Basalt
