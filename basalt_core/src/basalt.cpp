@@ -1,5 +1,5 @@
 #include "basalt.hpp"
-#include "SHA256Hash.hpp"
+#include "fasthash.h"
 #include <net/basalt_net.hpp>
 #include <asio/steady_timer.hpp>
 #include <misc.h>
@@ -45,10 +45,9 @@ namespace Basalt
     HTTPLogger *logger = nullptr;
 
     Node::Hash_t hashFunc(const NodeId& id, uint32_t seed) {
-        uint8_t data[8];
+        uint8_t data[4];
         toLittleEndian(id.id, 4, data);
-        toLittleEndian(seed, 4, data+4);
-        return SHA256Hash(data, 8);
+        return fasthash64(data, 4, seed);
     }
     void update(){
         std::lock_guard guard(mutex);
