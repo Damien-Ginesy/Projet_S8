@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #include "ip.h"
 
@@ -53,6 +55,8 @@ void ip_alloc_init(int mask1_nbraddr, int mask2_nbraddr, int mask3_nbraddr, int 
         mask4_allocated_adrr = NULL;
     }
 
+    srand(time(NULL));
+
 }
 
 void ip_alloc_free(){
@@ -74,9 +78,32 @@ void ip_alloc_free(){
     }
 }
 
-unsigned char ip_alloc_ip_with_mask(int mask){
+// void ip_alloc_network_ip(unsigned char *ip, char mask){
+//     char already_allocated = 1;
+//     switch (mask){
+//         case 4:
+//             while(already_allocated){
 
-}
+//                 // choosing_rand
+//                 for(int i = 3; i >= 0; i-- ){
+//                     ip[i] = rand() % 255;
+//                 }
+
+//                 // verifying if already allocated
+//                 for(int i = 0; i < mask4_allocated_adrr_curser; i++){
+//                     if(memcmp())
+//                 }
+//             }
+//             break;
+        
+//         default:
+//             break;
+//     }
+// }
+
+// unsigned char ip_alloc_ip_with_mask(int mask){
+
+// }
 
 void ip_int2ip(int ip_int, unsigned char *ip){
     
