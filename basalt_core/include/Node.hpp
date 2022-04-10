@@ -3,6 +3,7 @@
 #include "Array.hpp"
 #include "Hash.hpp"
 #include <net/Message.hpp>
+#include <rng.hpp>
 
 namespace Basalt
 {
@@ -26,7 +27,7 @@ namespace Basalt
         Hash_t (*_rankingFunc) (const NodeId&, uint32_t); /* The function used to rank nodes */
         uint32_t _r = 0; /* Local round robin counter */
         uint32_t _k; 
-        uint64_t _lfsr;
+        xoshiro256s _rng;
 
         /* =================== */
         NodeId selectPeer(); // selects someone in our view based on its hit counter

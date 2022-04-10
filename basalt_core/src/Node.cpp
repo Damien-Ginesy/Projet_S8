@@ -50,19 +50,13 @@ namespace Basalt
 		pull(p);
 		push(q);
 	}
-	uint32_t Node::generateSeed() {
-		_lfsr ^= _lfsr >> 12;
-		_lfsr ^= _lfsr << 25;
-		_lfsr ^= _lfsr >> 27;
-		return (_lfsr * 0x2545F4914F6CDD1D) & UINT32_MAX;
-	}
 	Array<NodeId> Node::reset() {
 		std::cout << "Resetting " << _k << " nodes" << '\n';
 		Array<NodeId> samples(_k);
 		for (size_t i = 0; i < _k; i++) {
 			_r = (_r + 1) % _view.size(); // get the next index and wrap around
 			samples[i] = _view[_r].id;
-			_view[_r].seed = generateSeed();
+			_view[_r].seed = _rng() & UINT32_MAX;
 		}
 		Array<NodeId> candidates(_view.size());
 		for(uint32_t i=0; i<_view.size(); ++i)
@@ -122,16 +116,16 @@ namespace Basalt
 		updateSamples(candidates);
 		resp.set_type(net::SESSION_END);
 	}
+	using std::chrono::high_resolution_clock;
 	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, Hash_t (*h)(const NodeId&, uint32_t),
 		bool isByzantine, bool isSgx): 
-		_id(id), _isByzantine(isByzantine), _isSGX(isSgx),_rankingFunc(h), _k(k)
+		_id(id), _isByzantine(isByzantine), _isSGX(isSgx),_rankingFunc(h), _k(k),
+		_rng(high_resolution_clock::now().time_since_epoch().count())
 	{
-		_lfsr = time(NULL);
-		generateSeed();
 		_view = Array<ViewEntry>(bs.size());
 		for(ViewEntry& e: _view){
 			e.hits = 0;
-			e.seed = generateSeed();
+			e.seed = _rng() & UINT32_MAX;
 			e.id = NodeId::null();
 		}
 		updateSamples(bs);

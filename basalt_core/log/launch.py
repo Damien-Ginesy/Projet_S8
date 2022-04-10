@@ -18,7 +18,6 @@ viewSize = int(argv[2])
 IDs = createBootStrap.gen(N)
 createBootStrap.toFile(argv[3], IDs)
 
-
 T = []
 
 for i in IDs:

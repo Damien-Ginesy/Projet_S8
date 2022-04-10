@@ -14,6 +14,7 @@ set(src_dir "${CMAKE_SOURCE_DIR}/src")
 set(core_sources
 ${src_dir}/misc.cpp
 ${src_dir}/NodeId.cpp
+${src_dir}/rng.cpp
 ${src_dir}/Node.cpp
 ${src_dir}/basalt.cpp
 ${src_dir}/JOAATHash.cpp
