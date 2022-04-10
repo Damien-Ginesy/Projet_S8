@@ -17,6 +17,7 @@ ${src_dir}/NodeId.cpp
 ${src_dir}/rng.cpp
 ${src_dir}/Node.cpp
 ${src_dir}/basalt.cpp
+${src_dir}/fasthash.c
 ${src_dir}/JOAATHash.cpp
 ${src_dir}/sha256.cpp
 ${src_dir}/SHA256Hash.cpp

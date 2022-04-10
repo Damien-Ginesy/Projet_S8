@@ -17,7 +17,7 @@ namespace Basalt
     /* Represents a Basalt protocol Node */
     class Node
     {
-    public: using Hash_t = Hash<32>;
+    public: using Hash_t = uint64_t;
     private:
         Array<ViewEntry> _view; /* Local view of the network */
         NodeId _id; /* The node's id */
