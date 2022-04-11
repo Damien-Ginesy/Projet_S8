@@ -4,7 +4,7 @@
 
 int main(){
 
-    ip_test();
+    ip_test_alloc();
 
     return 0;
 }
