@@ -17,13 +17,13 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-int socket_listen_and_bind(int Nb_proc, ushort* port);
+int socket_listen_and_bind(int Nb_node,char *port);
 
 int socket_bind(int Nb_proc, ushort* port);
 
-int socket_and_connect(char *hostname, char *port);
+int socket_and_connect(char *hostname, char *port,char* ip_str) ;
 
-void *receive_data(int sckt, size_t *size_p);
-void send_data(int sckt, void *data, size_t size);
+int receive_data(int sckt, char * buffer, size_t size_p,char*err_msg);
+void send_data(int sckt, char *buff, size_t size,char*err_msg);
 
 #endif

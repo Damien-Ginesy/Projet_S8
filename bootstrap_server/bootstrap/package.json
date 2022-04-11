@@ -1,0 +1,19 @@
+{
+  "name": "bootstrap",
+  "version": "1.0.0",
+  "main": "index.js",
+
+  "scripts": {
+    "start": "node bootstrap.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-preset-latest": "^6.24.1",
+    "body-parser": "^1.20.0",
+    "express": "^4.17.3",
+    "open": "^8.4.0"
+  },
+  "devDependencies": {},
+  "description": ""
+}

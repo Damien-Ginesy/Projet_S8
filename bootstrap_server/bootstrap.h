@@ -9,6 +9,9 @@ struct node_info{
     int attaque_id;
 };
 
+int NODE_NUM = 10; /* nombre de processus dsm */
+int NODE_ID; /* rang (= numero) du processus */
+
 struct attack_info{
     int id;
     char mask;

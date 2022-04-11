@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"  >
+<head>
+    <link rel="stylesheet" href="form.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BASALT</title>
+    <script type="text/javascript" src="bootstrap.js" defer></script>
+
+</head>
+<body>
+    
+    <div id="registration-form">
+        <div class='fieldset'>
+          <legend>Parameters</legend>
+          <form action="http://localhost:8080" method="POST" data-validate="parsley">
+            <div class='row'>
+              <label for='firstname'>Nb de noeud du réseau :</label>
+              <input type="text" name="info[nb_noeud]">           
+             </div>
+              <div class='row'>
+              <label for="email">% malicieux :</label>
+              <input type=text name="info[malicieux]" >
+            </div>
+            <div class='row'>
+              <label for="cemail">Taille des vues :</label>
+              <input type=text name="info[Taille]">
+            </div>
+            <div class='row'>
+                <label for="cemail">Nb de cycles avant reset :</label>
+                <input type=text name="info[nb_cycle]">
+              </div>
+              <div class='row'>
+                <label for="cemail">Nb de reset/vue :</label>
+                <input type=text name="info[nb_reset]">
+              </div>
+              <div class='row'>
+                <label for="cemail">Nb de cycles par seconde :</label>
+                <input type=text name="info[nb_cycle_sec]">
+              </div>
+              <div class='row'>
+                <label for="email">Attack Type :</label>
+                <select name="attack" >
+                    <option value="Choice 1">Choice 1 </option>
+                    <option value="Choice 2">Choice 2</option>
+                </select>
+            </div>
+              <input type="submit" value="START">
+
+        </form>
+        </div>
+      </div>
+
+
+</body>
+</html>
