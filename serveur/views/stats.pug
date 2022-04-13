@@ -1,0 +1,54 @@
+extends layout
+
+block style
+    style
+        include ../style/stats.css        
+block title
+    title Basalt Serveur Supervision
+
+block body
+
+    header 
+        a(href="accueil")
+            h3 Accueil
+
+    h1#title Statistiques Basalt APP
+
+    h1#basalt_left BASALT APP
+
+    div#screen
+        canvas#graph1 
+
+    div#nodes 
+        h1 Noeud numéro 1
+        div.containeur
+            table
+                tr
+                    td Age
+                    td 12
+                    td 14
+                    td 2
+                    td 12
+                tr
+                    td Vue
+                    td N1
+                    td N4
+                    td N18
+                    td N54
+            canvas#graph2
+
+        
+    
+
+    div#but
+        button#prev noeud précédent
+        button#global Statistiques globales
+        button#next  noeud suivant
+
+
+
+        
+
+
+    script(src='https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js')
+    script(src='graphs.js')

@@ -1,5 +1,9 @@
 extends layout
 
+block style
+    style
+        include ../style/homepage.css
+
 block title
     title Basalt Serveur Supervision
 
@@ -10,9 +14,9 @@ block body
 
     #center-text
         #menu
-            a(href="#")
+            a(href="stats")
                 h1#stats Statistiques
-            a(href="#")
+            a(href="network")
                 h1#reseaux Réseau
         hr.line
         h2#enseirb ENSEIRB-MATMECA
@@ -27,3 +31,8 @@ block body
         h1#basalt_left BASALT APP
     #right-side
         h1#basalt_right BASALT APP
+        
+    #particles-js.background
+    script(src='/particles.js')
+    script(src='/particles.min.js')
+    script(src='/app.js')
