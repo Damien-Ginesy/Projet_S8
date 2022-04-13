@@ -152,6 +152,15 @@ char ip_is_alloc(unsigned char *ip, char mask){
 
 void ip_alloc_network_ip(unsigned char *ip, char mask){
 
+    unsigned char *mask_allocated_adrr;
+    int mask_allocated_adrr_curser; // size in ip 
+
+    ip_alloc_get_registerd_net_ip_by_mask(
+        &mask_allocated_adrr,
+        &mask_allocated_adrr_curser,
+        mask
+    );
+
     memset(ip, 0, 4*sizeof(char));
 
     while(1){
@@ -162,9 +171,14 @@ void ip_alloc_network_ip(unsigned char *ip, char mask){
         }
 
         if(!ip_is_alloc(ip, mask)){
-            return;
+            break;
         }
     }
+
+    
+
+    memcpy(mask_allocated_adrr+mask*mask_allocated_adrr_curser, ip+(4-mask), mask*sizeof(char));
+    mask_allocated_adrr_curser++;
 
 }
 
@@ -184,6 +198,9 @@ void ip_alloc(unsigned char *ip_out, unsigned char *net_ip, char mask){
         already_alloc = ip_is_alloc(ip_out, mask);
 
     }
+
+    memcpy(mask4_allocated_adrr + 4*mask4_allocated_adrr_curser, ip_out, 4*sizeof(char));
+    mask4_allocated_adrr_curser++;
 
 }
 
