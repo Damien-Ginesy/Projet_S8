@@ -78,140 +78,116 @@ void ip_alloc_free(){
     }
 }
 
+void ip_alloc_get_registerd_net_ip_by_mask(
+    unsigned char **mask_allocated_adrr,
+    int *mask_allocated_adrr_curser,
+    char mask
+){
 
+    switch (mask){
+
+        case 4:
+            
+            *mask_allocated_adrr = mask4_allocated_adrr;
+            *mask_allocated_adrr_curser = mask4_allocated_adrr_curser;
+            
+            
+            break;
+
+        case 3:
+            
+            *mask_allocated_adrr = mask3_allocated_adrr;
+            *mask_allocated_adrr_curser = mask3_allocated_adrr_curser;
+            
+            
+            break;
+
+        case 2:
+            
+            *mask_allocated_adrr = mask2_allocated_adrr;
+            *mask_allocated_adrr_curser = mask2_allocated_adrr_curser;
+            
+            
+            break;
+
+        case 1:
+            
+            *mask_allocated_adrr = mask1_allocated_adrr;
+            *mask_allocated_adrr_curser = mask1_allocated_adrr_curser;
+            
+            
+            break;
+        
+        default:
+
+            fprintf(stderr, "ip_alloc_get_registerd_net_ip_by_mask : mask must be equal to 1, 2, 3 or 4\n");
+            exit(EXIT_FAILURE);
+
+            break;
+    }
+
+}
+
+char ip_is_alloc(unsigned char *ip, char mask){
+
+    unsigned char *mask_allocated_adrr;
+    int mask_allocated_adrr_curser; // size in ip 
+
+    ip_alloc_get_registerd_net_ip_by_mask(
+        &mask_allocated_adrr,
+        &mask_allocated_adrr_curser,
+        mask
+    );
+
+
+    for(int i = 0; i < mask_allocated_adrr_curser; i++){
+        if(memcmp(ip, mask_allocated_adrr+(mask*i), mask*sizeof(char)) == 0){
+            return 1;
+        }
+    }
+
+    return 0;
+
+}
 
 void ip_alloc_network_ip(unsigned char *ip, char mask){
 
     memset(ip, 0, 4*sizeof(char));
-    
-    char already_allocated;
-    switch (mask){
 
-        case 4:
+    while(1){
 
-            already_allocated = 1;
-            while(already_allocated){
+        // choosing_rand
+        for(int i = 4-mask; i < 4; i++){
+            ip[i] = rand() % 255;
+        }
 
-                already_allocated = 0;
-
-                // choosing_rand
-                for(int i = 3; i >= 0; i-- ){
-                    ip[i] = rand() % 255;
-                }
-
-                // verifying if already allocated
-                for(int i = 0; i < mask4_allocated_adrr_curser; i++){
-                    if(memcmp(ip, mask4_allocated_adrr+(4*i), 4*sizeof(char))){
-                        already_allocated = 1;
-                        break;
-                    }
-                }
-
-            }
-
-            // adding ip in allocation list
-            memcpy(mask4_allocated_adrr+(4*mask4_allocated_adrr_curser), ip, 4*sizeof(char));
-            mask4_allocated_adrr_curser++;
-
-            break;
-
-        case 3:
-
-            already_allocated = 1;
-            while(already_allocated){
-
-                already_allocated = 0;
-
-                // choosing_rand
-                for(int i = 3; i >= 1; i-- ){
-                    ip[i] = rand() % 255;
-                }
-
-                // verifying if already allocated
-                for(int i = 0; i < mask3_allocated_adrr_curser; i++){
-                    if(memcmp(ip, mask3_allocated_adrr+(3*i), 3*sizeof(char))){
-                        already_allocated = 1;
-                        break;
-                    }
-                }
-
-                
-
-            }
-
-            // adding ip in allocation list
-            memcpy(mask3_allocated_adrr+(3*mask3_allocated_adrr_curser), ip, 3*sizeof(char));
-            mask3_allocated_adrr_curser++;
-
-            break;
-
-        case 2:
-
-            already_allocated = 1;
-            while(already_allocated){
-
-                already_allocated = 0;
-
-                // choosing_rand
-                for(int i = 3; i >= 2; i-- ){
-                    ip[i] = rand() % 255;
-                }
-
-                // verifying if already allocated
-                for(int i = 0; i < mask2_allocated_adrr_curser; i++){
-                    if(memcmp(ip, mask2_allocated_adrr+(2*i), 2*sizeof(char))){
-                        already_allocated = 1;
-                        break;
-                    }
-                }
-
-                
-
-            }
-
-            // adding ip in allocation list
-            memcpy(mask2_allocated_adrr+(2*mask2_allocated_adrr_curser), ip, 2*sizeof(char));
-            mask2_allocated_adrr_curser++;
-
-            break;
-
-        case 1:
-
-            already_allocated = 1;
-            while(already_allocated){
-
-                already_allocated = 0;
-
-                // choosing_rand
-                for(int i = 3; i >= 3; i-- ){
-                    ip[i] = rand() % 255;
-                }
-
-                // verifying if already allocated
-                for(int i = 0; i < mask1_allocated_adrr_curser; i++){
-                    if(memcmp(ip, mask1_allocated_adrr+(1*i), 1*sizeof(char))){
-                        already_allocated = 1;
-                        break;
-                    }
-                }
-
-                
-
-            }
-
-            // adding ip in allocation list
-            memcpy(mask1_allocated_adrr+(1*mask1_allocated_adrr_curser), ip, 1*sizeof(char));
-            mask1_allocated_adrr_curser++;
-
-            break;
-        
-        default:
-            fprintf(stderr, "ip_alloc_network_ip : mask must be equal to 1, 2, 3 or 4\n");
-            exit(EXIT_FAILURE);
-            break;
+        if(!ip_is_alloc(ip, mask)){
+            return;
+        }
     }
+
 }
 
+// void ip_alloc(unsigned char *ip_out, unsigned char *net_ip, char mask){
+
+//     for(int i = 4-mask; i < 4; i++){
+//        ip_out[i] = net_ip[i];
+//     }
+
+//     char already_alloc = 1;
+//     while(already_alloc){
+
+//         for(int i = 0; i < 4-mask; i++){
+//             ip_out[i] = rand() % 255;
+//         }
+
+//         already_alloc = ip_is_alloc(ip_out, mask);
+
+//     }
+
+
+
+// }
 
 
 void ip_int2ip(int ip_int, unsigned char *ip){
@@ -247,7 +223,7 @@ void ip_test_conv(){
     printf("%d\n", ip_ip2int(ip));
 }
 
-void ip_test_alloc(){
+void ip_test_alloc_net_ip(){
 
     unsigned char ip[4];
 
@@ -269,6 +245,32 @@ void ip_test_alloc(){
     ip_print(ip);
     printf("\n");
 
-    ip_alloc_free();
+    // ip_alloc_free();
 
 }
+
+// void ip_test_alloc_ip(){
+
+//     unsigned char ip_net[4];
+//     unsigned char ip[4];
+
+//     ip_alloc_init(1, 1, 4, 10);
+
+//     printf("net ip :\n");
+
+//     ip_alloc_network_ip(ip_net, 3);
+//     ip_print(ip_net);
+//     printf("\n");
+
+//     printf("ip :\n");
+
+//     for(int i = 0; i < 5; i++){
+//         ip_alloc(ip, ip_net, 3);
+//         ip_print(ip);
+//         printf("\n");
+//     }
+
+
+//     ip_alloc_free();
+
+// }
