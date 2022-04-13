@@ -26,8 +26,8 @@ namespace Basalt
         bool _isSGX = false; /* Whether or not the node is running in a trusted environment */
         Hash_t (*_rankingFunc) (const NodeId&, uint32_t); /* The function used to rank nodes */
         uint32_t _r = 0; /* Local round robin counter */
-        uint32_t _k; 
-        xoshiro256s _rng;
+        uint32_t _k;
+        xoshiro256ss _rng;
 
         /* =================== */
         NodeId selectPeer(); // selects someone in our view based on its hit counter
