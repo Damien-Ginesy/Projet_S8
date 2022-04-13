@@ -1,14 +1,13 @@
 #pragma once
 #include <stdint.h>
 
-struct xoshiro256s {
+class xoshiro256ss {
 private:
 	uint64_t _s[4];
-    uint64_t _val;
 public:
     struct iterator
     {
-        xoshiro256s* _rng;
+        xoshiro256ss* _rng;
         uintmax_t _c;
         bool operator==(const iterator&) const;
         bool operator!=(const iterator&) const;
@@ -23,7 +22,7 @@ public:
         iterator end() const { return _end; }
     };
     
-    xoshiro256s(uint64_t seed);
+    xoshiro256ss(uint64_t seed);
     uint64_t operator()();
     generator operator()(uintmax_t n);
 };
