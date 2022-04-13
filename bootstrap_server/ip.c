@@ -168,26 +168,24 @@ void ip_alloc_network_ip(unsigned char *ip, char mask){
 
 }
 
-// void ip_alloc(unsigned char *ip_out, unsigned char *net_ip, char mask){
+void ip_alloc(unsigned char *ip_out, unsigned char *net_ip, char mask){
 
-//     for(int i = 4-mask; i < 4; i++){
-//        ip_out[i] = net_ip[i];
-//     }
+    for(int i = 4-mask; i < 4; i++){
+       ip_out[i] = net_ip[i];
+    }
 
-//     char already_alloc = 1;
-//     while(already_alloc){
+    char already_alloc = 1;
+    while(already_alloc){
 
-//         for(int i = 0; i < 4-mask; i++){
-//             ip_out[i] = rand() % 255;
-//         }
+        for(int i = 0; i < 4-mask; i++){
+            ip_out[i] = rand() % 255;
+        }
 
-//         already_alloc = ip_is_alloc(ip_out, mask);
+        already_alloc = ip_is_alloc(ip_out, mask);
 
-//     }
+    }
 
-
-
-// }
+}
 
 
 void ip_int2ip(int ip_int, unsigned char *ip){
@@ -249,28 +247,28 @@ void ip_test_alloc_net_ip(){
 
 }
 
-// void ip_test_alloc_ip(){
+void ip_test_alloc_ip(){
 
-//     unsigned char ip_net[4];
-//     unsigned char ip[4];
+    unsigned char ip_net[4];
+    unsigned char ip[4];
 
-//     ip_alloc_init(1, 1, 4, 10);
+    ip_alloc_init(1, 1, 4, 10);
 
-//     printf("net ip :\n");
+    printf("net ip :\n");
 
-//     ip_alloc_network_ip(ip_net, 3);
-//     ip_print(ip_net);
-//     printf("\n");
+    ip_alloc_network_ip(ip_net, 3);
+    ip_print(ip_net);
+    printf("\n");
 
-//     printf("ip :\n");
+    printf("ip :\n");
 
-//     for(int i = 0; i < 5; i++){
-//         ip_alloc(ip, ip_net, 3);
-//         ip_print(ip);
-//         printf("\n");
-//     }
+    for(int i = 0; i < 5; i++){
+        ip_alloc(ip, ip_net, 3);
+        ip_print(ip);
+        printf("\n");
+    }
 
 
-//     ip_alloc_free();
+    ip_alloc_free();
 
-// }
+}
