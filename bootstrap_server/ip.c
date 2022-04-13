@@ -245,7 +245,7 @@ void ip_test_alloc_net_ip(){
     ip_print(ip);
     printf("\n");
 
-    // ip_alloc_free();
+    ip_alloc_free();
 
 }
 
