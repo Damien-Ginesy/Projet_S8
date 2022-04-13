@@ -2,7 +2,7 @@ import express from 'express';
 import {DatabaseAccess} from './db'
 
 const app = express();
-const port = 3000;
+const port:number = 3000;
 
 app.set('views','./views');
 app.use(express.static(__dirname + '/../public'));
