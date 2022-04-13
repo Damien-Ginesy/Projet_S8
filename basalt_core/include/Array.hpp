@@ -13,20 +13,20 @@ namespace Basalt{
         struct View
         {
         private:
-            ptr_t _start, _end;
+            const ptr_t _start, _end;
         public:
             View(const ptr_t start, const ptr_t end): _start(start), _end(end){}
             const ref_t operator[] (size_t i) const { return _start[i]; }
-            ref_t operator[] (size_t i) { return _start[i]; }
-            ptr_t begin() { return _start; }
+            ref_t operator[] (size_t i)  = delete;
             const ptr_t begin() const { return _start; }
-            ptr_t end() { return _end; }
+            ptr_t begin()  = delete;
             const ptr_t end() const { return _end; }
+            ptr_t end()  = delete;
             size_t size() const { return _end - _start; }
-            ptr_t at(size_t n) { return _start + n; }
             const ptr_t at(size_t n) const { return _start + n; }
-            View sub(size_t start) { return View(_start+start, _end); }
-            View sub(size_t start, size_t size) { return View(_start+start, _start+size); }
+            ptr_t at(size_t n) = delete;
+            View sub(size_t start) const { return View(_start+start, _end); }
+            View sub(size_t start, size_t size) const { return View(_start+start, _start+size); }
         };
     protected:
         ptr_t _data = nullptr;
@@ -85,9 +85,9 @@ namespace Basalt{
         const ptr_t end() const { return _end; }
         size_t size() const { return _end - _data; }
         ptr_t at(size_t n) { return _data + n; }
-        View view() { return View(_data, _end); }
-        View sub(size_t start, size_t size) { return View(_data+start, _data+start+size); }
-        View sub(size_t start) { return View(_data+start, _end); }
+        View view() const { return View(_data, _end); }
+        View sub(size_t start, size_t size) const { return View(_data+start, _data+start+size); }
+        View sub(size_t start) const { return View(_data+start, _end); }
         virtual ~Array() { delete[] _data;  }
     };
     

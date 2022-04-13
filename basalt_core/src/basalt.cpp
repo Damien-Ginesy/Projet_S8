@@ -41,17 +41,19 @@ namespace Basalt
     LoopedFunction *mainLoop, *resetLoop;
     static std::thread runner;
     std::mutex mutex;
-    uint32_t iterCount = 0;
     HTTPLogger *logger = nullptr;
 
-    Node::Hash_t hashFunc(const NodeId& id, uint32_t seed) {
-        uint8_t data[4];
-        toLittleEndian(id.id, 4, data);
+    Hash_t hashFunc(uint32_t id, uint32_t seed) {
+        byte data[4] = {
+            (byte)(id&0xff), 
+            (byte)((id>>8)&0xff),
+            (byte)((id>>16)&0xff),
+            (byte)((id>>24)&0xff)
+        };
         return fasthash64(data, 4, seed);
     }
     void update(){
         std::lock_guard guard(mutex);
-        iterCount++;
         node->update();
         if(logger)
         {

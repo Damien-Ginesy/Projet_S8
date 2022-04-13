@@ -8,8 +8,8 @@ namespace Basalt
         using namespace asio::ip;
         auto buf = _addr.to_bytes();
         memcpy(output._M_elems, buf.data(), 4);
-        toLittleEndian(_port, 2, output._M_elems+4);
-        toLittleEndian(id, 4, output._M_elems+6);
+        *(uint16_t*)(output._M_elems+4) = lendian16(_port);
+        *(uint32_t*)(output._M_elems+6) = lendian32(id);
     }
     NodeId NodeId::from_bytes(const bytes_t& input) {
         using namespace asio::ip;
@@ -23,9 +23,9 @@ namespace Basalt
     bool NodeId::operator==(const NodeId& other) const { return id == other.id; }
     std::string NodeId::to_string() const {
         std::stringstream s;
-        s << "{\"ip\": \"" << _addr.to_string() << 
+        s << "{\"adresseReelle\": \"" << _addr.to_string() << 
             "\", \"port\": " << _port << 
-            ", \"virtual_id\": " << id << "}";
+            ", \"adresseVirtuelle\": " << id << "}";
         return s.str();
     }
 } // namespace Basalt

@@ -6,10 +6,11 @@ namespace Basalt
 {
 	std::string Node::to_string() const{
 		std::stringstream out;
-		out << "{\"id\":" << _id.to_string()
-		<< ", \"is_byzantine\": " << _isByzantine 
-		<< ", \"is_sgx\": " << _isSGX 
-		<< ", \"view\": [";
+		out << "{\"NodeID\":" << _id.to_string()
+		<< ", \"malicieux\": " << _isByzantine 
+		<< ", \"sgx\": " << _isSGX 
+		<< ", \"age\": " << _iter
+		<< ", \"vue\": [";
 		for(size_t i=0; i<_view.size()-1; ++i)
 			out << _view[i].to_string() << ", ";
 		out << (_view.end()-1)->to_string() << "]}";
@@ -17,18 +18,22 @@ namespace Basalt
 	}
 	std::string ViewEntry::to_string() const{
 		std::stringstream out;
-		out << "{\"id\": " << id.to_string() << ", "
-		"\"seed\": " << seed << ", \"hits\": " << hits
+		out << "{\"NodeID\": " << id.to_string() << ", "
+		"\"seed\": " << seed << ", \"hitCount\": " << hits
 		<< '}';
 		return out.str();
 	}
+	Array<ViewEntry>::View Node::view() const{
+		return _view.view();
+	}
+
 	void Node::updateSamples(const Array<NodeId>& candidates){
 		for(uint32_t i=0; i<_view.size() ; ++i){
-			Hash_t&& currentHash = _rankingFunc(_view[i].id, _view[i].seed);
+			Hash_t&& currentHash = _rankingFunc(_view[i].id.id, _view[i].seed);
 			for (const NodeId& p : candidates) {
 				if(p == _id) continue;
 				if(_view[i].id == p){ _view[i].hits++; continue; }
-				Hash_t&& P_Hash = _rankingFunc(_view[i].id, _view[i].seed);
+				Hash_t&& P_Hash = _rankingFunc(_view[i].id.id, _view[i].seed);
 				if(_view[i].id == NodeId::null() || P_Hash < currentHash){
 					currentHash = P_Hash;
 					_view[i].hits = 1;
@@ -49,6 +54,7 @@ namespace Basalt
 		NodeId q = selectPeer();
 		pull(p);
 		push(q);
+		_iter++;
 	}
 	Array<NodeId> Node::reset() {
 		std::cout << "Resetting " << _k << " nodes" << '\n';
@@ -117,7 +123,7 @@ namespace Basalt
 		resp.set_type(net::SESSION_END);
 	}
 	using std::chrono::high_resolution_clock;
-	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, Hash_t (*h)(const NodeId&, uint32_t),
+	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, RankFunc_t h,
 		bool isByzantine, bool isSgx): 
 		_id(id), _isByzantine(isByzantine), _isSGX(isSgx),_rankingFunc(h), _k(k),
 		_rng(high_resolution_clock::now().time_since_epoch().count())
