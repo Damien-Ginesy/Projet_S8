@@ -7,6 +7,8 @@
 
 namespace Basalt
 {
+    using Hash_t = uint64_t;
+    using RankFunc_t = Hash_t (*) (uint32_t, uint32_t);
     /* An entry in the Basalt Node's view */
     struct ViewEntry{
         NodeId id;
@@ -24,9 +26,10 @@ namespace Basalt
         
         bool _isByzantine = false; /* Whether or not the node is malicious */
         bool _isSGX = false; /* Whether or not the node is running in a trusted environment */
-        Hash_t (*_rankingFunc) (const NodeId&, uint32_t); /* The function used to rank nodes */
+        RankFunc_t _rankingFunc; /* The function used to rank nodes */
         uint32_t _r = 0; /* Local round robin counter */
         uint32_t _k;
+        uint32_t _iter = 0;
         xoshiro256ss _rng;
 
         /* =================== */
@@ -38,7 +41,7 @@ namespace Basalt
 
     public:
         /* Constructs the node */
-        Node(NodeId id, const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset, Hash_t (*)(const NodeId&, uint32_t),
+        Node(NodeId id, const Array<NodeId>& bootstrap, uint32_t numSamplesPerReset, RankFunc_t,
             bool isByzantine=false, bool isSGX=false);
         /* Resets this->_k nodes seeds in the view */
         Array<NodeId> reset();
@@ -50,6 +53,7 @@ namespace Basalt
         void on_pull_resp(net::Message&); /* pull response handler */
         void on_push_req(net::Message&); /* push request handler */
         std::string to_string() const;
+        Array<ViewEntry>::View view() const;
     };
     
 } // namespace Basalt

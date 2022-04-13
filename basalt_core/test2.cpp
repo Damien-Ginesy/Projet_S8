@@ -1,6 +1,8 @@
 #include <NodeId.hpp>
+#include <net/Message.hpp>
 #include <array>
 #include <iostream>
+#include <Array.hpp>
 
 int main(int argc, char const *argv[])
 {
@@ -18,5 +20,13 @@ int main(int argc, char const *argv[])
     };
     NodeId id2 = NodeId::from_bytes(d2);
     std::cout << id2.to_string() << '\n';
+
+    net::Message msg;
+    msg << id._addr.to_bytes() << id._port << id.id;
+    for(byte b: msg)
+        std::printf("%02x ", b);
+    printf("\n");
+    Array<int> a(10, 0);
+    Array<int>::View v = a.view();
     return 0;
 }

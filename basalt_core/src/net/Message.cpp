@@ -67,6 +67,7 @@ namespace Basalt
         Message& Message::operator<<(const std::string& str){
             return *this << str.c_str();
         }
+        
         asio::error_code Message::writeTo(tcp::socket& sock) const{
             asio::error_code ec;
             uint8_t buf[Header::dataSize];

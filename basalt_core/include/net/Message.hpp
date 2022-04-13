@@ -6,6 +6,7 @@
 #include <inttypes.h>
 #include <string.h>
 #include <asio.hpp>
+#include <misc.h>
 
 namespace Basalt
 {
@@ -31,7 +32,7 @@ namespace Basalt
             static Header fromBytes(const uint8_t* in){
                 return {
                     .type = (MessageType)in[0],
-                    .size = (uint32_t)(in[1] | (in[2] << 8) | (in[3] << 16) | (in[4]<<24))
+                    .size = lendian32(*(uint32_t*)(in+1))
                 };
             }
             /* The raw data size of a serialized Header object */ 
@@ -40,9 +41,9 @@ namespace Basalt
             void toBytes(uint8_t out[]) const {
                 out[0] = (uint8_t)      type;
                 out[1] = (uint8_t)      (size & 0xff);
-                out[2] = (uint8_t)(     (size >> 8) & 0xff);
-                out[3] = (uint8_t)(     (size >> 16) & 0xff);
-                out[4] = (uint8_t)(     (size >> 24) & 0xff);
+                out[2] = (uint8_t)     ((size >> 8) & 0xff);
+                out[3] = (uint8_t)     ((size >> 16) & 0xff);
+                out[4] = (uint8_t)     ((size >> 24) & 0xff);
             }
         };
         /* Represents a message */
@@ -66,6 +67,18 @@ namespace Basalt
             Message& operator<<(uint64_t b); /* Appends a 64-bit int to the Message in little endian order */
             Message& operator<<(const char* str); /* Appends a string to the message */
             Message& operator<<(const std::string& str); /* Appends a string to the message */
+            template<size_t N>
+            Message& operator<<(const std::array<byte, N>& b){
+                for(byte x: b)
+                    *this << x;
+                return *this;
+            }
+            template<size_t N>
+            Message& operator<<(const std::array<byte, N>&& b){
+                for(byte x: b)
+                    *this << x;
+                return *this;
+            }
             
             Message& operator>>(uint8_t& b); 
             Message& operator>>(uint16_t& b);

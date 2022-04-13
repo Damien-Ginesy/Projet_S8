@@ -9,6 +9,9 @@
 #include <HTTPLogger.hpp>
 #include <fasthash.h>
 #include <misc.h>
+#include <semaphore>
+
+std::binary_semaphore sem(0);
 
 #define ERROR_EXIT(x)   { std::cerr << x << '\n'; exit(EXIT_FAILURE); }
 
@@ -50,9 +53,13 @@ void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>
 }
 
 
-Basalt::Node::Hash_t hashFunc(const Basalt::NodeId& id, uint32_t seed) {
-    uint8_t data[4];
-    Basalt::toLittleEndian(id.id, 4, data);
+Basalt::Hash_t hashFunc(uint32_t id, uint32_t seed) {
+    byte data[4] = {
+        (byte)(id&0xff), 
+        (byte)((id>>8)&0xff),
+        (byte)((id>>16)&0xff),
+        (byte)((id>>24)&0xff)
+    };
     return fasthash64(data, 4, seed);
 }
 
@@ -65,17 +72,25 @@ int main(int argc, char const *argv[])
     Array<NodeId> bs(2);
     bs[0] = NodeId {address_v4(0x7F000001), 3001, 1};
     bs[1] = NodeId {address_v4(0x7F000001), 3002, 2};
+    const char* host = argv[1];
+    const char* url = argc>2?argv[2]: "/";
+    uint16_t port = argc>3? atoi(argv[3]):80;
     Node n(id, bs, 1, hashFunc, false, false);
+    
     try
     {
-        HTTPLogger logger(1, "localhost", 3000, "/");
+        HTTPLogger logger(1, host, port, url);
+        std::cout << logger.endpoint() << '\n';
         logger.setCallback([](const llhttp_t& parser, net::HTTPClient::BufferView body){
             std::cout << "Received code " << parser.status_code << '\n';
             for(char b: body)
                 std::cout << b;
+            sem.release();
         });
-        logger << n.to_string();
-        std::getchar();
+        std::string msg = n.to_string();
+        std::cout << msg << '\n';
+        logger << msg;
+        sem.acquire();
     }
     catch(const std::runtime_error& ec)
     {
