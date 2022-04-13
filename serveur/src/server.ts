@@ -23,6 +23,14 @@ app.post('/infoNoeud',(req,res)=>{
     res.sendStatus(200);
 })
 
+app.get('/network', (req,res)=>{
+    res.render('network');
+})
+
+app.get('/stats', (req,res)=>{
+    res.render('stats');
+})
+
 app.get('/accueil',(req, res) => {
     res.render('homepage');
 })

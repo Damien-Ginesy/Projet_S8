@@ -1,7 +1,8 @@
 
 
+/* graphe 1 pour les statistiques globales */
 
-let ctx = document.querySelector('#graph1')
+const ctx = document.querySelector('#graph1')
 
 const data = {
     labels: ['noeuds malicieux', 'noeuds bons'],
@@ -28,25 +29,57 @@ const config = {
 const graph1 = new Chart(ctx, config);
 
 
-let prev = document.getElementById("prev");
-let next = document.getElementById("next");
-let global = document.getElementById("global");
+/* graphe 2 pour les statistiques d'un noeud en particulier */
 
-let screen = document.getElementById("screen");
-let screen2 = document.getElementById("screen2");
 
+const ctx2 = document.querySelector('#graph2')
+
+const data2 = {
+    labels: ['noeuds malicieux', 'noeuds bons'],
+    datasets: [{
+        data: [10, 5], // mettre les données du serveur
+        backgroundColor: ['#6b2d5c', '#E2C290']
+    }]
+};
+
+const config2 = {
+    type: 'doughnut',
+    data: data,
+    options: {
+        maintainAspectRatio : true, // make the pie small
+         labels: {
+            display: true,
+            labels: {
+                  fontSize: 500 //change the size of the labels
+            }
+        }
+    }
+  };
+
+const graph2 = new Chart(ctx2, config2);
+
+
+const prev = document.getElementById("prev");
+const next = document.getElementById("next");
+const global = document.getElementById("global");
+
+const screen = document.getElementById("screen");
+const nodes = document.getElementById("nodes");
+
+nodes.style.display = 'none';
 
 next.addEventListener("click", () => {
   if(getComputedStyle(ctx).display != "none"){
     screen.style.display = "none";
-    screen2.style.display = "none";
-
+    nodes.style.display = 'block';
   } 
 })
 
 prev.addEventListener("click", () => {
     if(getComputedStyle(ctx).display != "none"){
       screen.style.display = "none";
+      
+      nodes.style.display = 'block';
   
     } 
   })
@@ -55,6 +88,7 @@ prev.addEventListener("click", () => {
 global.addEventListener("click", () => {
     if(getComputedStyle(ctx).display != "none"){
         screen.style.display = "block";
+        nodes.style.display = 'none';
     }else{
         screen.style.display = "block";
     }

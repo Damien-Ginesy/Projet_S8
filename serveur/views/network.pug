@@ -1,0 +1,20 @@
+extends layout 
+
+block style
+    style
+        include ../style/network.css
+
+block title
+    title Basalt Serveur Supervision
+
+block body 
+
+    div
+        img#background(src="/images/background.jpg")
+        img#rectangle(src="/images/vintage.png")
+
+    #container
+    <script src="https://cdn.anychart.com/releases/8.8.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.8.0/js/anychart-graph.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.8.0/js/anychart-data-adapter.min.js"></script>
+    script(src='networkGraph.js')

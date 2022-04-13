@@ -26,6 +26,19 @@ h1, h2, h3, p{
    
 }
 
+#graph2{
+    display: inline !important;
+    width: 15% !important;
+    height: 15% !important;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+    padding: 0;
+   
+}
+
+
+
 
 
 #screen{
@@ -101,4 +114,25 @@ h3{
     padding-left: 2vh;
     letter-spacing: 1.5vh;
     padding-right: 2vh;
+}
+
+#nodes{
+    margin-left: 20%;
+}
+
+table
+{
+    border-collapse: collapse;
+    display: inline !important;
+}
+td
+{
+    border: 1px solid black;
+    padding: 20px;
+}
+
+.containeur{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
