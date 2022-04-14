@@ -1,9 +1,10 @@
-const popup =  document.getElementById('popup');
+const popup =  document.getElementsByClassName('popup');
 
 function nodeHover(node){
-    popup.style.display = "block";
+    popup[0].style.display = "block";
+    showPopup = 1;
 }
 
-function nodeClearHover(node){
-    popup.style.display = "none";
+function nodeClearHover(){
+    popup[0].style.display = "none";
 }

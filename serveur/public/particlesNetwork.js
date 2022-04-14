@@ -12,7 +12,7 @@ class Circle {
       this.y = y;
       this.sx = sx;
       this.sy = sy;
-      this.r = 20;
+      this.r = 50;
 
       this.drawCircle = function () {
         ctx.beginPath();
@@ -48,7 +48,7 @@ class Circle {
         const dx = this.x - mouse.x;
         const dy = this.y - mouse.y;
         const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < this.r) 
+        if (dist <= this.r) 
             return true;
         return false
       }
@@ -98,17 +98,24 @@ canvas.addEventListener("click", function(event) {
     false
 );
 
+const breakException = {};
 // mouseover
 canvas.addEventListener("mousemove", function(event){
   mouse = mousePosition(event)
-  circles.forEach(element => {
-      if (element.pointInCircle(mouse)) {
-          console.log('hover')
-          nodeHover(element);
-      }
-      else
-        nodeClearHover();
-  });   
+  try{
+    circles.forEach(element => {
+        if (element.pointInCircle(mouse)) {
+            nodeHover(element);
+            throw breakException;
+        }
+        else{
+          nodeClearHover();
+        }
+    });   
+  }catch(err){
+    if (err!== breakException)
+      throw err
+    }
   },
   false
 )
