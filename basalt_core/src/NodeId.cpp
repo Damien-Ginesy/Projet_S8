@@ -7,9 +7,9 @@ namespace Basalt
     void NodeId::to_bytes(bytes_t& output) const{
         using namespace asio::ip;
         auto buf = _addr.to_bytes();
-        memcpy(output._M_elems, buf.data(), 4);
-        *(uint16_t*)(output._M_elems+4) = lendian16(_port);
-        *(uint32_t*)(output._M_elems+6) = lendian32(id);
+        memcpy(output.data(), buf.data(), 4);
+        *(uint16_t*)(output.data()+4) = lendian16(_port);
+        *(uint32_t*)(output.data()+6) = lendian32(id);
     }
     NodeId NodeId::from_bytes(const bytes_t& input) {
         using namespace asio::ip;

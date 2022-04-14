@@ -26,6 +26,9 @@
 *.a
 *.lib
 
+# Debugging files
+*.pdb
+
 # Executables
 *.exe
 *.out
@@ -36,6 +39,7 @@
 **build
 
 **bin/
+**lib/
 
 *.log
 *.bs
