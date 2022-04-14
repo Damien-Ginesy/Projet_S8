@@ -7,12 +7,13 @@ const col=['red','blue','green','yellow','magenta'],
     bounce=-1;
 
 class Circle {
-  constructor(x, y, sx, sy) {
+  constructor(x, y, sx, sy, r, infect) {
       this.x = x;
       this.y = y;
       this.sx = sx;
       this.sy = sy;
-      this.r = 50;
+      this.r = r;
+      this.infect = infect;
 
       this.drawCircle = function () {
         ctx.beginPath();
@@ -44,6 +45,13 @@ class Circle {
         }
       };
 
+      this.infectedNode = function () {
+        if (this.infect){
+          ctx.fillStyle = "#C70039";
+          ctx.fill();
+        }
+      }
+
       this.pointInCircle = function (mouse) {
         const dx = this.x - mouse.x;
         const dy = this.y - mouse.y;
@@ -55,28 +63,41 @@ class Circle {
     }
 }
 
-
+// ADD DATA
 // total nodes / nb gp
-for(let i=0;i<5;i++){
+function circleSet(nbCircle, radius, infectList){
+  let infect = false;
+  for(let i=0;i<nbCircle;i++){
     const _x = Math.floor((Math.random()*(canvas.width-15)))+15,
         _y = Math.floor((Math.random()*(canvas.height-15)))+15,
         xspd = Math.floor((Math.random()))+0.5,
         yspd = Math.floor((Math.random()))+0.5,
+        r = radius;
         /* xspd = 0,
         yspd = 0, */
-        c=new Circle(_x,_y,xspd,yspd);
+    if (infectList.includes(i))
+      infect= true;
+    c=new Circle(_x,_y,xspd,yspd, r, infect);
     circles.push(c);
+    infect=false;
+  }
+}
+
+function circleDelete(){
+  circles.forEach((value, index) =>{
+    circles.splice(index);
+  })
 }
 
 function update(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     for(let i=0;i<circles.length;i++){
         circles[i].drawCircle();
+        circles[i].infectedNode();
         circles[i].moveCircle();
     }
     requestAnimationFrame(update);
 }
-update();
 
 function mousePosition(event) {
     return {
@@ -85,20 +106,76 @@ function mousePosition(event) {
     }
 }
 
+/******************************************************************* */
+/***************************PARAMETRAGE***************************** */
+/******************************************************************* */
+
+function getInfectedList(nbInfectedNode, nbNodeTot){
+  const infectList = [];
+  for (let i=0;i<nbInfectedNode;i++){
+    const infectedNodeId = Math.floor(Math.random() * nbNodeTot)+1;
+    if (!infectList.includes(infectedNodeId))
+      infectList.push(infectedNodeId);
+  }
+  return infectList;
+}
+
+function getViewList(viewSize, nbNodeTot){
+  const viewList = [];
+  for (let i=0;i<nbNodeTot;i++){
+    const viewNodeList = [];
+    for (let j=0;j<viewSize;j++){
+      const inView = Math.floor(Math.random() * nbNodeTot)+1;
+      if (!viewNodeList.includes(inView))
+        viewNodeList.push(inView);
+    }
+    viewList.push(viewNodeList);
+  }
+  return viewList;
+}
+
+/******************************************************************* */
+/*************************APPEL FONCTIONS*************************** */   
+/******************************************************************* */
+
+const nbNodeTot = 100;
+const nbSubGp = 2;
+const nbInfectedNode = 4;
+const viewSize = 5;
+
+const infectedList = getInfectedList(nbInfectedNode, nbNodeTot);
+const viewList = getViewList(viewSize, nbNodeTot);
+
+/* circleSet(50, 20, infectedList);
+update(); */
+
+/******************************************************************* */
+/*************************EVENT LISTENER**************************** */   
+/******************************************************************* */
+
+
+const breakException = {};
+
 // Click event
 canvas.addEventListener("click", function(event) {
     mouse = mousePosition(event)
-    circles.forEach(element => {
-        // method using point to circle collision detection
-        if(element.pointInCircle(mouse)) {
-            console.log(mouse)
-        }
-    });
+    try{
+      circles.forEach(element => {
+          // method using point to circle collision detection
+          if(element.pointInCircle(mouse)) {      
+            circleDelete();
+            /* circleInit(20,30) */
+            throw breakException;
+          }
+      });
+    }catch(err){
+      if (err!== breakException)
+        throw err
+      }
     },
     false
 );
 
-const breakException = {};
 // mouseover
 canvas.addEventListener("mousemove", function(event){
   mouse = mousePosition(event)
