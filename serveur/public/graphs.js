@@ -46,13 +46,19 @@ const config2 = {
     type: 'doughnut',
     data: data,
     options: {
-        maintainAspectRatio : true, // make the pie small
-         labels: {
-            display: true,
-            labels: {
-                  fontSize: 500 //change the size of the labels
-            }
+      maintainAspectRatio : true, // make the pie small
+      labels: {
+        display: true,
+        labels: {
+              fontSize: 500 //change the size of the labels
         }
+      },
+      plugins: {
+        legend : {
+          display: false,
+        }
+      }
+      
     }
   };
 
@@ -66,20 +72,23 @@ const global = document.getElementById("global");
 const screen = document.getElementById("screen");
 const nodes = document.getElementById("nodes");
 
+const buttonBar = document.getElementById("cont");
+
 nodes.style.display = 'none';
 
 next.addEventListener("click", () => {
   if(getComputedStyle(ctx).display != "none"){
     screen.style.display = "none";
     nodes.style.display = 'block';
+    buttonBar.style.margin = "105px";
   } 
 })
 
 prev.addEventListener("click", () => {
     if(getComputedStyle(ctx).display != "none"){
       screen.style.display = "none";
-      
       nodes.style.display = 'block';
+      buttonBar.style.marginTop = "105px";
   
     } 
   })
@@ -89,7 +98,24 @@ global.addEventListener("click", () => {
     if(getComputedStyle(ctx).display != "none"){
         screen.style.display = "block";
         nodes.style.display = 'none';
+        buttonBar.style.marginTop = "0px";
     }else{
         screen.style.display = "block";
+        buttonBar.style.marginTop = "0px";
     }
   })
+
+
+
+  /* header nav */ 
+
+  
+function openNav() {
+  document.getElementById("myNav").style.width = "100%";
+ }
+ 
+ 
+function closeNav() {
+  document.getElementById("myNav").style.width = "0%";
+}
+

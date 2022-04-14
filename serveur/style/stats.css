@@ -28,13 +28,12 @@ h1, h2, h3, p{
 
 #graph2{
     display: inline !important;
-    width: 15% !important;
-    height: 15% !important;
+    width: 20% !important;
+    height: 20% !important;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 2%;
+    margin-top: 0;
     padding: 0;
-   
 }
 
 
@@ -45,7 +44,7 @@ h1, h2, h3, p{
     border: solid 5px black;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 5%;
+    margin-top: 3%;
     width: 50%;
     padding: 2%;
 }
@@ -56,11 +55,16 @@ h1, h2, h3, p{
 }
 
 
+#nodes > h1{
+    margin-top: 100px;
+}
+
 /* button part */
 
 
 #but{
     display: flex;
+    position: sticky;
     justify-content: space-around;
     margin-top: -5%;
     padding: 104px;
@@ -127,12 +131,83 @@ table
 }
 td
 {
-    border: 1px solid black;
+    
+    border-top: 1px solid black;
     padding: 20px;
+    font-size: 150%;
 }
+
+
 
 .containeur{
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+
+
+/* header nav style */
+
+
+span {
+    display: block;
+    height: 50px;
+    text-align: center;
+    font-size: 50%;
+    font-family: 'Lato';
+    margin-left: 70%;
+    z-index: 2;
+   
+}
+
+.overlay {
+  
+    height: 100%;
+    width: 0;
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+
+    background-color: rgba(0,0,0, 0.9); 
+    overflow-x: hidden; 
+    transition: 0.5s; 
+}
+
+.overlay-content {
+    position: relative;
+    top: 30%; 
+    width: 100%;
+    text-align: center; 
+
+}
+
+
+.overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: white;
+    display: block; 
+    transition: 0.3s; 
+}
+
+
+/*.overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+}*/
+
+
+.overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+}
+
+#open:hover{
+    color: #818181;
+}
+
+
