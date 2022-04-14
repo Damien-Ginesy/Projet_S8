@@ -58,7 +58,7 @@ namespace Basalt
             _payload.resize(_header.size = 0);
         }
         Message& Message::operator<<(const char* str){
-            unsigned len = strlen(str);
+            unsigned len = (uint32_t)strlen(str);
             _payload.resize(_header.size + len);
             std::memcpy(_payload.data()+_header.size, str, len);
             _header.size += len;
@@ -86,10 +86,10 @@ namespace Basalt
         void Message::append(const uint8_t *input, size_t n){
             _payload.resize(_header.size + n);
             std::memcpy(_payload.data() + _header.size, input, n);
-            _header.size += n;
+            _header.size += (uint32_t)n;
         }
         void Message::pop(uint8_t *output, size_t n){
-            _header.size -= n;
+            _header.size -= (uint32_t)n;
             std::memcpy(output, _payload.data()+_header.size, n);
             _payload.resize(_header.size);
         }

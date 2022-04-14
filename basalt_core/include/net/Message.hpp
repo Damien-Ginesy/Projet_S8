@@ -87,9 +87,9 @@ namespace Basalt
             void operator>>(char* out);
             void operator>>(std::string& out);
             /* Returns the total size of the message (header included) */
-            uint32_t size() const { return _payload.size() + Header::dataSize; }
+            uint32_t size() const { return (uint32_t)_payload.size() + Header::dataSize; }
             /* Returns the size of the payload */
-            uint32_t payloadSize() const { return _payload.size(); }
+            uint32_t payloadSize() const { return (uint32_t)_payload.size(); }
             /* Returns the type of the message */
             MessageType get_type() const { return _header.type; }
             /* Sets the type of the message */
