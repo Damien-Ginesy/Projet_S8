@@ -88,7 +88,7 @@ function mousePosition(event) {
 // Click event
 canvas.addEventListener("click", function(event) {
     mouse = mousePosition(event)
-    circles.forEach(function(element) {
+    circles.forEach(element => {
         // method using point to circle collision detection
         if(element.pointInCircle(mouse)) {
             console.log(mouse)
@@ -97,4 +97,18 @@ canvas.addEventListener("click", function(event) {
     },
     false
 );
-  
+
+// mouseover
+canvas.addEventListener("mousemove", function(event){
+  mouse = mousePosition(event)
+  circles.forEach(element => {
+      if (element.pointInCircle(mouse)) {
+          console.log('hover')
+          nodeHover(element);
+      }
+      else
+        nodeClearHover();
+  });   
+  },
+  false
+)
