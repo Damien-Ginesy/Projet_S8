@@ -9,5 +9,5 @@
         mode: 0644
 
     - name : compile
-      command : "bash -c 'cd /home/peer; rm -rf basalt_project; mkdir basalt_project; mv src.zip basalt_project/src.zip; cd basalt_project; unzip src.zip; make;./prog;' "
+      command : "bash -c 'cd /home/peer; rm -rf basalt_project; mkdir basalt_project; mv src.zip basalt_project/src.zip; cd basalt_project; unzip src.zip; make;' "
 
