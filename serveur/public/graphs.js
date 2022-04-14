@@ -1,4 +1,27 @@
 
+/* récupération params url */
+
+const queryString = window.location.search;
+const urlParams = new URLSearchParams (queryString);
+
+
+let nbNoeuds = 100;
+let nbMalicieux = 5; 
+
+
+
+if(urlParams .get ('nbNoeuds')){
+  nbNoeuds = urlParams .get ('nbNoeuds');
+}
+
+if(urlParams .get ('nbMalicieux')){
+  nbMalicieux= urlParams .get ('nbMalicieux');
+}
+
+
+let nbBon = nbNoeuds-nbMalicieux;
+
+
 
 /* graphe 1 pour les statistiques globales */
 
@@ -7,7 +30,7 @@ const ctx = document.querySelector('#graph1')
 const data = {
     labels: ['noeuds malicieux', 'noeuds bons'],
     datasets: [{
-        data: [10, 5], // mettre les données du serveur
+        data: [nbMalicieux, nbBon], // mettre les données du serveur
         backgroundColor: ['#6b2d5c', '#E2C290']
     }]
 };
@@ -118,4 +141,6 @@ function openNav() {
 function closeNav() {
   document.getElementById("myNav").style.width = "0%";
 }
+
+
 

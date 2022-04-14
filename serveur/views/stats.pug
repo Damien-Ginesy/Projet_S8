@@ -27,12 +27,24 @@ block body
         div#myNav.overlay
             a.closebtn(href='javascript:void(0)' onclick='closeNav()') &times;
             .overlay-content
-                a.overlay_a(href='#') Nombre de noeuds
-                input.tentacles(type='number' name='tentacles' min='1' max='100')
-                a.overlay_b(href='#') Taille de la vue 
-                input.tentacles(type='number' name='tentacles' min='2' max='6')
-                a.overlay_c(href='#') Nombre de noeuds malicieux 
-                input.tentacles(type='number' name='tentacles' min='1' max='100')
+
+
+                form(action='' method='get')
+                    .myForm
+                        label(for='nbNoeuds') Nombre de noeuds
+                        br
+                        input#nbNoeuds(type='number' name='nbNoeuds' min='1' max='100')
+                    .myForm
+                        label(for='vue') Taille de la vue
+                        br
+                        input#Vue(type='number' name='vue' min='2' max='6')
+                    .myForm
+                        label(for='vue') Nombre de noeuds malicieux
+                        br
+                        input#nbMalicieux(type='number' name='nbMalicieux' min='0' max='100')
+                    .myForm
+                        br
+                        input#submit(type='submit' value='Effectuer les changements')
 
         span#sub_header(onclick='openNav()')
             h1#open Ouvrir les options  
