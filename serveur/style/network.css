@@ -34,3 +34,11 @@ body {
     top: 20px;
     left: 20px;   
 }
+
+#particles-js {
+    position: absolute;
+    width: calc(100vw - 40px);
+    height: calc(100vh - 40px);
+    top: 20px;
+    left: 20px;
+  }
