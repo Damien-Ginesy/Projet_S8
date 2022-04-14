@@ -52,3 +52,17 @@ canvas {
     border-radius: 10%;
     color: white;
 }
+
+table
+{
+    border-collapse: collapse;
+    display: inline !important;
+    margin-left: 70px;
+}
+
+td{
+    border: 2px solid white;
+    padding: 10px;
+    font-size: 100%;
+    justify-content: center;
+}

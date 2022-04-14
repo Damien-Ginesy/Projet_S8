@@ -6,14 +6,17 @@ const circles = [];
 const col=['red','blue','green','yellow','magenta'],
     bounce=-1;
 
+
 class Circle {
-  constructor(x, y, sx, sy, r, infect) {
+  constructor(id, x, y, sx, sy, r, infect, view) {
+      this.id = id;
       this.x = x;
       this.y = y;
       this.sx = sx;
       this.sy = sy;
       this.r = r;
       this.infect = infect;
+      this.view = view;
 
       this.drawCircle = function () {
         ctx.beginPath();
@@ -63,21 +66,26 @@ class Circle {
     }
 }
 
-// ADD DATA
-// total nodes / nb gp
-function circleSet(nbCircle, radius, infectList){
+/******************************************************************* */
+/***************************FONCTIONS******************************* */
+/******************************************************************* */
+
+
+function circleInit(idList, radius, infectList, viewList){
   let infect = false;
-  for(let i=0;i<nbCircle;i++){
+  for(let i=0;i<idList.length;i++){
     const _x = Math.floor((Math.random()*(canvas.width-15)))+15,
         _y = Math.floor((Math.random()*(canvas.height-15)))+15,
         xspd = Math.floor((Math.random()))+0.5,
         yspd = Math.floor((Math.random()))+0.5,
+        id = idList[i],
+        view = viewList[i],
         r = radius;
         /* xspd = 0,
         yspd = 0, */
     if (infectList.includes(i))
       infect= true;
-    c=new Circle(_x,_y,xspd,yspd, r, infect);
+    c=new Circle(id, _x,_y,xspd,yspd, r, infect, view);
     circles.push(c);
     infect=false;
   }
@@ -139,6 +147,7 @@ function getViewList(viewSize, nbNodeTot){
 /******************************************************************* */
 
 const nbNodeTot = 100;
+const nbNodeSub = 50;
 const nbSubGp = 2;
 const nbInfectedNode = 4;
 const viewSize = 5;
@@ -146,7 +155,9 @@ const viewSize = 5;
 const infectedList = getInfectedList(nbInfectedNode, nbNodeTot);
 const viewList = getViewList(viewSize, nbNodeTot);
 
-/* circleSet(50, 20, infectedList);
+circleInit(Array.from({length: nbSubGp}, (_, i) => i + 1),100,[],[]);
+update();
+/* circleInit(50, 20, infectedList);
 update(); */
 
 /******************************************************************* */
@@ -162,9 +173,16 @@ canvas.addEventListener("click", function(event) {
     try{
       circles.forEach(element => {
           // method using point to circle collision detection
-          if(element.pointInCircle(mouse)) {      
-            circleDelete();
-            /* circleInit(20,30) */
+          if(element.pointInCircle(mouse) && (nbNodeSub!==circles.length)) {      
+              circleDelete();
+              const groupId = element.id;
+              const arraySubGroup = [];
+              const arraySubView  = [];
+              for (let i=1+nbNodeSub*(groupId-1); i<nbNodeSub*groupId+1;i++){
+                arraySubGroup.push(i);
+                arraySubView.push(viewList[i]);
+              }
+              circleInit(arraySubGroup,20, infectedList, arraySubView);
             throw breakException;
           }
       });
@@ -182,7 +200,7 @@ canvas.addEventListener("mousemove", function(event){
   try{
     circles.forEach(element => {
         if (element.pointInCircle(mouse)) {
-            nodeHover(element);
+            nodeHover(element, circles.length, nbNodeSub);
             throw breakException;
         }
         else{
