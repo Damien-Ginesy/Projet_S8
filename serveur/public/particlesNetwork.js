@@ -23,9 +23,15 @@ class Circle {
         ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
         ctx.fillStyle = "#000000";
         ctx.fill();
-        ctx.globalAlpha = 0.5
-          
+        ctx.globalAlpha = 0.5          
       };
+
+      this.drawLine = function (cx,cy){
+        ctx.beginPath();
+        ctx.moveTo(this.x,this.y);
+        ctx.lineTo(cx,cy);
+        ctx.stroke(); 
+      }
 
       this.moveCircle = function () {
         this.x += this.sx;
@@ -76,8 +82,8 @@ function circleInit(idList, radius, infectList, viewList){
   for(let i=0;i<idList.length;i++){
     const _x = Math.floor((Math.random()*(canvas.width-15)))+15,
         _y = Math.floor((Math.random()*(canvas.height-15)))+15,
-        xspd = Math.floor((Math.random()))+0.5,
-        yspd = Math.floor((Math.random()))+0.5,
+        xspd = Math.floor((Math.random()*0.5))+0.5,
+        yspd = Math.floor((Math.random()*0.5))+0.5,
         id = idList[i],
         view = viewList[i],
         r = radius;
@@ -157,8 +163,6 @@ const viewList = getViewList(viewSize, nbNodeTot);
 
 circleInit(Array.from({length: nbSubGp}, (_, i) => i + 1),100,[],[]);
 update();
-/* circleInit(50, 20, infectedList);
-update(); */
 
 /******************************************************************* */
 /*************************EVENT LISTENER**************************** */   
@@ -185,6 +189,7 @@ canvas.addEventListener("click", function(event) {
               circleInit(arraySubGroup,20, infectedList, arraySubView);
             throw breakException;
           }
+          // AJOUTER CLICK NODE
       });
     }catch(err){
       if (err!== breakException)
@@ -201,6 +206,16 @@ canvas.addEventListener("mousemove", function(event){
     circles.forEach(element => {
         if (element.pointInCircle(mouse)) {
             nodeHover(element, circles.length, nbNodeSub);
+            if (nbNodeSub===circles.length){
+              element.view.forEach(node =>{
+                if(node>nbNodeSub){
+                  const idx = node-nbNodeSub;
+                  const mx = circles[idx].x;
+                  const my= circles[idx].y;
+                  element.drawLine(mx,my)
+                }
+              })
+            }
             throw breakException;
         }
         else{
