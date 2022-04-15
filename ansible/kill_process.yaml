@@ -4,10 +4,17 @@
   tasks :
     - name: Get running basalt processes 
       command : "bash -c 'pgrep prog'"
-
-    - name: Kill running basalt processes
-      command : "bash -c 'pkill -9 prog'"
+      register: grep_resultat 
+ 
+    - name: affiche la liste des processus 
+      debug: 
+        msg: "Process id is : {{grep_resultat.stdout}}"
 
     - name: Check killing basalt processes 
-      command : "bash -c 'pgrep prog'"
+      command : "bash -c 'echo $?'"
+      register: check_resultat 
+    
+    - name: affiche le code retour si 0 ça marche sinon non ! 
+      debug: 
+        msg: "{{check_resultat.stdout}}"
    
