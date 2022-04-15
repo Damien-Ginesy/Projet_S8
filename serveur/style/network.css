@@ -19,30 +19,64 @@ body {
     z-index: -3;
     position: absolute;
     width: calc(100vw - 40px);
-    height: calc(100vh - 40px);
-    top: 20px;
+    height: calc(100vh - 60px);
+    top: 40px;
     left: 20px;
 
     background: white no-repeat;
     background-size: cover;
 }
 
+#headerTitle{
+    float: center;    
+    position: fixed;
+    top: -20px;
+    left: 40%;
+    color: #f2f2f2;
+    font-size: 25px;
+}
+
+.topNav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+#topNavLeft{
+    float: right;
+    position: fixed;
+    top: -20px;
+    left: 5px;
+}
+
+#topNavRight{
+    float: right;
+    position: fixed;
+    top: -20px;
+    right: 5px;
+}
+
 canvas {
     display: block;
+    border: 1px solid black;
 }
 
 
 #particles-js {
     position: absolute;
     width: calc(100vw - 40px);
-    height: calc(100vh - 40px);
-    top: 20px;
+    height: calc(100vh - 60px);
+    top: 40px;
     left: 20px;
 }
 
 .popup{
     position: absolute;
-    top: 30px;
+    top: 50px;
     left:30px;
     height: 200px;
     width: 300px;
@@ -57,7 +91,7 @@ table
 {
     border-collapse: collapse;
     display: inline !important;
-    margin-left: 70px;
+    margin-left: 60px;
 }
 
 td{
