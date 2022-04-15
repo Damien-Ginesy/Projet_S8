@@ -3,42 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Simu basalt</title>
-    <style media="screen">
-      canvas {
-        /*width: 100vw;*/
-        margin: auto;
-      }
-      body {margin: auto; padding: 40px; width: 80%; overflow-x: hidden;
-        font-family: 'Roboto', sans-serif;
-      }
-
-      input {width: 50px;margin-right: 10px;}
-
-      #InfectionRate {
-        position: absolute;
-        top: 50px;
-        right: 50px;
-        width: 300px;
-      }
-      #InfectionRate img {
-        width: 300px;
-        height: 300px;
-        position: absolute;
-      }
-
-      #InfectionRate h3 {
-        text-align: center;
-        width: 100%;
-        margin-bottom: -20px;
-      }
-
-
-    </style>
-
+    <link rel="stylesheet" href="style.css">
     </head>
   <body>
-    <button onclick="preset('light')">n=100</button>
-    <button onclick="preset('heavy')">n=1000</button>
+    <button class="button" onclick="preset('light')">n=100</button>
+    <button class="button" onclick="preset('heavy')">n=1000</button>
 
     <header>
       <h1>BASALT Simulation v.1.4<h1>
