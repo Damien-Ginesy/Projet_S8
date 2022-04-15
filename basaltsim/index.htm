@@ -3,21 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>Simu basalt</title>
-    <style media="screen">
-      canvas {
-        /*width: 100vw;*/
-        margin: auto;
-      }
-      body {margin: auto; padding: 40px; width: 80%; overflow-x: hidden;}
-
-      input {width: 50px;margin-right: 10px;}
-
-    </style>
-
+    <link rel="stylesheet" href="style.css">
     </head>
   <body>
-    <button onclick="preset('light')">n=100</button>
-    <button onclick="preset('heavy')">n=1000</button>
+    <button class="button" onclick="preset('light')">n=100</button>
+    <button class="button" onclick="preset('heavy')">n=1000</button>
 
     <header>
       <h1>BASALT Simulation v.1.4<h1>
@@ -92,6 +82,12 @@
         </td>
       </tr>
     </table>
+
+    <div id='InfectionRate'>
+      <h3>Infection Rate:</h3>
+      <img src="img/arrow.svg" id="arrow">
+      <img src="img/circle.svg" id="circle">
+    </div>
 
     <script src="graph.js" charset="utf-8"></script>
     <script src="hash.js" charset="utf-8"></script>

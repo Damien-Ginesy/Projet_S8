@@ -3,6 +3,8 @@
 #include <iostream>
 
 using byte=uint8_t;
+
+/* Rempresents a generic comparable Hash object of S bytes */
 template<uint32_t S>
 struct Hash
 {
@@ -11,12 +13,16 @@ struct Hash
     byte _data[S];
     Hash(){};
     public:
+    /* Returns an iterator to the beginning of the data */
     const byte* begin() const { return _data; }
+    /* Returns an iterator to past the end of the data */
     const byte* end() const { return _data+S; }
+    /* const data access */
     byte operator[](uint32_t i) const { return _data[i]; }
     Hash(byte* hash){
         for(uint32_t i=0; i<S; i++) _data[i] = hash[i];
     }
+    /* Builds the Hash object from a given hash function, fed with some input data */
     static Hash<S> compute(void (*func)(const void* in, uintmax_t len, byte* out), const void* in, uintmax_t len){
         Hash<S> h;
         func(in, len, h._data);
@@ -28,9 +34,10 @@ struct Hash
         return true;
     }
     virtual bool operator<(const Hash_t& other) const {
-        for(uint32_t i=0; i<S; ++i)
-            if(_data[i] < other._data[i]) return true;
-        return false;
+        size_t i=0;
+        while(i<S && _data[i] == other._data[i]) ++i;
+        return (i<S && _data[i] < other._data[i]);
+
     }
     bool operator<=(const Hash_t& other) const{
         return (*this < other) || (*this == other);

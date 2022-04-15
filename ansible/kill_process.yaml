@@ -1,0 +1,13 @@
+---
+- name : Deploy killing
+  hosts : all
+  tasks :
+    - name: Get running basalt processes 
+      command : "bash -c 'pgrep prog'"
+
+    - name: Kill running basalt processes
+      command : "bash -c 'pkill -9 prog'"
+
+    - name: Check killing basalt processes 
+      command : "bash -c 'pgrep prog'"
+   

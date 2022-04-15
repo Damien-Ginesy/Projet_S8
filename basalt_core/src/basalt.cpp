@@ -1,62 +1,122 @@
 #include "basalt.hpp"
-#include "SpookyHash.h"
+#include "SHA256Hash.hpp"
+#include <net/basalt_net.hpp>
+#include <asio/steady_timer.hpp>
+#include <misc.h>
 
 namespace Basalt
 {
     using std::chrono::duration;
-
-    template<typename... Arg_t>
-    class LoopedFunction{
-        std::thread _thread;
-        duration<double> _period;
-        void (*_cbk)(Arg_t... args);
-        bool _keepGoing = true;
-
-        public:
-        LoopedFunction(void (*f)(Arg_t...), duration<double> period, Arg_t... args):
-            _cbk(f), _period(period)
-        {
-            auto threadFunc = [this](Arg_t... args){
-                while(this->_keepGoing){
-                    std::this_thread::sleep_for(this->_period);
-                    this->_cbk(std::forward<Arg_t>(args)...);
+    class LoopedFunction
+    {
+        asio::chrono::milliseconds delay;
+        void (*cbk)();
+        asio::steady_timer t;
+        static void async_run(LoopedFunction* func){
+            auto handler = [=](asio::error_code ec){
+                if(!ec){
+                    func->cbk();
+                    async_run(func);
                 }
             };
-            _thread = std::thread(threadFunc, std::forward<Arg_t>(args)...);
+            func->t.expires_at(asio::chrono::steady_clock::now() + func->delay);
+            func->t.async_wait(handler);
         }
-        void finish() { _keepGoing = false; }
-        ~LoopedFunction() { _thread.join(); }
+    public:
+        LoopedFunction(asio::io_context& ctx, asio::chrono::milliseconds delay, void (*cbk)()):
+            cbk(cbk), delay(delay), t(asio::steady_timer(ctx))
+        {
+            async_run(this);
+        }
+        void stop(){
+            this->~LoopedFunction();
+        }
+        ~LoopedFunction() {
+            t.cancel();
+        }
     };
+
+    static asio::io_context ctx;
     Node *node;
-    LoopedFunction<> *mainLoop, *resetLoop;
-
+    LoopedFunction *mainLoop, *resetLoop;
+    static std::thread runner;
+    std::mutex mutex;
     uint32_t iterCount = 0;
+    HTTPLogger *logger = nullptr;
 
-    Hash<16> hashFunc(const NodeId& id, uint32_t seed) {
-        byte data[sizeof(id)] = {0};
-        id.serialize(data);
-
-        return SpookyHash(data, NodeId::dataSize, seed);
+    Node::Hash_t hashFunc(const NodeId& id, uint32_t seed) {
+        uint8_t data[8];
+        toLittleEndian(id.id, 4, data);
+        toLittleEndian(seed, 4, data+4);
+        return SHA256Hash(data, 8);
     }
     void update(){
+        std::lock_guard guard(mutex);
         iterCount++;
+        node->update();
+        if(logger)
+        {
+            try
+            {
+                *logger << node->to_string();
+            }
+            catch(const asio::error_code& ec)
+            {
+                std::cerr << "[LOGGER ERROR] " << ec.message() << '\n';
+            }
+        }
     }
     void reset(){
-        std::cout << "Reset\n";
+        std::lock_guard guard(mutex);
+        node->reset();
     }
-    void basalt_init(duration<double> updateDelay, duration<double> resetDelay){
-        /* init node here 
-        
-        */
+    // message handlers
+    void on_pull_req(net::Message& req){
+        std::lock_guard guard(mutex);
+        node->on_pull_req(req);
+    }
+    void on_push_req(net::Message& req){
+        std::lock_guard guard(mutex);
+        node->on_push_req(req);
+    }
+    void on_pull_resp(net::Message& resp){
+        std::lock_guard guard(mutex);
+        node->on_pull_resp(resp);
+    }
+    void on_push_resp(net::Message& resp){
+        resp.set_type(net::SESSION_END);
+    }
+
+    void basalt_init(NodeId id, const Array<NodeId>& bs, duration<double> updateDelay, duration<double> resetDelay){
+        /* init node here */
+        node = new Node(id, bs, bs.size()>>1, hashFunc);
+        net::CallbackMap callbacks {
+            {net::PULL_REQ, on_pull_req},
+            {net::PUSH_REQ, on_push_req},
+            {net::PULL_RESP, on_pull_resp},
+            {net::PUSH_RESP, on_push_resp}
+        };
+        using namespace asio::ip;
+        tcp::endpoint ep(tcp::v4(), id._port);
+        net::net_init(callbacks, ep);
         // init main update loop
-        mainLoop = new LoopedFunction<>(update, updateDelay);
-        resetLoop = new LoopedFunction<>(reset, resetDelay);
+        using namespace asio::chrono;
+
+        mainLoop = new LoopedFunction(ctx, duration_cast<milliseconds>(updateDelay), update);
+        resetLoop = new LoopedFunction(ctx, duration_cast<milliseconds>(resetDelay), reset);
+        runner = std::thread([](){ ctx.run(); });
+    }
+    void basalt_set_logger(HTTPLogger* log){
+        logger = log;
     }
     void basalt_stop(){
-        mainLoop->finish();
-        resetLoop->finish();
+        net::net_finish();
+        mainLoop->stop();
+        resetLoop->stop();
+        ctx.stop();
+        runner.join();
         delete mainLoop;
         delete resetLoop;
-        // delete node;
+        delete node;
     }
 } // namespace Basalt

@@ -1,0 +1,41 @@
+canvas {
+    /*width: 100vw;*/
+    margin: auto;
+  }
+  body {margin: auto; padding: 40px; width: 80%; overflow-x: hidden;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15pt;
+  }
+  h1{
+      font-size: 20pt;
+  }
+  input {
+      width: 50px;margin-right: 10px;
+      font-size: 1rem;
+}
+
+  #InfectionRate {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 300px;
+  }
+  #InfectionRate img {
+    width: 300px;
+    height: 300px;
+    position: absolute;
+  }
+
+  #InfectionRate h3 {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+
+  .button{
+      background: transparent;
+      border: 3px solid black;
+      font-family: inherit;
+      font-size: inherit;
+  }
