@@ -225,6 +225,15 @@ void ip_print(unsigned char *ip){
     
 }
 
+// Test
+
+void ip_print_after_init(){
+    printf("mask1_allocated_adrr_size = %d\n", mask1_allocated_adrr_size);
+    printf("mask2_allocated_adrr_size = %d\n", mask2_allocated_adrr_size);
+    printf("mask3_allocated_adrr_size = %d\n", mask3_allocated_adrr_size);
+    printf("mask4_allocated_adrr_size = %d\n", mask4_allocated_adrr_size);
+}
+
 void ip_test_conv(){
     unsigned char ip[4];
     
