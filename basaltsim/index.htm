@@ -12,6 +12,25 @@
 
       input {width: 50px;margin-right: 10px;}
 
+      #InfectionRate {
+        position: absolute;
+        top: 50px;
+        right: 50px;
+        width: 300px;
+      }
+      #InfectionRate img {
+        width: 300px;
+        height: 300px;
+        position: absolute;
+      }
+
+      #InfectionRate h3 {
+        text-align: center;
+        width: 100%;
+        margin-bottom: -20px;
+      }
+
+
     </style>
 
     </head>
@@ -92,6 +111,12 @@
         </td>
       </tr>
     </table>
+
+    <div id='InfectionRate'>
+      <h3>Infection Rate:</h3>
+      <img src="img/arrow.png" id="arrow">
+      <img src="img/circle.png" id="circle">
+    </div>
 
     <script src="graph.js" charset="utf-8"></script>
     <script src="hash.js" charset="utf-8"></script>

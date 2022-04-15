@@ -367,3 +367,8 @@ std::ostream& operator<<(std::ostream& s, const SpookyHash& h) {
     s << hex;
     return s;
 }
+SpookyHash& SpookyHash::operator=(const SpookyHash& other){
+    _hash_1 = other._hash_1;
+    _hash_2 = other._hash_2;
+    return *this;
+}

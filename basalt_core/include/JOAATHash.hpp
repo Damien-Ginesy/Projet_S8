@@ -1,5 +1,6 @@
 #include "Hash.hpp"
 
+/* Wrapper class for Jenkins' one-at-a-time hash function */
 struct JOAATHash: public Hash<4>
 {
     private:

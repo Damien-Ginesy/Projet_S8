@@ -35,4 +35,11 @@
 **.vs*
 **build
 
-/serveur/node_modules/
+**bin/
+
+*.log
+*.bs
+
+*.pyc
+*.zip
+*.json

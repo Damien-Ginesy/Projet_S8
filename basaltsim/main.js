@@ -76,6 +76,10 @@ function start(){
     } else {
       console.log(getMs() - t1); //On log le temps de tracé
     }
+
+
+    //Draw infection rate
+    Graph.drawInfectionRate();
   }
 }
 

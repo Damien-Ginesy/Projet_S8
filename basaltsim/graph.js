@@ -134,4 +134,8 @@ class Graph {
   static clear(){
     this.ctx.clearRect(0, 0, this.canvas.width/this.scale, this.canvas.height/this.scale);
   }
+
+  static drawInfectionRate(){
+    document.getElementById("arrow").style.transform = "rotate(" + (-targetViewInfection*270 + 180) + "deg)";
+  }
 }

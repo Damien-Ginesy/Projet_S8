@@ -2,6 +2,7 @@
 #include <Hash.hpp>
 #include <iostream>
 
+/* Wrapper class for the SpookyHash 128-bit algorithm */
 class SpookyHash: public Hash<16>
 {
 private:
@@ -14,16 +15,18 @@ private:
             s[i] = hexSymbols[x&15];        
     }
 public:
+    /* Builds the hash from data and optional seeds */
     SpookyHash(const void* data, size_t len, uint64_t seed1 = 0, uint64_t seed2 = 0);
     uint64_t hash1() const { return _hash_1; }
     uint64_t hash2() const { return _hash_2; }
-
+    /* Dumps the hex representation of the hash into out */
     void toString(char* out) const {
         hex(_hash_1, out);
         hex(_hash_2, out+16);
     }
+    /* Comparison operators */
     bool operator==(const SpookyHash&) const;
     bool operator<(const SpookyHash&) const;
-
+    SpookyHash& operator=(const SpookyHash&);
 };
 std::ostream& operator<<(std::ostream& s, const SpookyHash& h);
