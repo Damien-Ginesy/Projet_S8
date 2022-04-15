@@ -55,10 +55,13 @@ function nodeHover(node, circleLength,nbNodeSub){
         row_2_data_3.innerHTML = node.view[2];
         const row_2_data_4 = document.createElement('td');
         row_2_data_4.innerHTML = node.view[3];
+        const row_2_data_5 = document.createElement('td');
+        row_2_data_5.innerHTML = node.view[4];
         row_2.appendChild(row_2_data_1);
         row_2.appendChild(row_2_data_2);
         row_2.appendChild(row_2_data_3);
         row_2.appendChild(row_2_data_4);
+        row_2.appendChild(row_2_data_5);
         tbody.appendChild(row_2);
     }
 }

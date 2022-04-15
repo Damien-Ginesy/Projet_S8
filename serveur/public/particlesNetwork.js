@@ -1,4 +1,5 @@
 const canvas = document.getElementById('particles-js');
+const pcd = document.getElementById('topNavLeft');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const ctx = canvas.getContext('2d');
@@ -23,14 +24,16 @@ class Circle {
         ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
         ctx.fillStyle = "#000000";
         ctx.fill();
-        ctx.globalAlpha = 0.5          
+        ctx.globalAlpha = 0.5 
+        ctx.closePath();         
       };
 
       this.drawLine = function (cx,cy){
+        console.log("ee");
         ctx.beginPath();
         ctx.moveTo(this.x,this.y);
         ctx.lineTo(cx,cy);
-        ctx.stroke(); 
+        ctx.stroke();
       }
 
       this.moveCircle = function () {
@@ -69,6 +72,26 @@ class Circle {
             return true;
         return false
       }
+
+      this.checkCollision = function (c2) {
+        const absx = this.x - c2.x;
+        const absy = this.y - c2.y;
+      
+        // find distance between two balls.
+        const distance = Math.sqrt(absx * absx + absy * absy);
+        // check if distance is less than sum of two radius - if yes, collision
+        if (distance < this.r + c2.r) {
+          return true;
+        }
+        return false;
+      }
+
+      this.processCollision = function(c2){
+        this.sx *= bounce;
+        c2.sx *= bounce;
+        this.sy *= bounce;
+        c2.sy *= bounce;
+      }
     }
 }
 
@@ -77,18 +100,22 @@ class Circle {
 /******************************************************************* */
 
 
-function circleInit(idList, radius, infectList, viewList){
+function circleInit(idList,groupId, radius, infectList, viewList){
   let infect = false;
-  for(let i=0;i<idList.length;i++){
+  let limit = nbNodeSub;
+  if(!infectList.length){
+    limit = 1;
+  }
+  for(let i=limit*(groupId-1);i<limit*groupId+1;i++){
     const _x = Math.floor((Math.random()*(canvas.width-15)))+15,
         _y = Math.floor((Math.random()*(canvas.height-15)))+15,
         xspd = Math.floor((Math.random()*0.5))+0.5,
         yspd = Math.floor((Math.random()*0.5))+0.5,
-        id = idList[i],
+        id = idList[i-limit*(groupId-1)],
         view = viewList[i],
         r = radius;
         /* xspd = 0,
-        yspd = 0, */
+        yspd = 0; */
     if (infectList.includes(i))
       infect= true;
     c=new Circle(id, _x,_y,xspd,yspd, r, infect, view);
@@ -106,9 +133,14 @@ function circleDelete(){
 function update(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     for(let i=0;i<circles.length;i++){
-        circles[i].drawCircle();
-        circles[i].infectedNode();
-        circles[i].moveCircle();
+      for(let j=i+1;j<circles.length;++j){
+        if(circles[i].checkCollision(circles[j])) {
+          circles[i].processCollision(circles[j]);
+        }
+      }
+      circles[i].drawCircle();
+      circles[i].infectedNode();
+      circles[i].moveCircle();
     }
     requestAnimationFrame(update);
 }
@@ -126,7 +158,7 @@ function mousePosition(event) {
 
 function getInfectedList(nbInfectedNode, nbNodeTot){
   const infectList = [];
-  for (let i=0;i<nbInfectedNode;i++){
+  while(infectList.length!==nbInfectedNode){
     const infectedNodeId = Math.floor(Math.random() * nbNodeTot)+1;
     if (!infectList.includes(infectedNodeId))
       infectList.push(infectedNodeId);
@@ -138,7 +170,7 @@ function getViewList(viewSize, nbNodeTot){
   const viewList = [];
   for (let i=0;i<nbNodeTot;i++){
     const viewNodeList = [];
-    for (let j=0;j<viewSize;j++){
+    while(viewNodeList.length!==viewSize){
       const inView = Math.floor(Math.random() * nbNodeTot)+1;
       if (!viewNodeList.includes(inView))
         viewNodeList.push(inView);
@@ -161,7 +193,7 @@ const viewSize = 5;
 const infectedList = getInfectedList(nbInfectedNode, nbNodeTot);
 const viewList = getViewList(viewSize, nbNodeTot);
 
-circleInit(Array.from({length: nbSubGp}, (_, i) => i + 1),100,[],[]);
+circleInit(Array.from({length: nbSubGp}, (_, i) => i + 1),1,100,[],[]);
 update();
 
 /******************************************************************* */
@@ -181,12 +213,10 @@ canvas.addEventListener("click", function(event) {
               circleDelete();
               const groupId = element.id;
               const arraySubGroup = [];
-              const arraySubView  = [];
               for (let i=1+nbNodeSub*(groupId-1); i<nbNodeSub*groupId+1;i++){
                 arraySubGroup.push(i);
-                arraySubView.push(viewList[i]);
               }
-              circleInit(arraySubGroup,20, infectedList, arraySubView);
+              circleInit(arraySubGroup,groupId,20, infectedList, viewList);
             throw breakException;
           }
           // AJOUTER CLICK NODE
@@ -199,6 +229,13 @@ canvas.addEventListener("click", function(event) {
     false
 );
 
+// Click on precedent
+pcd.addEventListener('click', function(event) {
+  circleDelete();
+  circleInit(Array.from({length: nbSubGp}, (_, i) => i + 1),1,100,[],[]);
+  }, false
+)
+
 // mouseover
 canvas.addEventListener("mousemove", function(event){
   mouse = mousePosition(event)
@@ -206,10 +243,10 @@ canvas.addEventListener("mousemove", function(event){
     circles.forEach(element => {
         if (element.pointInCircle(mouse)) {
             nodeHover(element, circles.length, nbNodeSub);
-            if (nbNodeSub===circles.length){
+            if (nbNodeSub===circles.length && element.id>nbNodeSub){
               element.view.forEach(node =>{
                 if(node>nbNodeSub){
-                  const idx = node-nbNodeSub;
+                  const idx = node-nbNodeSub-1;
                   const mx = circles[idx].x;
                   const my= circles[idx].y;
                   element.drawLine(mx,my)
