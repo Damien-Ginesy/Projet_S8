@@ -136,6 +136,6 @@ class Graph {
   }
 
   static drawInfectionRate(){
-    document.getElementById("arrow").style.transform = "rotate(" + targetViewInfection*360 + "deg)";
+    document.getElementById("arrow").style.transform = "rotate(" + (-targetViewInfection*270 + 180) + "deg)";
   }
 }
