@@ -48,6 +48,13 @@ namespace Basalt
             out = ((uint64_t)a << 32) | b;
             return *this;
         }
+        Message& Message::operator>>(Array<byte>& out){
+            _header.size -= out.size();
+            for(size_t i=0; i<out.size(); i++)
+                out[i] = _payload[_header.size+i];
+            _payload.resize(_header.size);
+            return *this;
+        }
         void Message::operator>>(char* out){
             std::memcpy(out, _payload.data(), _header.size);
             _payload.resize(_header.size = 0);
