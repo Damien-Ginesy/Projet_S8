@@ -7,6 +7,7 @@
 #include <string.h>
 #include <asio.hpp>
 #include <misc.h>
+#include <Array.hpp>
 
 namespace Basalt
 {
@@ -67,19 +68,45 @@ namespace Basalt
             Message& operator<<(uint64_t b); /* Appends a 64-bit int to the Message in little endian order */
             Message& operator<<(const char* str); /* Appends a string to the message */
             Message& operator<<(const std::string& str); /* Appends a string to the message */
-            template<size_t N>
-            Message& operator<<(const std::array<byte, N>& b){
-                for(byte x: b)
+            template<typename T, size_t N>
+            Message& operator<<(const std::array<T, N>& in){
+                for(const T& x: in)
+                    *this << x;
+                return *this;
+            }
+            template<typename T, size_t N>
+            Message& operator<<(const std::array<T, N>&& in){
+                for(const T& x: in)
                     *this << x;
                 return *this;
             }
             template<size_t N>
-            Message& operator<<(const std::array<byte, N>&& b){
-                for(byte x: b)
+            Message& operator>>(std::array<byte, N>& out){
+                _header.size -= N;
+                for(size_t i=0; i<N; i++) 
+                    out[i] = _payload[_header.size+i];
+                _payload.resize(_header.size);
+                return *this;
+            }
+            Message& operator>>(Array<byte>& out);
+            template<typename T>
+            Message& operator<<(const Array<T>& in){
+                for(const T& x: in)
+                    *this << x;
+                return *this;                
+            }
+            template<typename T>
+            Message& operator<<(const Array<T>&& in){
+                for(const T& x: in)
+                    *this << x;
+                return *this;                
+            }
+            template<typename T>
+            Message& operator<<(Array<T>::View in){
+                for(const T& x: in)
                     *this << x;
                 return *this;
             }
-            
             Message& operator>>(uint8_t& b); 
             Message& operator>>(uint16_t& b);
             Message& operator>>(uint32_t& b);
