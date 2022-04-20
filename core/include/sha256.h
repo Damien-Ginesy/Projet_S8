@@ -18,6 +18,11 @@
 
 #pragma once
 
+#if defined(__cplusplus)
+extern "C"{
+#endif // __cplusplus
+
+
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -33,3 +38,7 @@ typedef uint8_t byte;
 void sha256_hash(const void* data, size_t len, byte output[32]);
 // computers the hash of whatever file is passed
 void sha256_hash_file(FILE* file, byte output[32]);
+
+#if defined(__cplusplus)
+}
+#endif // __cplusplus
