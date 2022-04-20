@@ -12,21 +12,18 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(src_dir "${CMAKE_SOURCE_DIR}/src")
 set(core_sources
-${src_dir}/misc.cpp
-${src_dir}/NodeId.cpp
-${src_dir}/rng.cpp
-${src_dir}/Node.cpp
-${src_dir}/basalt.cpp
-${src_dir}/fasthash.c
-${src_dir}/JOAATHash.cpp
-${src_dir}/sha256.cpp
-${src_dir}/SHA256Hash.cpp
-${src_dir}/SpookyHash.cpp
-${src_dir}/HTTPLogger.cpp
+    ${src_dir}/misc.cpp
+    ${src_dir}/NodeId.cpp
+    ${src_dir}/rng.cpp
+    ${src_dir}/Node.cpp
+    ${src_dir}/basalt.cpp
+    ${src_dir}/hash64.c
+    ${src_dir}/sha256.c
+    ${src_dir}/SHA256Hash.cpp
+    ${src_dir}/SpookyHash.cpp
+    ${src_dir}/HTTPLogger.cpp
 )
 
-set_source_files_properties(${llhttp_sources} PROPERTIES LANGUAGE CXX)
-# set_source_files_properties(${llhttp_sources} PROPERTIES LANGUAGE CXX)
 
 set(net_sources
     ${src_dir}/llhttp/api.c
