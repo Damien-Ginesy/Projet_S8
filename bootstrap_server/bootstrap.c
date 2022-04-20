@@ -30,7 +30,7 @@ void parse_simu_params(int argc, char **argv){
     for(int i = 0; i < attacks_nbr; i++){
         attacks_info[i].mask = 0;
         attacks_info[i].count_member = 0;
-        attacks_info[i].members = NULL;
+        attacks_info[i].attack_list = NULL;
     }
 
     int nbr_net_ip_by_mask[3];
@@ -108,4 +108,75 @@ void test_parse_simu_params(int argc, char **argv){
     ip_print_after_init();
 }
 
+// initialisation
+attack_point *initialisation()
+{
+    attack_point *attack_point = malloc(sizeof(*attack_point));
+    if (attack_point == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+    attack_point->premier = NULL;
+
+    return attack_point;
+}
+
+// insertion in chain list
+void insertion(attack_point *attack_point,struct node_network_info *attacker_info)
+{
+	// new attacker creation
+    attack_list *new_attacker = malloc(sizeof(*new_attacker));
+    if (new_attacker == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+
+	new_attacker->attacker_info = attacker_info;
+        
+
+	// attacker insertion in the chain
+		new_attacker->suivant = attack_point->premier;
+        attack_point->premier = new_attacker;
+		
+    
+}
+
+// add node_network_info data
+struct node_network_info *add_node_network_info(int ip,unsigned short port,int virtual_ip)
+{
+    // new attacker creation
+    struct node_network_info *node_network_info = malloc(sizeof(*node_network_info));
+    if (node_network_info == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+    node_network_info->ip = ip;
+    node_network_info->port = port;
+    node_network_info->virtual_ip = virtual_ip;
+    
+    return node_network_info;
+}
+
+// add node_info data
+struct node_info *add_node_info(struct node_network_info *network,int view_size,int attack_id)
+{
+    // new attacker creation
+    struct node_info *node_info = malloc(sizeof(*node_info));
+    if (node_info == NULL)
+    {
+        exit(EXIT_FAILURE);
+    }
+    node_info->attaque_id = attack_id;
+    node_info->network = network;
+    node_info->view_size = view_size;
+    return node_info;
+}
+
+// update attack_info
+void update_attack_info(attack_point *attack_point,struct node_network_info *network)
+{
+    attacks_info->count_member++;
+    insertion(attack_point,network);
+}
 // -----
