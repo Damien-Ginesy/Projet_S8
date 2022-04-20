@@ -12,7 +12,7 @@ namespace Basalt
     /* An entry in the Basalt Node's view */
     struct ViewEntry{
         NodeId id;
-        uint32_t seed;
+        uint64_t seed;
         uint16_t hits;
         std::string to_string() const;
     };

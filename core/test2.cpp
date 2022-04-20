@@ -23,10 +23,12 @@ int main(int argc, char const *argv[])
 
     net::Message msg;
     msg << id._addr.to_bytes() << id._port << id.id;
-    for(byte b: msg)
+
+    std::array<byte, 10> out;
+    msg >> out;
+    for(byte b: out)
         std::printf("%02x ", b);
-    printf("\n");
-    Array<int> a(10, 0);
-    Array<int>::View v = a.view();
+    printf("\n%u\n", msg.payloadSize());
+
     return 0;
 }
