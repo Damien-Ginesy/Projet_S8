@@ -7,7 +7,6 @@
 #include <random>
 #include <algorithm>
 #include <HTTPLogger.hpp>
-#include <fasthash.h>
 #include <misc.h>
 #include <semaphore>
 
@@ -52,17 +51,6 @@ void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>
         std::cout << id.to_string() << '\n';
 }
 
-
-Basalt::Hash_t hashFunc(uint32_t id, uint32_t seed) {
-    byte data[4] = {
-        (byte)(id&0xff), 
-        (byte)((id>>8)&0xff),
-        (byte)((id>>16)&0xff),
-        (byte)((id>>24)&0xff)
-    };
-    return fasthash64(data, 4, seed);
-}
-
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
@@ -75,13 +63,13 @@ int main(int argc, char const *argv[])
     const char* host = argv[1];
     const char* url = argc>2?argv[2]: "/";
     uint16_t port = argc>3? atoi(argv[3]):80;
-    Node n(id, bs, 1, hashFunc, false, false);
+    Node n(id, bs, 1, rank, false, false);
     
     try
     {
         HTTPLogger logger(1, host, port, url);
-        std::cout << logger.endpoint() << '\n';
         logger.setCallback([](const llhttp_t& parser, net::HTTPClient::BufferView body){
+            std::cout << "\nLOG SERVER RESPONSE" << '\n';
             std::cout << "Received code " << parser.status_code << '\n';
             for(char b: body)
                 std::cout << b;

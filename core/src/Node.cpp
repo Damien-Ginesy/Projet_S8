@@ -31,7 +31,7 @@ namespace Basalt
 		for(uint32_t i=0; i<_view.size() ; ++i){
 			Hash_t&& currentHash = _rankingFunc(_view[i].id.id, _view[i].seed);
 			for (const NodeId& p : candidates) {
-				if(p == _id) continue;
+				if(p.id == _id.id) continue;
 				if(_view[i].id == p){ _view[i].hits++; continue; }
 				Hash_t&& P_Hash = _rankingFunc(_view[i].id.id, _view[i].seed);
 				if(_view[i].id == NodeId::null() || P_Hash < currentHash){
@@ -62,7 +62,7 @@ namespace Basalt
 		for (size_t i = 0; i < _k; i++) {
 			_r = (_r + 1) % _view.size(); // get the next index and wrap around
 			samples[i] = _view[_r].id;
-			_view[_r].seed = _rng() & UINT32_MAX;
+			_view[_r].seed = _rng();
 		}
 		Array<NodeId> candidates(_view.size());
 		for(uint32_t i=0; i<_view.size(); ++i)
@@ -131,7 +131,7 @@ namespace Basalt
 		_view = Array<ViewEntry>(bs.size());
 		for(ViewEntry& e: _view){
 			e.hits = 0;
-			e.seed = _rng() & UINT32_MAX;
+			e.seed = _rng();
 			e.id = NodeId::null();
 		}
 		updateSamples(bs);

@@ -20,7 +20,9 @@ namespace Basalt
         uint32_t id = input[6] | (input[7]<<8) | (input[8]<<16) | (input[9]<<24);
         return NodeId {addr, port, id};
     }
-    bool NodeId::operator==(const NodeId& other) const { return id == other.id; }
+    bool NodeId::operator==(const NodeId& other) const { 
+        return id == other.id;
+    }
     std::string NodeId::to_string() const {
         std::stringstream s;
         s << "{\"adresseReelle\": \"" << _addr.to_string() << 

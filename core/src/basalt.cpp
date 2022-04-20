@@ -1,7 +1,9 @@
 #include "basalt.hpp"
-#include "fasthash.h"
+#include <hash64.h>
 #include <net/basalt_net.hpp>
 #include <asio/steady_timer.hpp>
+#include <asio/ip/tcp.hpp>
+#include <asio/ip/address_v4.hpp>
 #include <misc.h>
 
 namespace Basalt
@@ -43,9 +45,8 @@ namespace Basalt
     std::mutex mutex;
     HTTPLogger *logger = nullptr;
 
-    Hash_t hashFunc(uint32_t id, uint32_t seed) {
-        id = lendian32(id);
-        return fasthash64(&id, 4, seed);
+    Hash_t rank(uint32_t id, uint32_t seed) {
+        return hash64(id, seed);
     }
     void update(){
         std::lock_guard guard(mutex);
@@ -67,25 +68,26 @@ namespace Basalt
         node->reset();
     }
     // message handlers
-    void on_pull_req(net::Message& req){
+    void on_pull_req(asio::ip::tcp::endpoint sender, net::Message& req){
+        using namespace asio::ip;
         std::lock_guard guard(mutex);
         node->on_pull_req(req);
     }
-    void on_push_req(net::Message& req){
+    void on_push_req(asio::ip::tcp::endpoint sender, net::Message& req){
         std::lock_guard guard(mutex);
         node->on_push_req(req);
     }
-    void on_pull_resp(net::Message& resp){
+    void on_pull_resp(asio::ip::tcp::endpoint sender, net::Message& resp){
         std::lock_guard guard(mutex);
         node->on_pull_resp(resp);
     }
-    void on_push_resp(net::Message& resp){
+    void on_push_resp(asio::ip::tcp::endpoint sender, net::Message& resp){
         resp.set_type(net::SESSION_END);
     }
 
     void basalt_init(NodeId id, const Array<NodeId>& bs, duration<double> updateDelay, duration<double> resetDelay){
         /* init node here */
-        node = new Node(id, bs, (uint32_t)bs.size()>>1, hashFunc);
+        node = new Node(id, bs, (uint32_t)bs.size()>>1, rank);
         net::CallbackMap callbacks {
             {net::PULL_REQ, on_pull_req},
             {net::PUSH_REQ, on_push_req},

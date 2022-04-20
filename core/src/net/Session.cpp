@@ -11,7 +11,7 @@ namespace Basalt{
             }
             auto handler = _callbacks.find(t);
             if(handler != _callbacks.end())
-                handler->second(_msg);
+                handler->second(_peer.remote_endpoint(), _msg);
             asio::error_code ec;
             if(_msg.get_type() & 0xf0) /* if _msg is a reponse message */
                  _msg.writeTo(_peer);
