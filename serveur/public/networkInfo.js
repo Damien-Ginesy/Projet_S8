@@ -3,18 +3,11 @@ const popup =  document.getElementsByClassName('popup')[0];
 function nodeHover(node, circleLength,nbNodeSub){
     popup.style.display = "block";
     if (circleLength<nbNodeSub){
-        popup.innerHTML = "<p id='title'> Group " + node.id + " : ";
-        const popupTitle =  document.getElementById('title');
-        popupTitle.style.display = "flex";
-        popupTitle.style.justifyContent = "center";
-        popupTitle.style.fontSize = "200%";
-        popupTitle.style.textDecoration = "underline";
+        const popupTitle =  document.getElementById('popupTitle');
+        popupTitle.textContent = "Group " + node.id + " : ";
 
-        popup.innerHTML += "<p id='info'> Has " + nbNodeSub + " nodes in this group.";        
-        const popupInfo = document.getElementById('info');
-        popupInfo.style.fontSize = "100%";
-        popupInfo.style.marginLeft = "50px";
-        popupInfo.style.justifyContent = "left";
+        const popupInfo = document.getElementById('popupInfo');
+        popupInfo.textContent = "Has " + nbNodeSub + " nodes in this group.";
     }   
     else {
         popup.innerHTML = "<p id='title'> Node " + node.id + " : ";

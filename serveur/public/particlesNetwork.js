@@ -1,5 +1,7 @@
 const canvas = document.getElementById('particles-js');
 const pcd = document.getElementById('topNavLeft');
+const popupCross = document.getElementById('headerTitle');
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const ctx = canvas.getContext('2d');
@@ -28,12 +30,18 @@ class Circle {
         ctx.closePath();         
       };
 
-      this.drawLine = function (cx,cy){
-        console.log("ee");
-        ctx.beginPath();
-        ctx.moveTo(this.x,this.y);
-        ctx.lineTo(cx,cy);
-        ctx.stroke();
+      this.drawLine = function (view){
+        view.forEach(node =>{
+          if(node>nbNodeSub){
+            const idx = node-nbNodeSub-1;
+            const mx = circles[idx].x;
+            const my= circles[idx].y;
+            ctx.beginPath();
+            ctx.moveTo(this.x,this.y);
+            ctx.lineTo(mx,my);
+            ctx.stroke();
+          }
+        })
       }
 
       this.moveCircle = function () {
@@ -109,8 +117,8 @@ function circleInit(idList,groupId, radius, infectList, viewList){
   for(let i=limit*(groupId-1);i<limit*groupId+1;i++){
     const _x = Math.floor((Math.random()*(canvas.width-15)))+15,
         _y = Math.floor((Math.random()*(canvas.height-15)))+15,
-        xspd = Math.floor((Math.random()*0.5))+0.5,
-        yspd = Math.floor((Math.random()*0.5))+0.5,
+        xspd = Math.floor((Math.random()*0.2))+0.5,
+        yspd = Math.floor((Math.random()*0.2))+0.5,
         id = idList[i-limit*(groupId-1)],
         view = viewList[i],
         r = radius;
@@ -140,6 +148,8 @@ function update(){
       }
       circles[i].drawCircle();
       circles[i].infectedNode();
+      /* if (circles.length-1===nbNodeSub)
+        circles[i].drawLine(circles[i].view); */
       circles[i].moveCircle();
     }
     requestAnimationFrame(update);
@@ -209,7 +219,7 @@ canvas.addEventListener("click", function(event) {
     try{
       circles.forEach(element => {
           // method using point to circle collision detection
-          if(element.pointInCircle(mouse) && (nbNodeSub!==circles.length)) {      
+          if(element.pointInCircle(mouse) && (nbNodeSub!==circles.length-1)) {      
               circleDelete();
               const groupId = element.id;
               const arraySubGroup = [];
@@ -236,6 +246,10 @@ pcd.addEventListener('click', function(event) {
   }, false
 )
 
+popupCross.addEventListener('click', function(event) {
+  nodeClearHover();
+})
+
 // mouseover
 canvas.addEventListener("mousemove", function(event){
   mouse = mousePosition(event)
@@ -243,20 +257,28 @@ canvas.addEventListener("mousemove", function(event){
     circles.forEach(element => {
         if (element.pointInCircle(mouse)) {
             nodeHover(element, circles.length, nbNodeSub);
-            if (nbNodeSub===circles.length && element.id>nbNodeSub){
+            if (nbNodeSub===circles.length-1){
+              const nodeViewArray =[];
               element.view.forEach(node =>{
+                if(node>nbNodeSub){
+                  const idx = node-nbNodeSub-1;   
+                  nodeViewArray.push(circles[idx].view);
+                  /* const mx = circles[idx].x;
+                  const my= circles[idx].y; */
+                }
+              })
+              
+              element.drawLine(nodeViewArray);
+              /* element.view.forEach(node =>{
                 if(node>nbNodeSub){
                   const idx = node-nbNodeSub-1;
                   const mx = circles[idx].x;
                   const my= circles[idx].y;
                   element.drawLine(mx,my)
                 }
-              })
+              }) */
             }
             throw breakException;
-        }
-        else{
-          nodeClearHover();
         }
     });   
   }catch(err){

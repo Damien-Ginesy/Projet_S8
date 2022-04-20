@@ -78,24 +78,47 @@ canvas {
     position: absolute;
     top: 50px;
     left:30px;
-    height: 200px;
-    width: 300px;
+    height: 30vh;
+    width: 20vw;
     display: none;
     background-image: url(/images/background.jpg);
-    opacity: 80%;
+    opacity: 90%;
     border-radius: 10%;
     color: white;
 }
 
+#popupTitle{
+    display: flex;
+    justify-content: center;
+    font-size: 200%;
+    text-decoration: underline;
+}
+
+#popupInfo{
+    display: flex;
+    justify-content: center;
+    font-size: 100%;
+}
+
+#popupQuit{
+    display: flex;
+    justify-content: right;
+    margin-right: 5%;
+    margin-top: 2%;
+    font-weight: bold;
+    cursor: pointer;
+}
+
 table
 {
+    position: absolute;
     border-collapse: collapse;
     display: inline !important;
-    margin-left: 60px;
+    left: 20%;
 }
 
 td{
-    border: 2px solid white;
+    border: 1px solid white;
     padding: 10px;
     font-size: 100%;
     justify-content: center;
