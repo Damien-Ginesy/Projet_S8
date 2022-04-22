@@ -133,16 +133,18 @@ char ip_is_alloc(unsigned char *ip, char mask){
     unsigned char *mask_allocated_adrr;
     int mask_allocated_adrr_curser; // size in ip 
 
-    ip_alloc_get_registerd_net_ip_by_mask(
-        &mask_allocated_adrr,
-        &mask_allocated_adrr_curser,
-        mask
-    );
+    for(int g_mask = 1; g_mask <= mask; g_mask++){
+        
+        ip_alloc_get_registerd_net_ip_by_mask(
+            &mask_allocated_adrr,
+            &mask_allocated_adrr_curser,
+            g_mask
+        );
 
-
-    for(int i = 0; i < mask_allocated_adrr_curser; i++){
-        if(memcmp(ip, mask_allocated_adrr+(mask*i), mask*sizeof(char)) == 0){
-            return 1;
+        for(int i = 0; i < mask_allocated_adrr_curser; i++){
+            if(memcmp(ip, mask_allocated_adrr+(g_mask*i), g_mask*sizeof(char)) == 0){
+                return 1;
+            }
         }
     }
 
