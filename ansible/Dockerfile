@@ -61,9 +61,10 @@ cp  /home/dev/Makefile Makefile; \
 zip /home/peer/basalt_project/src.zip project_example.c Makefile > /dev/null; \
 ansible-playbook /home/dev/send_src.yaml; \
 # test kill process
-ansible all -a "bash -c '/home/peer/basalt_project/prog & pgrep prog;pkill -9 prog;pgrep prog; echo ""code retour du dernier pgrep est :""$?;'"; \ 
+ansible all -a "bash -c '/home/peer/basalt_project/prog;'" & \ 
 # pratic kill process after clic
-#ansible all -a "pkill -9 prog;pgrep prog; echo ""code retour du dernier pgrep est :""$?;'"; \ 
+ansible-playbook /home/dev/kill_process.yaml; \
+#ansible all -a "echo ""code retour du dernier pgrep est :""$?;'"; \ 
 bash
 
 

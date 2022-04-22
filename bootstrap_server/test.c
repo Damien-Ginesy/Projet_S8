@@ -1,10 +1,11 @@
 #include <stdio.h>
 
 #include "ip.h"
+#include "bootstrap.h"
 
-int main(){
+int main(int argc, char **argv){
 
-    ip_test_alloc();
+    test_parse_simu_params(argc, argv);
 
     return 0;
 }
