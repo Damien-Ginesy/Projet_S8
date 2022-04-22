@@ -42,6 +42,8 @@ void attack_list_store_by_mask(
     int attacks_tab_size
 );
 
+void attack_generate_net_ip();
+
 // Tests
 void test_parse_simu_params(int argc, char **argv);
 

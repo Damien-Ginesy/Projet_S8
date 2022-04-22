@@ -7,6 +7,12 @@
 
 int main(int argc, char *argv[]) {
 
+/**** Parse simulation parametres and init db struct ******/
+parse_simu_params(argc, argv);
+attack_generate_net_ip();
+
+/**********************************************************/
+
 /****************** Listening socket ************************/
 // Create listening socket
 	char *port = argv[1];
