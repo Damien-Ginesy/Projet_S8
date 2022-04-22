@@ -37,6 +37,11 @@ struct attack_info *attacks_info;
 
 void parse_simu_params(int argc, char **argv);
 
+void attack_list_store_by_mask(
+    struct attack_info *attacks_tab,
+    int attacks_tab_size
+);
+
 // Tests
 void test_parse_simu_params(int argc, char **argv);
 
