@@ -6,7 +6,7 @@
 #include <random>
 
 void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>& bs){
-    
+
     using namespace Basalt;
     std::ifstream inputFile(filename);
     using namespace asio::ip;
@@ -37,6 +37,7 @@ void on_logger_response(const llhttp_t& parser, Basalt::net::HTTPClient::BufferV
     std::cout << "[LOGGER] Received code " << parser.status_code << '\n';
 }
 
+//doc p2p_test.cpp id viewSize bootstrap
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
