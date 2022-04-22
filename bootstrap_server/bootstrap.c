@@ -55,7 +55,6 @@ void parse_simu_params(int argc, char **argv){
 
             attacks_info[attack_i].mask = atoi(argv[arg_i++]);
             
-            //ip_alloc_network_ip(attacks_info[attack_i].network_ip, attacks_info[attack_i].mask);
 
             switch (attacks_info[attack_i].mask){
                 
@@ -149,6 +148,22 @@ void attack_list_store_by_mask(
     memcpy(attacks_tab, stored_tab_tmp, attacks_tab_size*sizeof(struct attack_info));
     
 }
+
+void attack_generate_net_ip(){
+
+    attack_list_store_by_mask(attacks_info, attacks_nbr);
+
+    for(int attack_i = 0; attack_i < attacks_nbr; attack_i++){
+        
+        if(attacks_info[attack_i].mask == 0)
+            continue;
+
+        ip_alloc_network_ip(attacks_info[attack_i].network_ip, attacks_info[attack_i].mask);
+        
+    }
+
+}
+
 
 void test_parse_simu_params(int argc, char **argv){
     parse_simu_params(argc, argv);
