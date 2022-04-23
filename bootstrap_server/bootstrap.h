@@ -10,15 +10,15 @@ struct node_info{
     int attaque_id;
 };
 
-typedef struct attack_list attack_list;
-struct attack_list{
+typedef struct attackers_list attackers_list;
+struct attackers_list{
     struct node_network_info * attacker_info;
-    struct attack_list *suivant;
+    struct attackers_list *suivant;
 };
 
 typedef struct attack_point attack_point;
 struct attack_point{
-    struct attack_list *premier;
+    struct attackers_list *premier;
 };
 
 struct attack_info{
@@ -26,13 +26,14 @@ struct attack_info{
     char mask;
     unsigned char network_ip[4];
     int count_member;
-    attack_list *attack_list;
+    attack_point *attack_point;
 };
 
 // simu params
 int node_nbr;
 int attacks_nbr;
 struct attack_info *attacks_info;
+
 
 void parse_simu_params(int argc, char **argv);
 
@@ -47,12 +48,15 @@ struct node_network_info *add_node_network_info(int ip,unsigned short port,int v
 attack_point *initialisation();
 
 // insertion in chain list
-void insertion(attack_point *attack_point,struct node_network_info *attacker_info);
+void attacker_add_list(attack_point *attack_point,struct node_network_info *attacker_info);
 
 // add node_info data
 struct node_info *add_node_info(struct node_network_info *network,int view_size,int attack_id);
 
 // update attack_info
-void update_attack_info(attack_point *attack_point,struct node_network_info *attacker_info);
+void update_attacks_info(struct node_network_info *network, int attack_id);
+
+// print attacker list
+void print_list_attackers();
 
 #endif

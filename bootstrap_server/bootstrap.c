@@ -27,10 +27,11 @@ void parse_simu_params(int argc, char **argv){
     printf("attacks_nbr = %d\n", attacks_nbr);
     
     attacks_info = malloc(attacks_nbr*sizeof(struct attack_info));
+    
     for(int i = 0; i < attacks_nbr; i++){
         attacks_info[i].mask = 0;
         attacks_info[i].count_member = 0;
-        attacks_info[i].attack_list = NULL;
+        attacks_info[i].attack_point = NULL;
     }
 
     int nbr_net_ip_by_mask[3];
@@ -122,11 +123,11 @@ attack_point *initialisation()
     return attack_point;
 }
 
-// insertion in chain list
-void insertion(attack_point *attack_point,struct node_network_info *attacker_info)
+// attacker_add_list in chain list
+void attacker_add_list(attack_point *attack_point,struct node_network_info *attacker_info)
 {
 	// new attacker creation
-    attack_list *new_attacker = malloc(sizeof(*new_attacker));
+    attackers_list *new_attacker = malloc(sizeof(*new_attacker));
     if (new_attacker == NULL)
     {
         exit(EXIT_FAILURE);
@@ -135,7 +136,7 @@ void insertion(attack_point *attack_point,struct node_network_info *attacker_inf
 	new_attacker->attacker_info = attacker_info;
         
 
-	// attacker insertion in the chain
+	// attacker_add_list in the chain
 		new_attacker->suivant = attack_point->premier;
         attack_point->premier = new_attacker;
 		
@@ -174,9 +175,31 @@ struct node_info *add_node_info(struct node_network_info *network,int view_size,
 }
 
 // update attack_info
-void update_attack_info(attack_point *attack_point,struct node_network_info *network)
+void update_attacks_info(struct node_network_info *network, int attack_id)
 {
-    attacks_info->count_member++;
-    insertion(attack_point,network);
+    for(int i = 0; i < attacks_nbr; i++){
+        if (attack_id == attacks_info[i].id)
+        {
+            attacks_info[i].count_member++;
+            attacker_add_list(attacks_info[i].attack_point,network);
+        }
+    }    
 }
+
+//check out attacker list
+
+void print_list_attackers()
+{   
+    for(int i = 0; i < attacks_nbr; i++){
+        if ( attacks_info[i].attack_point->premier != NULL){
+            attackers_list* attacker_actuel = attacks_info[i].attack_point->premier;
+            while (attacker_actuel->suivant != NULL)
+            {				
+                printf("attacker info : IP : %i, PORT : %i , VIRTUAL IP : %i \n", attacker_actuel->attacker_info->ip,attacker_actuel->attacker_info->port,attacker_actuel->attacker_info->virtual_ip);
+                attacker_actuel = attacker_actuel->suivant;
+            }	
+	    }
+    } 
+}
+
 // -----
