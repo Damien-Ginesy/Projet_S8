@@ -4,7 +4,7 @@
 
 struct attack_member{
     struct node_network_info * net_info;
-    struct attackers_list *next;
+    struct attack_member *next;
 };
 
 struct attack_members_list{
@@ -24,10 +24,7 @@ extern int attacks_nbr;
 extern struct attack_info *attacks_info;
 
 
-void attacks_store_by_mask(
-    struct attack_info *attacks_tab,
-    int attacks_tab_size
-);
+void attack_generate_net_ip();
 
 // attacks tab
 void attacks_alloc_tab(int nbr_attacks);

@@ -1,9 +1,17 @@
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "ip.h"
 #include "attack.h"
 
 struct attack_info *attacks_info = NULL;
 int attacks_nbr = 0;
+
+void attacks_store_by_mask(
+    struct attack_info *attacks_tab,
+    int attacks_tab_size
+);
 
 void attacks_store_by_mask(
     struct attack_info *attacks_tab,
@@ -24,8 +32,8 @@ void attacks_store_by_mask(
     int tab1_index = 0;
     int tab2_index = 0;
     
-    attack_list_store_by_mask(tab1, tab1_size);
-    attack_list_store_by_mask(tab2, tab2_size);
+    attacks_store_by_mask(tab1, tab1_size);
+    attacks_store_by_mask(tab2, tab2_size);
 
     //fusion
     for(int i = 0; i < attacks_tab_size; i++){
@@ -52,14 +60,14 @@ void attacks_store_by_mask(
 
 void attack_generate_net_ip(){
 
-    attack_list_store_by_mask(attacks_info, attacks_nbr);
+    attacks_store_by_mask(attacks_info, attacks_nbr);
 
     for(int attack_i = 0; attack_i < attacks_nbr; attack_i++){
         
         if(attacks_info[attack_i].mask == 0)
             continue;
-        // J'AI REMPLACER LE attacks_info[attack_i].mask PAR 1 POUR TESTER CAR YAVAIS ERREUR MASK 2 24.. ALORS IL FAUT 1 2 3 4....
-        ip_alloc_network_ip(attacks_info[attack_i].network_ip,1);
+        
+        ip_alloc_network_ip(attacks_info[attack_i].network_ip, attacks_info[attack_i].mask);
         
     }
 
