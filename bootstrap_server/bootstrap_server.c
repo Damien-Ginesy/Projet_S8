@@ -15,7 +15,7 @@ attack_generate_net_ip();
 
 /****************** Listening socket ************************/
 // Create listening socket
-	char *port = argv[1];
+	char *port = "8080";
 	int listen_fd = -1;
 	if (-1 == (listen_fd = socket_listen_and_bind(node_nbr,port))) {
 		printf("Could not create, bind and listen properly\n");
@@ -47,8 +47,7 @@ attack_generate_net_ip();
 
    struct bootstrap_req bootstrap_req;
    struct bootstrap_res bootstrap_res;
-   attack_point *attack_point = initialisation();
-   attacks_nbr = 3;
+   //attack_point *attack_point = initialisation();
    while(1){
       printf("pass la \n");
       int n_active =0;

@@ -31,7 +31,8 @@ void parse_simu_params(int argc, char **argv){
     for(int i = 0; i < attacks_nbr; i++){
         attacks_info[i].mask = 0;
         attacks_info[i].count_member = 0;
-        attacks_info[i].attack_point = NULL;
+        attacks_info[i].attack_point = malloc(sizeof(attack_point));
+        attacks_info[i].attack_point->premier = NULL;
     }
 
     int nbr_net_ip_by_mask[3];
@@ -158,8 +159,8 @@ void attack_generate_net_ip(){
         
         if(attacks_info[attack_i].mask == 0)
             continue;
-
-        ip_alloc_network_ip(attacks_info[attack_i].network_ip, attacks_info[attack_i].mask);
+        // J'AI REMPLACER LE attacks_info[attack_i].mask PAR 1 POUR TESTER CAR YAVAIS ERREUR MASK 2 24.. ALORS IL FAUT 1 2 3 4....
+        ip_alloc_network_ip(attacks_info[attack_i].network_ip,1);
         
     }
 
@@ -255,11 +256,11 @@ void print_list_attackers()
     for(int i = 0; i < attacks_nbr; i++){
         if ( attacks_info[i].attack_point->premier != NULL){
             attackers_list* attacker_actuel = attacks_info[i].attack_point->premier;
-            while (attacker_actuel->suivant != NULL)
+            while (attacker_actuel != NULL)
             {				
-                printf("attacker info : IP : %i, PORT : %i , VIRTUAL IP : %i \n", attacker_actuel->attacker_info->ip,attacker_actuel->attacker_info->port,attacker_actuel->attacker_info->virtual_ip);
+                printf("[TEST ATTACK LIST] from attack ID : %i,  INFO : IP : %i, PORT : %i , VIRTUAL IP : %i \n", attacks_info[i].id, attacker_actuel->attacker_info->ip,attacker_actuel->attacker_info->port,attacker_actuel->attacker_info->virtual_ip);
                 attacker_actuel = attacker_actuel->suivant;
-            }	
+            }
 	    }
     } 
 }

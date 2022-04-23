@@ -35,6 +35,7 @@ int attacks_nbr;
 struct attack_info *attacks_info;
 
 
+
 void parse_simu_params(int argc, char **argv);
 
 void attack_list_store_by_mask(
