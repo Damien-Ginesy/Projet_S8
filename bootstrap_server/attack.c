@@ -2,6 +2,9 @@
 
 #include "attack.h"
 
+struct attack_info *attacks_info = NULL;
+int attacks_nbr = 0;
+
 void attacks_store_by_mask(
     struct attack_info *attacks_tab,
     int attacks_tab_size
@@ -59,6 +62,28 @@ void attack_generate_net_ip(){
         ip_alloc_network_ip(attacks_info[attack_i].network_ip,1);
         
     }
+
+}
+
+// attacks tab
+void attacks_alloc_tab(int nbr_attacks){
+    
+    attacks_info = malloc(nbr_attacks*sizeof(struct attack_info));
+
+    for(int i = 0; i < attacks_nbr; i++){
+        attacks_info[i].mask = 0;
+        attacks_info[i].members = attack_members_list_new();
+    }
+
+}
+
+void attacks_free_tab(){
+
+    for(int i = 0; i < attacks_nbr; i++){
+        attack_members_list_free(attacks_info[i].members);
+    }
+
+    free(attacks_info);
 
 }
 

@@ -29,6 +29,10 @@ void attacks_store_by_mask(
     int attacks_tab_size
 );
 
+// attacks tab
+void attacks_alloc_tab(int nbr_attacks);
+void attacks_free_tab(int nbr_attacks);
+
 // attackers list
 
 struct attack_members_list * attack_members_list_new();
