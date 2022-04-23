@@ -26,6 +26,11 @@ int compute_attacks_nbr(int argc, char **argv){
 
 void parse_simu_params(int argc, char **argv){
 
+    if(argc < 2){
+        fprintf(stderr, "No argument where given. Running Example : \n\t./bootstrap_server eclipse 1 inst 2 24 10000\n");
+        exit(EXIT_FAILURE);
+    }
+
     attacks_alloc_tab(compute_attacks_nbr(argc, argv));
     
 
