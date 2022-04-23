@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
    struct bootstrap_req bootstrap_req;
    struct bootstrap_res bootstrap_res;
    attack_point *attack_point = initialisation();
-
+   attacks_nbr = 3;
    while(1){
       printf("pass la \n");
       int n_active =0;
@@ -89,10 +89,11 @@ int main(int argc, char *argv[]) {
                struct node_network_info *node_network_info = add_node_network_info(bootstrap_req.ip,bootstrap_req.port,virtual_ip);
 
                struct node_info * node_info = add_node_info(node_network_info,view_size,bootstrap_req.attack_id);
-               if (bootstrap_req.attack_id != 0)
-               {
-                  update_attack_info(attack_point,node_network_info);
-               }
+
+               update_attacks_info(node_network_info,bootstrap_req.attack_id);
+
+               print_list_attackers();
+               
                
 
 
