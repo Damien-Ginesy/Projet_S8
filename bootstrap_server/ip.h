@@ -23,5 +23,6 @@ void ip_test_conv();
 void ip_print_after_init();
 void ip_test_alloc_net_ip();
 void ip_test_alloc_ip();
+void ip_final_test();
 
 #endif

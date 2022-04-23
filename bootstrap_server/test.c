@@ -5,7 +5,7 @@
 
 int main(int argc, char **argv){
 
-    test_parse_simu_params(argc, argv);
+    ip_final_test();
 
     return 0;
 }
