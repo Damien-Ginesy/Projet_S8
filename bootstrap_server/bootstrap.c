@@ -40,15 +40,15 @@ void parse_simu_params(int argc, char **argv){
     while(1){
         if(strcmp(argv[arg_i], "eclipse") == 0){
             arg_i++;
-
-            attacks_info[attack_i].id = atoi(argv[arg_i++]);
+            
+            attacks_set_id_by_index(attack_i, atoi(argv[arg_i++]));
 
             attack_i++;
 
         }else if(strcmp(argv[arg_i], "inst") == 0){
             arg_i++;
 
-            attacks_info[attack_i].id = atoi(argv[arg_i++]);
+            attacks_set_id_by_index(attack_i, atoi(argv[arg_i++]));
 
             natural_mask = atoi(argv[arg_i++]);
             
@@ -57,17 +57,17 @@ void parse_simu_params(int argc, char **argv){
                 
                 case 8:
                     nbr_net_ip_by_mask[0]++;
-                    attacks_info[attack_i].mask = 1;
+                    attacks_set_mask_by_index(attack_i, 1);
                     break;
 
                 case 16:
                     nbr_net_ip_by_mask[1]++;
-                    attacks_info[attack_i].mask = 2;
+                    attacks_set_mask_by_index(attack_i, 2);
                     break;
                 
                 case 24:
                     nbr_net_ip_by_mask[2]++;
-                    attacks_info[attack_i].mask = 3;
+                    attacks_set_mask_by_index(attack_i, 3);
                     break;
                 
                 default:

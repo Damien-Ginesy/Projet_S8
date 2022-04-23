@@ -87,6 +87,13 @@ void attacks_free_tab(){
 
 }
 
+void attacks_set_id_by_index(int index, int id){
+    attacks_info[index].id = id;
+}
+void attacks_set_mask_by_index(int index, int mask){
+    attacks_info[index].mask = mask;
+}
+
 // attackers list
 
 struct attack_members_list *attack_members_list_new(){
