@@ -119,7 +119,7 @@ void attack_list_store_by_mask(
     int attacks_tab_size
 ){
 
-    if(attacks_tab_size == 1){
+    if(attacks_tab_size <= 1){
         return;
     }
 
