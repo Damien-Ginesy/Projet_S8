@@ -33,6 +33,10 @@ void attacks_store_by_mask(
 void attacks_alloc_tab(int nbr_attacks);
 void attacks_free_tab();
 
+void attacks_set_id_by_index(int index, int id);
+void attacks_set_mask_by_index(int index, int mask);
+
+
 // attackers list
 
 struct attack_members_list * attack_members_list_new();
