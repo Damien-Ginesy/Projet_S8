@@ -102,6 +102,18 @@ void attacks_set_mask_by_index(int index, int mask){
     attacks_info[index].mask = mask;
 }
 
+struct attack_info attacks_get_attack_by_id(int id){
+    for(int i = 0; i < attacks_nbr; i++){
+        if(attacks_info[i].id == id){
+            return attacks_info[i];
+        }
+    }
+
+    fprintf(stderr, "attacks_get_attack_by_id : id not found\n");
+    exit(EXIT_FAILURE);
+
+}
+
 // attackers list
 
 struct attack_members_list *attack_members_list_new(){
@@ -122,4 +134,16 @@ void attack_member_free_recursif(struct attack_member *am){
 void attack_members_list_free(struct attack_members_list *aml){
     attack_member_free_recursif(aml->first_member);
     free(aml);
+}
+
+
+// height level
+
+void attacks_get_net_ip_by_attack_id(unsigned char *net_ip, int *mask, int attack_id){
+    
+    struct attack_info attack = attacks_get_attack_by_id(attack_id);
+
+    memcpy(net_ip, attack.network_ip, 4*sizeof(char));
+    *mask = attack.mask;
+
 }
