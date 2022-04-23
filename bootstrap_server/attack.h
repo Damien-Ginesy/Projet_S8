@@ -31,7 +31,7 @@ void attacks_store_by_mask(
 
 // attacks tab
 void attacks_alloc_tab(int nbr_attacks);
-void attacks_free_tab(int nbr_attacks);
+void attacks_free_tab();
 
 // attackers list
 
