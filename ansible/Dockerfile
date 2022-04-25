@@ -56,16 +56,22 @@ ssh-keygen -t rsa -f "/home/peer/.ssh/id_rsa" -q -P "" > /dev/null; \
 sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.2 > /dev/null 2> /dev/null; \
 sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.3 > /dev/null 2> /dev/null; \
 mkdir /home/peer/basalt_project; \
-cp  /home/dev/project_example.c project_example.c; \
-cp  /home/dev/Makefile Makefile; \
-zip /home/peer/basalt_project/src.zip project_example.c Makefile > /dev/null; \
+#cp  /home/dev/project_example.c project_example.c; \
+#cp  /home/dev/Makefile Makefile; \
+#zip /home/peer/basalt_project/src.zip project_example.c Makefile > /dev/null; \
+cp -r /home/dev/bootstrap_server ./; \
+zip -r /home/peer/basalt_project/src.zip bootstrap_server/; \
 ansible-playbook /home/dev/send_src.yaml; \
 # test kill process
-ansible all -a "bash -c '/home/peer/basalt_project/prog;'" & \ 
+ansible all -a "bash -c 'cd /home/peer/basalt_project/bootstrap_server; stdbuf -o0 ./bootstrap_server eclipse 1 inst 2 8 1000 > output.txt ;'" & \
+sleep 2; \
+ansible all -a "bash -c 'cd /home/peer/basalt_project/bootstrap_server; ./node hosts 8081;'"; \ 
+ansible all -a "bash -c 'cd /home/peer/basalt_project/bootstrap_server; cat output.txt;'"; \ 
 # pratic kill process after clic
-ansible-playbook /home/dev/kill_process.yaml; \
+#ansible-playbook /home/dev/kill_process.yaml; \
 #ansible all -a "echo ""code retour du dernier pgrep est :""$?;'"; \ 
-bash
+bash ; \
+ls
 
 
 # echo "yes" > ~/password; \

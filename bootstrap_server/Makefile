@@ -1,22 +1,13 @@
-CFLAGS=-Wall -std=gnu99
+CFLAGS=-g -Wall -std=gnu99
 LDFLAGS=-lpthread
 
 all: bootstrap_server
 
-bootstrap_server : bootstrap_server.c
-	gcc $(CFLAGS) -o bootstrap_server bootstrap_server.c
+bootstrap_server : bootstrap.c bootstrap.h exchange_protocol.h bootstrap_server.c ip.c socket_IO.c socket_IO.h
+	gcc $(CFLAGS) -o bootstrap_server bootstrap.c bootstrap.h exchange_protocol.h bootstrap_server.c ip.c socket_IO.c socket_IO.h
 
-socket_IO.o : socket_IO.c socket_IO.h
-	gcc $(CFLAGS) -o socket_IO.o -c socket_IO.c
-
-ip.o : ip.c ip.h
-	gcc $(CFLAGS) -o ip.o -c ip.c
-
-bootstrap.o : bootstrap.c bootstrap.h
-	gcc $(CFLAGS) -o bootstrap.o -c bootstrap.c
-
-test : test.c ip.o bootstrap.o
-	gcc $(CFLAGS) -o test test.c ip.o bootstrap.o
+node : node Node.c socket_IO.c socket_IO.h
+	gcc $(CFLAGS) -o node Node.c socket_IO.c socket_IO.h
 
 clean :
-	rm -f bootstrap_server test *.o
+	rm -f bootstrap_server Node *.o

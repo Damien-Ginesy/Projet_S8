@@ -21,9 +21,9 @@ int main(int argc, char  *argv[]) {
 
     struct bootstrap_req bootstrap_req;
     bootstrap_req.attack_id = 2;
-    bootstrap_req.ip = 64550;
+    bootstrap_req.ip = 4000;
     bootstrap_req.port = 8080;
-    bootstrap_req.view_size = 100000;
+    bootstrap_req.view_size = 1000;
 
 
     // Send Data to Node
