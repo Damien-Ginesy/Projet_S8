@@ -47,6 +47,13 @@ attack_generate_net_ip();
 
    struct bootstrap_req bootstrap_req;
    struct bootstrap_res bootstrap_res;
+
+   unsigned char net_ip[4];
+   int mask;
+   unsigned char ip[4];
+   int virtual_ip;
+
+
    //attack_point *attack_point = initialisation();
    while(1){
       printf("pass la \n");
@@ -81,11 +88,14 @@ attack_generate_net_ip();
             // clean memory
             memset(&bootstrap_req,0,sizeof(bootstrap_req));
             memset(&bootstrap_res,0,sizeof(bootstrap_res));
+
             // Recieve Data from Nodes
                receive_data(client_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"data from node");
                printf("[TEST] : Attaque ID : %i, Adresse IP : %i, Port : %hu, ViewSize : %i\n",bootstrap_req.attack_id,bootstrap_req.ip,bootstrap_req.port,bootstrap_req.view_size);
+            
             // Generate Virtual IP
-               int virtual_ip = 0;
+            attacks_get_net_ip_by_attack_id(net_ip, &mask, bootstrap_req.attack_id);
+            
 
             // Generate View
                int view_size = 0;
@@ -128,6 +138,15 @@ attack_generate_net_ip();
 
 
 /**********************************************************/
-    return 0;
+   
+/************** Memory free**************/
+   
+   attacks_free_tab();
+
+
+
+/**********************************************************/
+   
+   return 0;
    
 }
