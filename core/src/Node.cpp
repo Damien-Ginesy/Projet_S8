@@ -118,6 +118,7 @@ namespace Basalt
 	}
 	#else
 	Node::Node(NodeId id, const Array<NodeId>& bs, const Array<NodeId>& friends):
+		_id(id),
 		_rng(high_resolution_clock::now().time_since_epoch().count())
 	{
 		_friends = friends;
