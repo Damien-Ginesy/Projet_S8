@@ -10,6 +10,7 @@
 #include <misc.h>
 #include <semaphore>
 
+
 std::binary_semaphore sem(0);
 
 #define ERROR_EXIT(x)   { std::cerr << x << '\n'; exit(EXIT_FAILURE); }
@@ -60,19 +61,30 @@ int main(int argc, char const *argv[])
     Array<NodeId> bs(2);
     bs[0] = NodeId {address_v4(0x7F000001), 3001, 1};
     bs[1] = NodeId {address_v4(0x7F000001), 3002, 2};
+    if(argc < 2){
+        std::cerr << "Provide at least the hostname\n";
+        return EXIT_FAILURE;
+    }
     const char* host = argv[1];
     const char* url = argc>2?argv[2]: "/";
     uint16_t port = argc>3? atoi(argv[3]):80;
-    Node n(id, bs, 1, rank, false, false);
-    
+    Array<NodeId> friends(2);
+    bs[0] = NodeId {address_v4(0x7F000001), 3003, 3};
+    bs[1] = NodeId {address_v4(0x7F000001), 3004, 4};
+    Node n(id, bs, friends);
     try
     {
         HTTPLogger logger(1, host, port, url);
         logger.setCallback([](const llhttp_t& parser, net::HTTPClient::BufferView body){
             std::cout << "\nLOG SERVER RESPONSE" << '\n';
-            std::cout << "Received code " << parser.status_code << '\n';
+            if(parser.status_code == 200)
+            std::cout << STYLE_BOLD STYLE_GREEN "Received code 200";
+            else
+            std::cout << STYLE_BOLD STYLE_RED "Received code " << parser.status_code;
+            std::cout << STYLE_DEFAULT << std::endl;
             for(char b: body)
                 std::cout << b;
+            std::cout << '\n';
             sem.release();
         });
         std::string msg = n.to_string();
