@@ -52,7 +52,7 @@ int main(int argc, char const *argv[])
     std::cout << "Starting basalt..." << '\n';
     using namespace std::chrono_literals;
     basalt_set_logger(&log);
-    basalt_init(id, bs, 1s, 5s);
+    basalt_init(id, bs, (uint32_t)(viewSize>>1),1s, 5s);
     std::this_thread::sleep_for(2min);
     basalt_stop();
     return 0;

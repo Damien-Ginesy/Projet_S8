@@ -2,10 +2,10 @@
 
 // Compression function for Merkle-Damgard construction.
 // This function is generated using the framework provided.
-#define mix(h) ({					\
+#define mix(h) {					\
 	(h) ^= (h) >> 23;		\
 	(h) *= 0x2127599bf4325c37ULL;	\
-	(h) ^= (h) >> 47; })
+	(h) ^= (h) >> 47; }
 
 uint64_t hash64(uint64_t x, uint64_t seed)
 {
