@@ -7,9 +7,9 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
     private noeudSchema:Schema = new Schema(
     {
         nodeID:{
-            port:{type:String, required:true},
+            port:{type:Number, required:true},
             adresseReelle:{type:String, required:true},
-            adresseVirtuelle:{type:String, required:true},
+            adresseVirtuelle:{type:Number, required:true},
         },
         vue:[{
             nodeID:{
@@ -20,8 +20,8 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
             seed:{type:Number, required: true},
             hitCount:{type:Number, required:true},
         }],
-        age:{type:Number, required:true},
-        malicieux:{type:Boolean, required:true},
+        age:{type:Number, required:false},
+        malicieux:{type:Number, required:false},
     },
     );
 
@@ -33,15 +33,25 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
         this.openDb(urlmongo);
     }
 
-    addInfo(infoNoeud:any){
+    addInfo(infoNoeud:InfoNoeud){
         const noeud:InfoNoeud = new this.noeudModel({
             nodeID:infoNoeud.nodeID,
             vue:infoNoeud.vue,
-            age:infoNoeud.age,
             malicieux: infoNoeud.malicieux,
-        
         });
         noeud.save();
+    }
+
+    recupNoeud(infoNoeud:InfoNoeud):Promise<any>{
+        return this.noeudModel.findOne({noeudID:infoNoeud.nodeID}).exec();
+    }
+
+    async updateNoeud(noeud: InfoNoeud) {
+        const noeudEnregistrer:InfoNoeud = await this.recupNoeud(noeud);
+        noeudEnregistrer.vue = noeud.vue;
+        noeudEnregistrer.age = noeud.age;
+        noeudEnregistrer.malicieux = noeud.malicieux;
+        noeudEnregistrer.save();
     }
 
     private openDb(url: string) {
@@ -52,4 +62,4 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
             console.log("Connexion à la base de donnée réussi");
         });
     }
-}
+ }
