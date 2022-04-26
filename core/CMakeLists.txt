@@ -41,12 +41,15 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib")
 
 add_library(basalt ${core_sources})
 add_library(basalt_net ${net_sources})
+add_library(byzantine_basalt ${core_sources})
 target_link_libraries(basalt basalt_net)
+target_link_libraries(byzantine_basalt basalt_net)
+target_compile_definitions(byzantine_basalt PUBLIC IS_BYZANTINE=1)
 
 # EXEC
 
 add_executable(test test.cpp)
-target_link_libraries(test basalt)
+target_link_libraries(test byzantine_basalt)
 
 add_executable(p2p_test p2p_test.cpp)
 target_link_libraries(p2p_test basalt)
@@ -56,3 +59,6 @@ target_link_libraries(test2 basalt)
 
 add_executable(ranking_tests ranking_tests.cpp)
 target_link_libraries(ranking_tests basalt)
+
+add_executable(byzantine_test byzantine_test.cpp)
+target_link_libraries(byzantine_test byzantine_basalt)
