@@ -5,7 +5,7 @@
 #include "ip.h"
 
 struct node_info{
-    struct node_network_info *network;
+    struct node_network_info network;
     int view_size;
     int attaque_id;
 };
