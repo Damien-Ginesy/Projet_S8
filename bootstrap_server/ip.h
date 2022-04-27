@@ -22,6 +22,13 @@ int ip_str2intip(char *str);
 
 void ip_print(unsigned char *ip);
 
+// other tools
+void ip_and_port_from_struct_sockaddr(
+    struct sockaddr sockaddr_in,
+    int *ip_out,
+    unsigned short *port_out
+);
+
 // Tests
 void ip_test_conv();
 void ip_print_after_init();
