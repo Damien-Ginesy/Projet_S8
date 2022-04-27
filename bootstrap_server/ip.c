@@ -268,20 +268,24 @@ void ip_print(unsigned char *ip){
     
 }
 
-// void ip_and_port_from_struct_sockaddr(struct sockaddr sockaddr_in, int *ip_out, unsigned short *port_out){
+void ip_and_port_from_struct_sockaddr(
+    struct sockaddr sockaddr_in,
+    int *ip_out,
+    unsigned short *port_out
+){
     
-//     // ip
-//     struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&sockaddr_in;
-//     struct in_addr ipAddr = pV4Addr->sin_addr;
-//     char str[INET_ADDRSTRLEN];
-//     inet_ntop( AF_INET, &ipAddr, str, INET_ADDRSTRLEN );
+    // ip
+    struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&sockaddr_in;
+    struct in_addr ipAddr = pV4Addr->sin_addr;
+    char str[INET_ADDRSTRLEN];
+    inet_ntop( AF_INET, &ipAddr, str, INET_ADDRSTRLEN );
 
-//     *ip_out = ip_str2intip(str);
+    *ip_out = ip_str2intip(str);
 
-//     // port
-//     *port_out = pV4Addr->sin_port;
+    // port
+    *port_out = pV4Addr->sin_port;
 
-// }
+}
 
 // Test
 
