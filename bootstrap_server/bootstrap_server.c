@@ -93,9 +93,17 @@ attack_generate_net_ip();
                receive_data(client_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"data from node");
                printf("[TEST] : Attaque ID : %i, Adresse IP : %i, Port : %hu, ViewSize : %i\n",bootstrap_req.attack_id,bootstrap_req.ip,bootstrap_req.port,bootstrap_req.view_size);
             
+            // Saving node info
+
+            node_tab[node_current].attaque_id = bootstrap_req.attack_id;
+            node_tab[node_current].view_size = bootstrap_req.view_size;
+
+            // (node_tab[node_current].network)->ip = ;
+
             // Generate Virtual IP
             attacks_get_net_ip_by_attack_id(net_ip, &mask, bootstrap_req.attack_id);
             
+            node_current++;
 
             // Generate View
                int view_size = 0;
@@ -142,6 +150,7 @@ attack_generate_net_ip();
 /************** Memory free**************/
    
    attacks_free_tab();
+   free(node_tab);
 
 
 

@@ -12,6 +12,8 @@ struct node_info{
 
 // simu params
 extern int node_nbr;
+extern struct node_info *node_tab;
+extern int node_current;
 
 void parse_simu_params(int argc, char **argv);
 
