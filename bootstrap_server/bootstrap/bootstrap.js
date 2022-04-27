@@ -4,12 +4,19 @@ const express = require("express");
 
 
 var app = express();
-
 app.use(express.urlencoded());
 
 app.use(express.json());
+app.use(express.static('public'));
 
-app.post('/', (req, res) => {
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html')
+ })
+
+
+app.post('/bootstrap', (req, res) => {
+    
+    console.log(req.body);
     const option1 = req.body.survey_options1;
     const option2 = req.body.survey_options2;
     const info = req.body.info;
@@ -19,7 +26,7 @@ app.post('/', (req, res) => {
     cmd+= "--port " + port;
 
 for (let index = 0; index < option1.length; index++) {
-    if ( index%2==0 )
+    if ( index%3==0 )
     {
      cmd += " --machine ";
     }
@@ -27,19 +34,23 @@ for (let index = 0; index < option1.length; index++) {
     
 }
 for (let index = 0; index < option2.length; index++) {
-    if ( index%3==0 )
+    if ( option2[index] == 'eclipse' || option2[index] == 'inst' )
     {
-     cmd += "--machine_malicious ";
+     cmd += "--attack ";
     }
     cmd += option2[index]+" ";
     
 }
 cmd+= "--info " ;
-for (let index = 0; index < info.length; index++) {
+    cmd += "--taille_vue ";
+    cmd += info[0]+" ";
+    cmd += "--nb_cycle_reset ";
+    cmd += info[1]+" ";
+    cmd += "--nb_reset ";
+    cmd += info[2]+" ";
+    cmd += "--nb_cycle_sec ";
+    cmd += info[3]+" ";    
 
-    cmd += info[index]+" ";
-    
-}
 console.log(cmd)
 
     exec("ls -la", (error, stdout, stderr) => {
