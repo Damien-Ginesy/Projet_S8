@@ -6,14 +6,13 @@
 
 int main(int argc, char **argv){
 
-    unsigned char ip[4];
-    ip[0] = 129;
-    ip[1] = 169;
-    ip[2] = 159;
-    ip[3] = 192;
 
     char ip_str[16];
 
+    int ip_int = ip_str2intip("255.1.102.37");
+
+    unsigned char ip[4];
+    ip_int2ip(ip_int, ip);
     ip2srt(ip_str, ip);
 
     printf("ip : %s\n", ip_str);
