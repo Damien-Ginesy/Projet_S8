@@ -16,6 +16,9 @@ void ip_alloc(unsigned char *ip_out, unsigned char *net_ip, char mask);
 void ip_int2ip(int ip_int, unsigned char *ip);
 int ip_ip2int(unsigned char *ip);
 
+// str conversion
+void ip2srt(char *str_out, unsigned char *ip);
+
 void ip_print(unsigned char *ip);
 
 // Tests
