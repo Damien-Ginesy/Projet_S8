@@ -1,6 +1,7 @@
 import express from 'express';
 import {DatabaseAccess} from './db'
 
+
 const app = express();
 const port:number = 3000;
 
@@ -16,7 +17,8 @@ if(process.argv.length !== 4){
 }
 
 
-const db = new DatabaseAccess(process.argv[2], process.argv[3]);
+const db:DatabaseAccess = new DatabaseAccess();
+db.connexionDb(process.argv[2], process.argv[3]);
 
 app.post('/infoNoeud',(req,res)=>{
     db.addInfo(req.body);
@@ -27,16 +29,12 @@ app.get('/network', (req,res)=>{
     res.render('network');
 })
 
-app.get('/stats', (req,res)=>{
+app.get('/stats', async(req,res)=>{
     res.render('stats');
 })
 
 app.get('/accueil',(req, res) => {
     res.render('homepage');
-})
-
-app.get('/stats',(req, res) => {
-    res.render('stats');
 })
 
 app.get('/',(req, res) =>{

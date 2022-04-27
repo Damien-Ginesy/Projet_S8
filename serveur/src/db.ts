@@ -27,11 +27,6 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
 
     private noeudModel:Model<InfoNoeud> = model<InfoNoeud>('Info_Noeuds', this.noeudSchema);
 
-    constructor(user:string, password:string) {
-        const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
-        /*const urlmongo = 'mongodb+srv://thomas:9jqtaEAfBloSTSam@cluster0.tr1ew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';*/
-        this.openDb(urlmongo);
-    }
 
     addInfo(infoNoeud:any){
         const noeud:InfoNoeud = new this.noeudModel({
@@ -42,6 +37,24 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
         
         });
         noeud.save();
+    }
+
+    async recupTotalNoeud():Promise<any>{
+        return await this.noeudModel.find().estimatedDocumentCount().exec();
+    }
+
+    async recupTotalMalicieux():Promise<any>{
+        return await this.noeudModel.where({malicieux:true}).countDocuments().exec();
+    }
+
+    async recupNoeud():Promise<any>{
+        return await this.noeudModel.find()
+    }
+
+    connexionDb(user:string, password:string){
+        const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
+        /*const urlmongo = 'mongodb+srv://thomas:9jqtaEAfBloSTSam@cluster0.tr1ew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';*/
+        this.openDb(urlmongo);
     }
 
     private openDb(url: string) {
