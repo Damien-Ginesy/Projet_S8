@@ -1,6 +1,11 @@
 #ifndef IP_H_
 #define IP_H_
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+
 void ip_alloc_init(int mask1_nbraddr, int mask2_nbraddr, int mask3_nbraddr, int mask4_nbraddr);
 void ip_alloc_free();
 
