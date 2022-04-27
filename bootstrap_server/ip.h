@@ -18,6 +18,7 @@ int ip_ip2int(unsigned char *ip);
 
 // str conversion
 void ip2srt(char *str_out, unsigned char *ip);
+int ip_str2intip(char *str);
 
 void ip_print(unsigned char *ip);
 

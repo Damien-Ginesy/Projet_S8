@@ -238,12 +238,16 @@ int ip_str2intip(char *str){
         c = str[i];
 
         if(c == '.'){
+            nbr_buffer[nbr_buffer_index++] = '\0';
             ip[ip_index--] = (unsigned char) atoi(nbr_buffer);
             nbr_buffer_index = 0;
         }else{
             nbr_buffer[nbr_buffer_index++] = c;
         }
     }
+
+    nbr_buffer[nbr_buffer_index++] = '\0';
+    ip[ip_index--] = (unsigned char) atoi(nbr_buffer);
 
     return ip_ip2int(ip);
 }
