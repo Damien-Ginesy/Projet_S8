@@ -11,6 +11,8 @@
 #include "attack.h"
 
 int node_nbr = 0;
+struct node_info *node_tab = NULL;
+int node_current = 0;
 
 // ----- parse_simu_params
 
@@ -102,10 +104,10 @@ void parse_simu_params(int argc, char **argv){
 
         }
     }
-    
-    // re-order attack list by mask
 
     ip_alloc_init(nbr_net_ip_by_mask[0], nbr_net_ip_by_mask[1], nbr_net_ip_by_mask[2], node_nbr);
+
+    node_tab = malloc(node_nbr * sizeof(struct node_info));
 
 }
 
