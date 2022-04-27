@@ -3,8 +3,8 @@ LDFLAGS=-lpthread
 
 all: bootstrap_server
 
-bootstrap_server : bootstrap_server.c bootstrap.o ip.o socket_IO.o
-	gcc $(CFLAGS) -o bootstrap_server bootstrap_server.c bootstrap.o ip.o socket_IO.o
+bootstrap_server : bootstrap_server.c bootstrap.o ip.o socket_IO.o attack.o
+	gcc $(CFLAGS) -o bootstrap_server bootstrap_server.c bootstrap.o ip.o socket_IO.o attack.o
 
 socket_IO.o : socket_IO.c socket_IO.h
 	gcc $(CFLAGS) -o socket_IO.o -c socket_IO.c
