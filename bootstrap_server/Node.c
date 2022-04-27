@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "socket_IO.h"
-#include "bootstrap.h"
 #include "exchange_protocol.h"
 
 int main(int argc, char  *argv[]) {

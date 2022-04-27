@@ -100,20 +100,20 @@ attack_generate_net_ip();
 
             ip_and_port_from_struct_sockaddr(
                client_addr,
-               &((node_tab[node_current].network)->ip),
-               &((node_tab[node_current].network)->port)
+               &((node_tab[node_current].network).ip),
+               &((node_tab[node_current].network).port)
             );
 
-            {//test
+            // {//test
 
-               unsigned char ip[4];
-               char ip_str[16];
+            //    unsigned char ip[4];
+            //    char ip_str[16];
 
-               ip_int2ip((node_tab[node_current].network)->ip, ip);
-               ip2srt(ip_str, ip);
-               printf("client ip:port : %s:%hu\n", ip_str, (node_tab[node_current].network)->port);
+            //    ip_int2ip((node_tab[node_current].network).ip, ip);
+            //    ip2srt(ip_str, ip);
+            //    printf("client ip:port : %s:%hu\n", ip_str, (node_tab[node_current].network).port);
 
-            }
+            // }
 
             // // Generate Virtual IP
             // attacks_get_net_ip_by_attack_id(net_ip, &mask, bootstrap_req.attack_id);
