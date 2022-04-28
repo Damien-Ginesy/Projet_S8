@@ -210,7 +210,13 @@ int main(int argc, char *argv[]) {
 
       // generating malicious view
       int malicious_view_size;
-      struct malicious_view_size *malicious_view;
+      struct node_network_info *malicious_view;
+
+      attack_get_attack_member_as_tab(
+         &malicious_view,
+         &malicious_view_size, 
+         node_tab[i].attaque_id
+      );
 
       #ifdef DEBUG
       {
@@ -219,8 +225,8 @@ int main(int argc, char *argv[]) {
          char vip_str[16];
          unsigned char vip[4];
 
-
-         printf("Node %d view :\n", i);
+         // view
+         printf("Node %d :\n\t View :\n", i);
          for(int vi = 0; vi < view_size; vi++){
 
             ip_int2ip(view[vi].ip , ip);
@@ -229,8 +235,23 @@ int main(int argc, char *argv[]) {
             ip2srt(ip_str, ip);
             ip2srt(vip_str, vip);
 
-            printf("\t%s\t%s:%hu\n", vip_str, ip_str, view[vi].port);
+            printf("\t\t%s\t%s:%hu\n", vip_str, ip_str, view[vi].port);
          }
+
+         // malicious view
+         printf("\t Malicous View :\n");
+         for(int mvi = 0; mvi < malicious_view_size; mvi++){
+
+            ip_int2ip(malicious_view[mvi].ip , ip);
+            ip_int2ip(malicious_view[mvi].virtual_ip , vip);
+
+            ip2srt(ip_str, ip);
+            ip2srt(vip_str, vip);
+
+            printf("\t\t%s\t%s:%hu\n", vip_str, ip_str, malicious_view[mvi].port);
+
+         }
+
       }
       #endif
 
@@ -248,7 +269,9 @@ int main(int argc, char *argv[]) {
       //sending the malicious view
 
       //free
-      // free(malicious_view);
+      if(malicious_view != NULL){
+         free(malicious_view);
+      }
 
    }
 
