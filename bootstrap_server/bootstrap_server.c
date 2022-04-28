@@ -106,7 +106,16 @@ attack_generate_net_ip();
 
                attacks_get_net_ip_by_attack_id(net_ip, &mask, bootstrap_req.attack_id);
 
-               ip_alloc(ip, net_ip, mask);
+               if(mask==0){ // eclipse
+
+                  ip_alloc(ip, NULL, 0);
+               
+               }else{ //inst
+               
+                  ip_alloc(ip, net_ip, mask);
+               
+               }
+
                node_tab[node_current].network.virtual_ip = ip_ip2int(ip);
 
                // register as an attacker
