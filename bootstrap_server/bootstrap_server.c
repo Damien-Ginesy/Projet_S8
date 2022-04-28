@@ -49,7 +49,7 @@ attack_generate_net_ip();
    struct bootstrap_res bootstrap_res;
 
    unsigned char net_ip[4];
-   int mask;
+   char mask;
    unsigned char ip[4];
    int virtual_ip;
 
@@ -115,10 +115,27 @@ attack_generate_net_ip();
 
             // }
 
-            // // Generate Virtual IP
-            // attacks_get_net_ip_by_attack_id(net_ip, &mask, bootstrap_req.attack_id);
+            // Generate Virtual IP
+            if(bootstrap_req.attack_id != 0){
+
+               // malicious node
+
+               attacks_get_net_ip_by_attack_id(net_ip, &mask, bootstrap_req.attack_id);
+
+               ip_alloc(ip, net_ip, mask);
+               node_tab[node_current].network.virtual_ip = ip_ip2int(ip);
+
+            }else{
+
+               // non malicious node
+
+               ip_alloc(ip, NULL, 0);
+               node_tab[node_current].network.virtual_ip = ip_ip2int(ip);
+
+            }
             
-            // node_current++;
+
+            node_current++;
 
             // // Generate View
             //    int view_size = 0;
