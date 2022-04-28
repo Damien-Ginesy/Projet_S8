@@ -99,30 +99,23 @@ attack_generate_net_ip();
                &((node_tab[node_current].network).port)
             );
 
-            // {//test
 
-            //    unsigned char ip[4];
-            //    char ip_str[16];
+            if(bootstrap_req.attack_id != 0){ // malicious node
 
-            //    ip_int2ip((node_tab[node_current].network).ip, ip);
-            //    ip2srt(ip_str, ip);
-            //    printf("client ip:port : %s:%hu\n", ip_str, (node_tab[node_current].network).port);
-
-            // }
-
-            // Generate Virtual IP
-            if(bootstrap_req.attack_id != 0){
-
-               // malicious node
+               // Generate Virtual IP
 
                attacks_get_net_ip_by_attack_id(net_ip, &mask, bootstrap_req.attack_id);
 
                ip_alloc(ip, net_ip, mask);
                node_tab[node_current].network.virtual_ip = ip_ip2int(ip);
 
-            }else{
+               // register as an attacker
 
-               // non malicious node
+               attack_register_attacker(bootstrap_req.attack_id, &(node_tab[node_current].network));
+
+            }else{ // non malicious node
+
+               // Generate Virtual IP
 
                ip_alloc(ip, NULL, 0);
                node_tab[node_current].network.virtual_ip = ip_ip2int(ip);

@@ -102,10 +102,10 @@ void attacks_set_mask_by_index(int index, int mask){
     attacks_info[index].mask = mask;
 }
 
-struct attack_info attacks_get_attack_by_id(int id){
+struct attack_info *attacks_get_attack_by_id(int id){
     for(int i = 0; i < attacks_nbr; i++){
         if(attacks_info[i].id == id){
-            return attacks_info[i];
+            return attacks_info+i;
         }
     }
 
@@ -136,14 +136,35 @@ void attack_members_list_free(struct attack_members_list *aml){
     free(aml);
 }
 
+void attack_members_add(
+    struct attack_members_list *aml,
+    struct node_network_info *member_net_info
+){
+    
+    struct attack_member *member = malloc(sizeof(struct attack_member));
+
+    member->net_info = member_net_info;
+    member->next = aml->first_member;
+
+    aml->first_member = member;
+}
+
 
 // height level
 
 void attacks_get_net_ip_by_attack_id(unsigned char *net_ip, char *mask, int attack_id){
     
-    struct attack_info attack = attacks_get_attack_by_id(attack_id);
+    struct attack_info *attack = attacks_get_attack_by_id(attack_id);
 
-    memcpy(net_ip, attack.network_ip, 4*sizeof(char));
-    *mask = attack.mask;
+    memcpy(net_ip, attack->network_ip, 4*sizeof(char));
+    *mask = attack->mask;
+
+}
+
+void attack_register_attacker(int attack_id, struct node_network_info *network_info){
+    
+    struct attack_info *attack = attacks_get_attack_by_id(attack_id);
+
+    attack_members_add(attack->members, network_info);
 
 }
