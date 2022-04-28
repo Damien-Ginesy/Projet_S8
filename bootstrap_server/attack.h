@@ -46,5 +46,10 @@ void attack_members_list_free(struct attack_members_list *aml);
 void attacks_get_net_ip_by_attack_id(unsigned char *net_ip, char *mask, int attack_id);
 void attack_register_attacker(int attack_id, struct node_network_info *network_info);
 
+void attack_get_attack_member_as_tab(
+    struct node_network_info **attack_member_tab_out,
+    int *attack_member_tab_size_out, 
+    int attack_id
+);
 
 #endif
