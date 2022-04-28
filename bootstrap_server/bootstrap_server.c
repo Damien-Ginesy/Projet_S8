@@ -70,8 +70,8 @@ attack_generate_net_ip();
    char mask;
    unsigned char ip[4];
 
-
-   while(1){
+   char still_unconnected_nodes = 1;
+   while(still_unconnected_nodes){
 
       int n_active =0;
          // Block until new activity detected on existing socket
@@ -79,7 +79,7 @@ attack_generate_net_ip();
 			perror("Poll");
 		}
 
-         
+
       for (int i = 0; i < node_nbr+1; i++){
          // If listening socket is active => accept new incoming connection
          if (pollfds[i].fd == listen_fd && pollfds[i].revents & POLLIN) {
@@ -177,29 +177,15 @@ attack_generate_net_ip();
 
             node_current++;
 
-            // // Generate View
-            //    int view_size = 0;
-
-            // // Fill in structures
-            //    struct node_network_info *node_network_info = add_node_network_info(bootstrap_req.ip,bootstrap_req.port,virtual_ip);
-
-            //    struct node_info * node_info = add_node_info(node_network_info,view_size,bootstrap_req.attack_id);
-
-            //    update_attacks_info(node_network_info,bootstrap_req.attack_id);
-
-            //    print_list_attackers();
-               
-               
-
-
-            // // Send Data to Node
-            //    send_data(client_fd,(char*) &bootstrap_res,sizeof(bootstrap_res),"data to node");
+            if(node_current == node_nbr){
+               still_unconnected_nodes = 0;
+               break;
+            }
                
             // Set .revents of listening socket back to default
             pollfds[i].revents = 0;
          } else if (pollfds[i].fd != listen_fd && pollfds[i].revents & POLLHUP) { // If a socket previously created to communicate with a client detects a disconnection from the client side
-            
-            
+
             // free memory
             
             // Close socket and set struct pollfd back to default
@@ -214,7 +200,7 @@ attack_generate_net_ip();
 /**********************************************************/
 
 /************** Generate view and Send Data **************/
-
+   printf("Responding : \n");
 
 
 /**********************************************************/
@@ -223,7 +209,6 @@ attack_generate_net_ip();
    
    attacks_free_tab();
    free(node_tab);
-
 
 
 /**********************************************************/
