@@ -28,6 +28,5 @@ int main(int argc, char  *argv[]) {
     // Send Data to Node
     send_data(sock_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"data to server");
     printf("Data sent !\n");
-    sleep(10);
     return 0;
 }

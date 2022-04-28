@@ -75,7 +75,7 @@ attack_generate_net_ip();
             
             // store new file descriptor in available slot in the array of struct pollfd set .events to POLLIN
             for (int j = 0; j < node_nbr+1; j++) {
-               if (pollfds[j].fd == -1) {
+               if (pollfds[j].fd == -1 && j != i) {
                   pollfds[j].fd = client_fd;
                   pollfds[j].events = POLLIN;
                   break;
