@@ -51,18 +51,15 @@ attack_generate_net_ip();
    unsigned char net_ip[4];
    char mask;
    unsigned char ip[4];
-   int virtual_ip;
 
 
-   //attack_point *attack_point = initialisation();
    while(1){
-      printf("pass la \n");
+
       int n_active =0;
          // Block until new activity detected on existing socket
 		if (-1 == (n_active = poll(pollfds, node_nbr+1, -1))) {
 			perror("Poll");
 		}
-		printf("[SERVER] : %d active socket\n", n_active);
 
          
       for (int i = 0; i < node_nbr+1; i++){
@@ -75,7 +72,6 @@ attack_generate_net_ip();
             if (-1 == (client_fd = accept(listen_fd, &client_addr, &size))) {
                perror("Accept");
             }
-            printf("Node Accepted !\n");
             
             // store new file descriptor in available slot in the array of struct pollfd set .events to POLLIN
             for (int j = 0; j < node_nbr+1; j++) {
@@ -90,9 +86,8 @@ attack_generate_net_ip();
             memset(&bootstrap_res,0,sizeof(bootstrap_res));
 
             // Recieve Data from Nodes
-               receive_data(client_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"data from node");
-               printf("[TEST] : Attaque ID : %i, Adresse IP : %i, Port : %hu, ViewSize : %i\n",bootstrap_req.attack_id,bootstrap_req.ip,bootstrap_req.port,bootstrap_req.view_size);
-            
+            receive_data(client_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"data from node");
+
             // Saving node info
 
             node_tab[node_current].attaque_id = bootstrap_req.attack_id;
@@ -133,6 +128,31 @@ attack_generate_net_ip();
                node_tab[node_current].network.virtual_ip = ip_ip2int(ip);
 
             }
+
+            #ifdef DEBUG
+            {
+               unsigned char ip[4];
+               char ip_str[16];
+               ip_int2ip((node_tab[node_current].network).ip, ip);
+               ip2srt(ip_str, ip);
+
+               unsigned char vip[4];
+               char vip_str[16];
+               ip_int2ip(node_tab[node_current].network.virtual_ip, vip);
+               ip2srt(vip_str, vip);
+
+               printf(
+
+                  "%s:%hu\n\tattack id : %d\n\tview_size : %d\n\tvirtual ip : %s\n",
+                  ip_str,
+                  (node_tab[node_current].network).port,
+                  node_tab[node_current].attaque_id,
+                  node_tab[node_current].view_size,
+                  vip_str
+               );
+
+            }
+            #endif
             
 
             node_current++;

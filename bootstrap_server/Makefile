@@ -1,4 +1,4 @@
-CFLAGS=-g -Wall -std=gnu99
+CFLAGS=-g -Wall -std=gnu99 -DDEBUG=1
 LDFLAGS=-lpthread
 
 all: bootstrap_server client
