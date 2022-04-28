@@ -139,7 +139,7 @@ void attack_members_list_free(struct attack_members_list *aml){
 
 // height level
 
-void attacks_get_net_ip_by_attack_id(unsigned char *net_ip, int *mask, int attack_id){
+void attacks_get_net_ip_by_attack_id(unsigned char *net_ip, char *mask, int attack_id){
     
     struct attack_info attack = attacks_get_attack_by_id(attack_id);
 
