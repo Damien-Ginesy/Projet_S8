@@ -8,26 +8,26 @@
 int main(int argc, char *argv[]) {
 
 /**** Parse simulation parametres and init db struct ******/
-parse_simu_params(argc, argv);
-attack_generate_net_ip();
+   parse_simu_params(argc, argv);
+   attack_generate_net_ip();
 
-#ifdef DEBUG
-{
-   printf("attacks nbr = %d\n", attacks_nbr);
-   for(int i = 0; i < attacks_nbr; i++){
+   #ifdef DEBUG
+   {
+      printf("attacks nbr = %d\n", attacks_nbr);
+      for(int i = 0; i < attacks_nbr; i++){
 
-      char str_ip[16];
-      ip2srt(str_ip, attacks_info[i].network_ip);
+         char str_ip[16];
+         ip2srt(str_ip, attacks_info[i].network_ip);
 
-      printf(
-         "attack : id=%d, net_ip=%s, mask=%d\n",
-         attacks_info[i].id,
-         str_ip,
-         attacks_info[i].mask
-      );
+         printf(
+            "attack : id=%d, net_ip=%s, mask=%d\n",
+            attacks_info[i].id,
+            str_ip,
+            attacks_info[i].mask
+         );
+      }
    }
-}
-#endif
+   #endif
 
 /**********************************************************/
 
@@ -186,13 +186,13 @@ attack_generate_net_ip();
             pollfds[i].revents = 0;
          } else if (pollfds[i].fd != listen_fd && pollfds[i].revents & POLLHUP) { // If a socket previously created to communicate with a client detects a disconnection from the client side
 
-            // free memory
+            fprintf(stderr, "A client has disconnected before revieving respond.\n");
             
-            // Close socket and set struct pollfd back to default
-            close(pollfds[i].fd);
-            pollfds[i].fd = -1;
-            pollfds[i].events = 0;
-            pollfds[i].revents = 0;
+            // // Close socket and set struct pollfd back to default
+            // close(pollfds[i].fd);
+            // pollfds[i].fd = -1;
+            // pollfds[i].events = 0;
+            // pollfds[i].revents = 0;
          }
       }
    }
@@ -200,7 +200,33 @@ attack_generate_net_ip();
 /**********************************************************/
 
 /************** Generate view and Send Data **************/
-   printf("Responding : \n");
+   for(int i = 0; i<node_nbr; i++){
+
+      // generating view
+      int view_size = node_tab[i].view_size;
+      struct node_network_info view[view_size];
+
+      // generating malicious view
+      int malicious_view_size;
+      struct malicious_view_size *malicious_view;
+
+      // sending booststrap_res
+      struct bootstrap_res bootstrap_res;
+
+      bootstrap_res.ip = node_tab[i].network.ip;
+      bootstrap_res.view_size = node_tab[i].view_size;
+
+      
+      
+      //sending the view
+
+
+      //sending the malicious view
+
+      //free
+      // free(malicious_view);
+
+   }
 
 
 /**********************************************************/
