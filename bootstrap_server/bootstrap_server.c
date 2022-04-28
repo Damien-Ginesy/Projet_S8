@@ -11,6 +11,24 @@ int main(int argc, char *argv[]) {
 parse_simu_params(argc, argv);
 attack_generate_net_ip();
 
+#ifdef DEBUG
+{
+   printf("attacks nbr = %d\n", attacks_nbr);
+   for(int i = 0; i < attacks_nbr; i++){
+
+      char str_ip[16];
+      ip2srt(str_ip, attacks_info[i].network_ip);
+
+      printf(
+         "attack : id=%d, net_ip=%s, mask=%d\n",
+         attacks_info[i].id,
+         str_ip,
+         attacks_info[i].mask
+      );
+   }
+}
+#endif
+
 /**********************************************************/
 
 /****************** Listening socket ************************/

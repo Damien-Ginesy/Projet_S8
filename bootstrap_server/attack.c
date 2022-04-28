@@ -76,10 +76,12 @@ void attack_generate_net_ip(){
 // attacks tab
 void attacks_alloc_tab(int nbr_attacks){
     
+    attacks_nbr = nbr_attacks;
     attacks_info = malloc(nbr_attacks*sizeof(struct attack_info));
 
     for(int i = 0; i < attacks_nbr; i++){
         attacks_info[i].mask = 0;
+        memset(attacks_info[i].network_ip, 0, 4*sizeof(char));
         attacks_info[i].members = attack_members_list_new();
     }
 
