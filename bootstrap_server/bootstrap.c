@@ -88,7 +88,6 @@ void parse_simu_params(int argc, char **argv){
         }else{ // nbr nodes
 
             node_nbr = atoi(argv[arg_i]);
-            printf("node_nbr = %s\n", argv[arg_i]);
 
             if(node_nbr == 0){
                 fprintf(stderr, "Non valid params : Node_nbr = %s\n", argv[arg_i]);

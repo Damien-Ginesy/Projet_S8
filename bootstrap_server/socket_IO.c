@@ -31,7 +31,6 @@ int socket_listen_and_bind(int Nb_node,char *port) {
 		perror("Socket");
 		exit(EXIT_FAILURE);
 	}
-	printf("Listen socket descriptor %d\n", listen_fd);
 
 	int yes = 1;
 	if (-1 == setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int))) {
@@ -56,7 +55,9 @@ int socket_listen_and_bind(int Nb_node,char *port) {
 		if (tmp->ai_family == AF_INET) {
 			struct sockaddr_in *sockptr = (struct sockaddr_in *)(tmp->ai_addr);
 			struct in_addr local_address = sockptr->sin_addr;
-			printf("Binding to %s on port %hd\n",inet_ntoa(local_address),ntohs(sockptr->sin_port));
+			#ifdef DEBUG
+				printf("Binding to %s on port %hd\n",inet_ntoa(local_address),ntohs(sockptr->sin_port));
+			#endif
 			
 
 			if (-1 == bind(listen_fd, tmp->ai_addr, tmp->ai_addrlen)) {
