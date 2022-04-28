@@ -129,7 +129,9 @@ struct attack_members_list *attack_members_list_new(){
 }
 
 void attack_member_free_recursif(struct attack_member *am){
-    attack_member_free_recursif(am->next);
+    if(am->next != NULL){
+        attack_member_free_recursif(am->next);
+    }
     free(am);
 }
 
