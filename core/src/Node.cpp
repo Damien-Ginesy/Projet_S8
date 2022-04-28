@@ -91,8 +91,7 @@ namespace Basalt
 	}
 	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, RankFunc_t h,
 		bool isByzantine, bool isSgx): 
-		_id(id), _isSGX(isSgx),_rankingFunc(h), _k(k),
-		_rng(high_resolution_clock::now().time_since_epoch().count())
+		_id(id), _isSGX(isSgx),_rankingFunc(h), _k(k)
 	{
 		_view = Array<ViewEntry>(bs.size());
 		for(ViewEntry& e: _view){
@@ -118,8 +117,7 @@ namespace Basalt
 	}
 	#else
 	Node::Node(NodeId id, const Array<NodeId>& bs, const Array<NodeId>& friends):
-		_id(id),
-		_rng(high_resolution_clock::now().time_since_epoch().count())
+		_id(id)
 	{
 		_friends = friends;
 		_view = Array<ViewEntry>(bs.size());
