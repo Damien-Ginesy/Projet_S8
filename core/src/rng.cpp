@@ -1,4 +1,5 @@
 #include "rng.hpp"
+#include <random>
 
 #define ROL64(x, k) (((x) << (k)) | ((x) >> (64 - (k))))
 
@@ -7,17 +8,24 @@ static inline uint64_t splitmix64(uint64_t& state){
     result = (result ^ (result >> 30)) * 0xBF58476D1CE4E5B9;
     return (result ^ (result >> 27)) * 0x94D049BB133111EB;
 }
-static inline uint64_t xorshift64(uint64_t& x){
-    x ^= x<<13;
-    x ^= x>>7;
-    return (x ^ x<<17);
-}
 
 xoshiro256ss::xoshiro256ss(uint64_t seed){
     _s[0] = splitmix64(seed);
     _s[1] = splitmix64(seed);
     _s[2] = splitmix64(seed);
     _s[3] = splitmix64(seed);
+}
+xoshiro256ss::xoshiro256ss(uint64_t initState[4]){
+    for(int i=0; i<4; ++i) _s[i] = initState[i];
+}
+xoshiro256ss::xoshiro256ss(){
+    // default constructor uses std::random_device as a non-deterministic 
+    // source for the initial state
+    // note that if no such source is available on the current platform,
+    // a deterministic algorithm may be used instead
+    std::random_device rd;
+    std::uniform_int_distribution<uint64_t> dist;
+    for(int i=0; i<4; ++i) _s[i] = dist(rd);
 }
 
 uint64_t xoshiro256ss::operator()(){
