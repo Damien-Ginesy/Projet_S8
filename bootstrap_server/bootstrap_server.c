@@ -206,9 +206,33 @@ int main(int argc, char *argv[]) {
       int view_size = node_tab[i].view_size;
       struct node_network_info view[view_size];
 
+      generate_view(view_size, view);
+
       // generating malicious view
       int malicious_view_size;
       struct malicious_view_size *malicious_view;
+
+      #ifdef DEBUG
+      {
+         char ip_str[16];
+         unsigned char ip[4];
+         char vip_str[16];
+         unsigned char vip[4];
+
+
+         printf("Node %d view :\n", i);
+         for(int vi = 0; vi < view_size; vi++){
+
+            ip_int2ip(view[vi].ip , ip);
+            ip_int2ip(view[vi].virtual_ip , vip);
+
+            ip2srt(ip_str, ip);
+            ip2srt(vip_str, vip);
+
+            printf("\t%s\t%s:%hu\n", vip_str, ip_str, view[vi].port);
+         }
+      }
+      #endif
 
       // sending booststrap_res
       struct bootstrap_res bootstrap_res;

@@ -114,3 +114,37 @@ void test_parse_simu_params(int argc, char **argv){
     parse_simu_params(argc, argv);
     ip_print_after_init();
 }
+
+void generate_view(int view_size, struct node_network_info *view){
+
+    int tab_choosen_indexes[view_size];
+    int index;
+
+    char choosen;
+
+    for(int i = 0; i < view_size; i++){
+        
+        choosen = 1;
+
+        // get unchoosen index
+        while(choosen){
+
+            index = rand()%node_nbr;
+
+            choosen = 0;
+            for(int j = 0; j<i; j++){
+                if(tab_choosen_indexes[j] == index){
+                    choosen = 1;
+                    break;
+                }
+            }
+
+        }
+
+        tab_choosen_indexes[i] = index;
+
+        memcpy(view+i, &(node_tab[index].network), sizeof(struct node_network_info));
+
+    }
+
+}
