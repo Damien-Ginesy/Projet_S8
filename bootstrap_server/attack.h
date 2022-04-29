@@ -49,7 +49,8 @@ void attack_register_attacker(int attack_id, struct node_network_info *network_i
 void attack_get_attack_member_as_tab(
     struct node_network_info **attack_member_tab_out,
     int *attack_member_tab_size_out, 
-    int attack_id
+    int attack_id,
+    int requester_virtual_ip
 );
 
 #endif

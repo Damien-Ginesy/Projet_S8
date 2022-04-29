@@ -17,7 +17,11 @@ extern int node_current;
 
 void parse_simu_params(int argc, char **argv);
 
-void generate_view(int view_size, struct node_network_info *view);
+void generate_view(
+    int view_size,
+    struct node_network_info *view,
+    int requester_virtual_ip
+);
 
 // Tests
 void test_parse_simu_params(int argc, char **argv);

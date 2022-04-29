@@ -206,7 +206,7 @@ int main(int argc, char *argv[]) {
       int view_size = node_tab[i].view_size;
       struct node_network_info view[view_size];
 
-      generate_view(view_size, view);
+      generate_view(view_size, view, node_tab[i].network.virtual_ip);
 
       // generating malicious view
       int malicious_view_size;
@@ -215,7 +215,8 @@ int main(int argc, char *argv[]) {
       attack_get_attack_member_as_tab(
          &malicious_view,
          &malicious_view_size, 
-         node_tab[i].attaque_id
+         node_tab[i].attaque_id,
+         node_tab[i].network.virtual_ip
       );
 
       #ifdef DEBUG
