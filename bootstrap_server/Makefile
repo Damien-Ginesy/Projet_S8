@@ -6,8 +6,8 @@ all: bootstrap_server client
 bootstrap_server : bootstrap_server.c exchange_protocol.h bootstrap.o ip.o socket_IO.o attack.o
 	gcc $(CFLAGS) -o bootstrap_server bootstrap_server.c bootstrap.o ip.o socket_IO.o attack.o
 
-client : Node.c exchange_protocol.h socket_IO.o
-	gcc $(CFLAGS) -o client Node.c socket_IO.o
+client : Node.c exchange_protocol.h socket_IO.o ip.o
+	gcc $(CFLAGS) -o client Node.c socket_IO.o ip.o
 
 socket_IO.o : socket_IO.c socket_IO.h
 	gcc $(CFLAGS) -o socket_IO.o -c socket_IO.c
@@ -25,4 +25,4 @@ test : test.c ip.o bootstrap.o attack.o
 	gcc $(CFLAGS) -o test test.c ip.o bootstrap.o attack.o
 
 clean :
-	rm -f bootstrap_server Node *.o
+	rm -f bootstrap_server client test *.o *.report
