@@ -4,7 +4,7 @@
 
 #include "ip.h" //used only for printing received data
 
-int main(int argc, char  *argv[]) {
+int main(int argc, char  *argv[]){
 	if (argc != 5) {
 		printf("Usage: ./client hostname port_number attack_id view_size\n");
 		exit(EXIT_FAILURE);
@@ -22,8 +22,14 @@ int main(int argc, char  *argv[]) {
 
     struct bootstrap_req bootstrap_req;
     bootstrap_req.attack_id = atoi(argv[3]);
-    bootstrap_req.ip = 4000;
-    bootstrap_req.port = 8080;
+
+    /*
+        ip and port are obtined directely by the server at the accept.
+        So there is no need to correctly specify them.
+    */
+    bootstrap_req.ip = 0;
+    bootstrap_req.port = 0;
+
     bootstrap_req.view_size = atoi(argv[4]);
 
 
