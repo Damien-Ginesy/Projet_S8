@@ -1,0 +1,5 @@
+*.report
+*.o
+*.out
+obj/
+bin/
