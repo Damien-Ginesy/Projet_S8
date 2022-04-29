@@ -293,6 +293,10 @@ int main(int argc, char *argv[]) {
 
 
 /**********************************************************/
+
+   #ifdef DEBUG
+      printf("bootstrap server : Bye !\n");
+   #endif
    
    return 0;
    
