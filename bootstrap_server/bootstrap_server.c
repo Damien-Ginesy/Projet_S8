@@ -261,13 +261,20 @@ int main(int argc, char *argv[]) {
 
       bootstrap_res.ip = node_tab[i].network.ip;
       bootstrap_res.view_size = node_tab[i].view_size;
+      bootstrap_res.malicious_view_size = malicious_view_size;
 
+      send_data(pollfds[i+1].fd, (char *) (&bootstrap_res), sizeof(struct bootstrap_res), "Sending bootstrap_res");
       
       
       //sending the view
-
+      if(view_size > 0){
+         send_data(pollfds[i+1].fd, (char *) view, view_size*sizeof(struct node_network_info), "Sending view");
+      }
 
       //sending the malicious view
+      if(malicious_view_size > 0){
+         send_data(pollfds[i+1].fd, (char *) malicious_view, malicious_view_size*sizeof(struct node_network_info), "Sending malicious view");
+      }
 
       //free
       if(malicious_view != NULL){

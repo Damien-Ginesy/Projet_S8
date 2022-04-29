@@ -2,6 +2,8 @@
 #include "socket_IO.h"
 #include "exchange_protocol.h"
 
+#include "ip.h" //used only for printing received data
+
 int main(int argc, char  *argv[]) {
 	if (argc != 5) {
 		printf("Usage: ./client hostname port_number attack_id view_size\n");
@@ -26,7 +28,79 @@ int main(int argc, char  *argv[]) {
 
 
     // Send Data to Node
-    send_data(sock_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"data to server");
+    send_data(sock_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"sending bootstrap_req");
     printf("Data sent !\n");
+
+    // Receiving data
+    struct bootstrap_res bootstrap_res;
+    receive_data(sock_fd, (char*) &bootstrap_res, sizeof(bootstrap_res), "receiving bootstrap_res");
+
+    struct node_network_info *view = NULL;
+    struct node_network_info *malicious_view = NULL;
+
+    if(bootstrap_res.view_size > 0){
+        view = malloc(bootstrap_res.view_size * sizeof(struct node_network_info));
+        receive_data(
+            sock_fd,
+            (char*) view,
+            bootstrap_res.view_size * sizeof(struct node_network_info),
+            "receiving view"
+        );
+    }
+
+    if(bootstrap_res.malicious_view_size > 0){
+        malicious_view = malloc(bootstrap_res.malicious_view_size * sizeof(struct node_network_info));
+        receive_data(
+            sock_fd,
+            (char*) malicious_view,
+            bootstrap_res.malicious_view_size * sizeof(struct node_network_info),
+            "receiving malicious_view"
+        );
+    }
+
+    // print data
+    {
+        char ip_str[16];
+        unsigned char ip[4];
+        char vip_str[16];
+        unsigned char vip[4];
+
+        // -- view
+        printf("View :\n");
+        for(int vi = 0; vi < bootstrap_res.view_size; vi++){
+
+            ip_int2ip(view[vi].ip , ip);
+            ip_int2ip(view[vi].virtual_ip , vip);
+
+            ip2srt(ip_str, ip);
+            ip2srt(vip_str, vip);
+
+            printf("\t%s\t%s:%hu\n", vip_str, ip_str, view[vi].port);
+
+        }
+
+        // malicious view
+        printf("Malicous View :\n");
+        for(int mvi = 0; mvi < bootstrap_res.malicious_view_size; mvi++){
+
+            ip_int2ip(malicious_view[mvi].ip , ip);
+            ip_int2ip(malicious_view[mvi].virtual_ip , vip);
+
+            ip2srt(ip_str, ip);
+            ip2srt(vip_str, vip);
+
+            printf("\t%s\t%s:%hu\n", vip_str, ip_str, malicious_view[mvi].port);
+
+        }
+    }
+
+    // free
+    if(view != NULL){
+        free(view);
+    }
+    if(malicious_view != NULL){
+        free(malicious_view);
+    }
+
     return 0;
 }
