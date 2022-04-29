@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 
 /****************** Listening socket ************************/
 // Create listening socket
-	char *port = "8080";
+	char *port = argv[argc -1];
 	int listen_fd = -1;
 	if (-1 == (listen_fd = socket_listen_and_bind(node_nbr,port))) {
 		printf("Could not create, bind and listen properly\n");
