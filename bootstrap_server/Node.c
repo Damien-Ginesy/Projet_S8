@@ -3,8 +3,8 @@
 #include "exchange_protocol.h"
 
 int main(int argc, char  *argv[]) {
-	if (argc != 3) {
-		printf("Usage: ./client hostname port_number\n");
+	if (argc != 5) {
+		printf("Usage: ./client hostname port_number attack_id view_size\n");
 		exit(EXIT_FAILURE);
 	}
 	char *hostname = argv[1];
@@ -19,15 +19,14 @@ int main(int argc, char  *argv[]) {
 	}
 
     struct bootstrap_req bootstrap_req;
-    bootstrap_req.attack_id = 2;
+    bootstrap_req.attack_id = atoi(argv[3]);
     bootstrap_req.ip = 4000;
     bootstrap_req.port = 8080;
-    bootstrap_req.view_size = 1000;
+    bootstrap_req.view_size = atoi(argv[4]);
 
 
     // Send Data to Node
     send_data(sock_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"data to server");
     printf("Data sent !\n");
-    sleep(10);
     return 0;
 }
