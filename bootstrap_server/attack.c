@@ -179,7 +179,8 @@ void attack_register_attacker(int attack_id, struct node_network_info *network_i
 void attack_get_attack_member_as_tab(
     struct node_network_info **attack_member_tab_out,
     int *attack_member_tab_size_out, 
-    int attack_id
+    int attack_id,
+    int requester_virtual_ip
 ){
 
     if(attack_id == 0){
@@ -190,15 +191,22 @@ void attack_get_attack_member_as_tab(
 
     struct attack_info *attack = attacks_get_attack_by_id(attack_id);
 
-    *attack_member_tab_size_out = attack->members->size;
-    *attack_member_tab_out = malloc(*attack_member_tab_size_out * sizeof(struct node_network_info));
+    *attack_member_tab_size_out = attack->members->size -1;
+    *attack_member_tab_out = malloc((*attack_member_tab_size_out) * sizeof(struct node_network_info));
 
     struct attack_member *member_in_list = attack->members->first_member;
 
-    for(int i = 0; i < (*attack_member_tab_size_out); i++){
+    int tab_i = 0;
+    for(int i = 0; i < (*attack_member_tab_size_out) +1; i++){
+
+        if(member_in_list->net_info->virtual_ip == requester_virtual_ip){
+            member_in_list = member_in_list->next;
+            continue;
+        }
         
-        memcpy((*attack_member_tab_out)+i, member_in_list->net_info, sizeof(struct node_network_info));
-        
+        memcpy((*attack_member_tab_out)+tab_i, member_in_list->net_info, sizeof(struct node_network_info));
+        tab_i++;
+
         member_in_list = member_in_list->next;
 
     }

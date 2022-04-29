@@ -115,7 +115,11 @@ void test_parse_simu_params(int argc, char **argv){
     ip_print_after_init();
 }
 
-void generate_view(int view_size, struct node_network_info *view){
+void generate_view(
+    int view_size,
+    struct node_network_info *view,
+    int requester_virtual_ip
+){
 
     int tab_choosen_indexes[view_size];
     int index;
@@ -133,7 +137,10 @@ void generate_view(int view_size, struct node_network_info *view){
 
             choosen = 0;
             for(int j = 0; j<i; j++){
-                if(tab_choosen_indexes[j] == index){
+                if(
+                    tab_choosen_indexes[j] == index ||
+                    node_tab[index].network.virtual_ip == requester_virtual_ip
+                ){
                     choosen = 1;
                     break;
                 }
