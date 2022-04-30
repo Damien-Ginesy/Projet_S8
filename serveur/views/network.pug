@@ -23,6 +23,12 @@ block body
                 h3#accueil Accueil
             a(href="stats")
                 h3#reseaux Statistiques
+            a#moreData(onclick="showData()") 
+                h3 &lt;
+            a.lessData(onclick="hideData()") 
+                h3 &gt;
+    
+    #overlay Overlay 
 
     .popup 
         p#popupQuit &times;
@@ -31,7 +37,9 @@ block body
         #view 
             table 
                 thead 
-                tbody 
+                    tr
+                        th View
+                tbody#viewInfo 
 
     canvas#particles-js
     // script(src='particlesNetwork.js')
