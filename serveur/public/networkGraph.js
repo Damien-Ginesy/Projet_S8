@@ -171,8 +171,8 @@ function getViewList(viewSize, nbNodeTot){
     return viewList;
 }
 
-const nbNodeTot = 100;
-const nodeFinalMax = 200;
+const nbNodeTot = 1000;
+const nodeFinalMax = 450;
 const nbInfectedNode = 4;
 const viewSize = 5;
 
@@ -213,7 +213,8 @@ c.canvas.addEventListener("mousemove", function(event){
                 throw breakException;
             }
             else if (Node.mouseInNode(el.circle, mouse) && final){
-                //Node.nodeHighlight(idx,c.nodes, c.ctx);
+                console.log(c.nodes[idx], idx);
+                Node.nodeHighlight(idx,c.nodes, c.ctx,c.nodesWin[c.gpWin]);
                 nodeHover(el,final);
                 throw breakException;
             }

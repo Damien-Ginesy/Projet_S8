@@ -1,14 +1,4 @@
 class Node {
-    /* constructor(id, x, y, sx, sy, r, view) {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this.sx = sx;
-        this.sy = sy;
-        this.r = r;
-        this.view = view;
-    } */
-
     constructor(id,circle,info) {
         this.id = id;
         this.circle = circle;
@@ -20,13 +10,13 @@ class Node {
         if (winFinal){
 
             /* Si circulaire */ /* modifier la répartition */
-            circle = Node.setPosition(id, cvsDim,'circular', n);
+            //circle = Node.setPosition(id, cvsDim,'circular', n);
             /* si aléatoire */ /* enlever n + winFinal et le remplacer par r */
-            /* circle = Node.setPosition(id, cvsDim,'default',20);
+            circle = Node.setPosition(id, cvsDim,'default',20);
             while(this.checkBorder(circle, cvsDim) || this.checkOverlap(circle,nodes)){
                 // changer l'argument
                 circle = Node.setPosition(id, cvsDim,'default',20);
-            } */
+            }
         }
         else{
             circle = Node.setPosition(id, cvsDim,'default',n);
@@ -43,7 +33,7 @@ class Node {
         switch(shape){
             case "circular":
                 // A modifier
-                const baseRadius = Math.min(cvsDim.width,cvsDim.height)/(n/47);
+                const baseRadius = Math.min(cvsDim.width,cvsDim.height)/(n/59);
                 const angle = Math.PI / n;
                 const s = Math.sin(angle);
                 const r = baseRadius * s / (1-s);
@@ -172,21 +162,23 @@ class Node {
         }
     }
 
-    /* static nodeHightlight(idx,nodes, ctx){
+    static nodeHighlight(idx,nodes, ctx, win){
         nodes[idx].info.view.forEach(element => {
             if (element < win[0].firstId || element >= win[0].firstId+win[0].nodeNbInGrp)
                 return;
+            console.log(element)
             const mx = nodes[idx].circle.x;
             const my= nodes[idx].circle.y;
             const nodeIdx = element - win[0].firstId;
-            ctx.globalAlpha = 0.1;
+            console.log('in : ', nodeIdx)
             ctx.beginPath();
             ctx.moveTo(nodes[nodeIdx].circle.x,nodes[nodeIdx].circle.y);
             ctx.lineTo(mx,my);
+            //ctx.strokeStyle = "blue";
             ctx.stroke();
             ctx.closePath();   
         });
-    } */
+    }
 
     static mouseInNode(node, mouse){
         const dx = node.x - mouse.x;
