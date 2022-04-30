@@ -75,7 +75,7 @@ canvas {
 }
 
 .popup{
-    position: absolute;
+    position: fixed;
     top: 50px;
     left:30px;
     height: 30vh;
@@ -85,13 +85,16 @@ canvas {
     opacity: 90%;
     border-radius: 10%;
     color: white;
+    z-index: 1000;
 }
 
 #popupTitle{
-    display: flex;
+    display: fixed;
     justify-content: center;
+    align-items: center;
     font-size: 200%;
     text-decoration: underline;
+    text-align: center;
 }
 
 #popupInfo{
@@ -101,11 +104,12 @@ canvas {
 }
 
 #popupQuit{
-    display: flex;
-    justify-content: right;
+    float: right;
     margin-right: 5%;
-    margin-top: 2%;
+    margin-top: 5%;
+    margin-bottom: 0%;
     font-weight: bold;
+    font-size: 150%;
     cursor: pointer;
 }
 

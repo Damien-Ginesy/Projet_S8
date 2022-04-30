@@ -25,10 +25,16 @@ block body
                 h3#reseaux Statistiques
 
     .popup 
-        #popupQuit X 
+        p#popupQuit &times;
         p#popupTitle 
         p#popupInfo 
+        #view 
+            table 
+                thead 
+                tbody 
 
     canvas#particles-js
-    script(src='particlesNetwork.js')
+    // script(src='particlesNetwork.js')
+    script(src='networkNode.js')
+    script(src='networkGraph.js')
     script(src="networkInfo.js")
