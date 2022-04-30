@@ -45,6 +45,9 @@ app.get('/stats', async(req,res)=>{
     res.render('stats');
 })
 
+app.get('/stats/:id', async(req,res)=>{
+})
+
 app.get('/accueil', (req, res) => {
     res.render('homepage');
 })

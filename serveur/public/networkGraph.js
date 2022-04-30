@@ -230,10 +230,15 @@ c.canvas.addEventListener("mousemove", function(event){
 c.canvas.addEventListener('click', function(event){
     mouse = mousePosition(event);
     const nodeWin = c.nodesWin[c.gpWin];
+    const final = nodeWin.length===1?1:0;
     try{
         c.nodes.forEach(el=>{
-            if(Node.mouseInNode(el.circle, mouse)){
+            if(Node.mouseInNode(el.circle, mouse) && !final){
                 c.addWin(nodeWin[el.id]);
+                throw breakException;
+            }
+            else if (Node.mouseInNode(el.circle, mouse) && final){
+                window.location.href = "/stats/"+el.id;
                 throw breakException;
             }
         })
