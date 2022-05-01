@@ -47,3 +47,5 @@
 *.pyc
 *.zip
 *.json
+
+*.odp*
