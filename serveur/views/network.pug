@@ -28,7 +28,14 @@ block body
             a.lessData(onclick="hideData()") 
                 h3 &gt;
     
-    #overlay Overlay 
+    #overlay
+        //- #globalData
+        //-     h2.infectTitle Taux d'infection
+        //-     figure.chartBox
+        figure.chartBox
+            #infectionRate
+
+
 
     .popup 
         p#popupQuit &times;
@@ -45,4 +52,9 @@ block body
     // script(src='particlesNetwork.js')
     script(src='networkNode.js')
     script(src='networkGraph.js')
-    script(src="networkInfo.js")
+    script(src="https://code.highcharts.com/highcharts.js")
+    script(src="https://code.highcharts.com/highcharts-more.js")
+    script(src="https://code.highcharts.com/modules/solid-gauge.js")
+    script(src="https://code.highcharts.com/modules/accessibility.js")
+    script(src="gaugeChart.js")
+    script(src="networkInfo.js") 

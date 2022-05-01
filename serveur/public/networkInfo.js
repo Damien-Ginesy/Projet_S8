@@ -47,9 +47,10 @@ function nodeClearHover(){
     popup.style.display = "none";
 }
 
-function showData(){
+function showData(infectArray){
     document.getElementById("overlay").style.display = "block";
     document.querySelector(".lessData").style.display = "block";
+    document.querySelector(".popup").style.display = "none";
     document.getElementById("topNavLeft").style.display = "none";
     document.getElementById("moreData").style.display = "none";
 }
@@ -60,3 +61,7 @@ function hideData(){
     document.getElementById("topNavLeft").style.display = "block";
     document.getElementById("moreData").style.display = "block";
 }
+
+chart = Highcharts.chart('infectionRate',
+Highcharts.merge(getGaugeOptions(),setGaugeData()));
+setInterval(gaugeUpdate(chart),2000);

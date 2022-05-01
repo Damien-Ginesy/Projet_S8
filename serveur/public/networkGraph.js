@@ -1,5 +1,6 @@
 const pcd = document.getElementById('topNavLeft');
 const popupCross = document.getElementById('popupQuit');
+const moreData = document.getElementById('moreData');
 
 class NetworkGraph {
     constructor(nodeNb,nodeFinalMax,infectedArray,viewArray){
@@ -172,7 +173,7 @@ function getViewList(viewSize, nbNodeTot){
 }
 
 const nbNodeTot = 1000;
-const nodeFinalMax = 450;
+const nodeFinalMax = 400;
 const nbInfectedNode = 4;
 const viewSize = 5;
 
@@ -202,6 +203,10 @@ popupCross.addEventListener('click', function(event) {
     nodeClearHover();
 })
 
+moreData.addEventListener('click', function(event) {
+    showData(infectArray);
+})
+
 c.canvas.addEventListener("mousemove", function(event){
     const mouse = mousePosition(event);
     const nodeWin = c.nodesWin[c.gpWin];
@@ -214,7 +219,7 @@ c.canvas.addEventListener("mousemove", function(event){
             }
             else if (Node.mouseInNode(el.circle, mouse) && final){
                 console.log(c.nodes[idx], idx);
-                Node.nodeHighlight(idx,c.nodes, c.ctx,c.nodesWin[c.gpWin]);
+                Node.nodeHighlightLine(idx,c.nodes, c.ctx,c.nodesWin[c.gpWin]);
                 nodeHover(el,final);
                 throw breakException;
             }
@@ -238,7 +243,7 @@ c.canvas.addEventListener('click', function(event){
                 throw breakException;
             }
             else if (Node.mouseInNode(el.circle, mouse) && final){
-                window.location.href = "/stats/"+el.id;
+                //window.location.href = "/stats/"+el.id;
                 throw breakException;
             }
         })
