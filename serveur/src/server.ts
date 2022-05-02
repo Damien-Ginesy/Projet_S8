@@ -18,14 +18,14 @@ if (process.argv.length !== 4) {
 }
 
 
-const db = new DatabaseAccess(process.argv[2], process.argv[3]);
+const db = new DatabaseAccess();
+db.openDb(process.argv[2], process.argv[3]);
 
 app.post('/infoNoeud', async (req, res) => {
 
     let noeud: any;
     for (noeud of req.body) {
-        console.log(noeud);
-        const existe: InfoNoeud | null = await db.recupNoeud(noeud);
+        const existe: InfoNoeud | null = await db.recupNoeudExistant(noeud);
         if (existe === null) {
             db.addInfo(noeud);
         } else {
@@ -45,10 +45,6 @@ app.get('/stats', (req, res) => {
 
 app.get('/accueil', (req, res) => {
     res.render('homepage');
-})
-
-app.get('/stats', (req, res) => {
-    res.render('stats');
 })
 
 app.get('/', (req, res) => {

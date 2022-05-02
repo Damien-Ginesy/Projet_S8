@@ -27,12 +27,6 @@ export class DatabaseAccess {
 
     private noeudModel: Model<InfoNoeud> = model<InfoNoeud>('Info_Noeuds', this.noeudSchema);
 
-    constructor(user: string, password: string) {
-        const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
-        /*const urlmongo = 'mongodb+srv://thomas:9jqtaEAfBloSTSam@cluster0.tr1ew.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';*/
-        this.openDb(urlmongo);
-    }
-
     addInfo(infoNoeud: any) {
         const noeud: InfoNoeud = new this.noeudModel({
             nodeID: infoNoeud.nodeID,
@@ -42,20 +36,33 @@ export class DatabaseAccess {
         noeud.save().then(() => console.log("Ajout réussi\n"));
     }
 
-    recupNoeud(infoNoeud: any): Promise<any> {
+    recupNoeudExistant(infoNoeud: any): Promise<any> {
         return this.noeudModel.findOne({nodeID: infoNoeud.nodeID}).exec();
     }
 
+    recupTotalNoeudSain():Promise<number>{
+        return this.noeudModel.find().countDocuments({malicieux:0}).exec();
+    }
+
+    recupTotalMalicieux():Promise<number>{
+        return this.noeudModel.find().countDocuments({malicieux:1}).exec();
+    }
+
+    recupAllNoeud():Promise<Array<InfoNoeud>>{
+        return this.noeudModel.find().exec();
+    }
+
     async updateNoeud(noeud: any) {
-        const noeudEnregistrer: InfoNoeud = await this.recupNoeud(noeud);
+        const noeudEnregistrer: InfoNoeud = await this.recupNoeudExistant(noeud);
         noeudEnregistrer.vue = noeud.vue;
         noeudEnregistrer.age = noeud.age;
         noeudEnregistrer.malicieux = noeud.malicieux;
         noeudEnregistrer.save().then(() => console.log("Modification réussi\n"));
     }
 
-    private openDb(url: string) {
-        mongoose.connect(url);
+    openDb(user:string,password:string) {
+        const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
+        mongoose.connect(urlmongo);
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));
         db.once('open', () => {
