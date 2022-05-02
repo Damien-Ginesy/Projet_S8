@@ -42,7 +42,17 @@ app.get('/network', (req, res) => {
 })
 
 app.get('/stats', async(req,res)=>{
-    res.render('stats');
+    try{
+        const nodes = await db.recupTotalNoeud();
+        const noeudMalicieux = await db.recupTotalMalicieux();
+        const nodesJson = {
+            totalNoeud: nodes,
+            nbMalicieux: noeudMalicieux,
+        }
+        res.render('stats',{nodesJson});
+    }catch(err){
+        console.log(err);
+    }
 })
 
 app.get('/stats/:id', async(req,res)=>{

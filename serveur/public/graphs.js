@@ -191,7 +191,7 @@ span2.className = "data"
 td2.append(span2);
 
 
-console.log(mainDiv.childNodes)
+//console.log(mainDiv.childNodes)
 
 function openChart(){
   screen.style.display = "none";
@@ -199,5 +199,13 @@ function openChart(){
   mainDiv.style.display = "block";
 }
 
-
-
+async function init(){
+  try{
+    const query = await fetch('/stats');
+    const res = await query.text();
+    console.log(res);
+  }catch(err){
+    console.log(err)
+  }
+}
+init();
