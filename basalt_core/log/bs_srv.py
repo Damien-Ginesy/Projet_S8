@@ -1,6 +1,10 @@
 from flask import Flask, request, jsonify, Response
 from dataclasses import dataclass
 import random
+import logging, os
+
+logging.getLogger('werkzeug').setLevel(logging.CRITICAL)
+
 
 @dataclass
 class Node:
@@ -12,14 +16,14 @@ class Node:
 NodeList = []
 i = 0
 
-lim = 3
+lim = 3 #au minimum bs_size + 1
 bs_size = 2
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def serve():
-    if i > lim:
+    if i >= lim:
         bs = random.sample(NodeList, bs_size)
         ls = ""
         for x in bs:
@@ -28,7 +32,7 @@ def serve():
         resp.headers['Content-Type'] = 'text/plain'
         return resp
     else:
-        return "wait", 206
+        return "wait\n", 206
 
 @app.route('/log', methods=['GET','POST'])
 def log():
@@ -38,7 +42,10 @@ def log():
     ip = request.remote_addr
     id = (i:=i+1)
     NodeList.append(Node(ip, port, id, type))
-    return "logged"
+    print("Logged " + ip + ":" + port + " (strategy=" + type + ") as vId=" + str(id))
+    if i == lim:
+        print("Ready to serve bootstrap!")
+    return "successfully logged as vId=" + str(id) + "\n"
 
 
 
