@@ -1,64 +1,67 @@
-const popup =  document.getElementsByClassName('popup')[0];
-
-function nodeHover(node, circleLength,nbNodeSub){
+function nodeHover(node, finalWin){
+    const popup =  document.querySelector(".popup");
+    const canvas = document.querySelector("#particles-js");
+    const view = document.getElementById('view');
     popup.style.display = "block";
-    if (circleLength<nbNodeSub){
+
+    if(!finalWin){
         const popupTitle =  document.getElementById('popupTitle');
-        popupTitle.textContent = "Group " + node.id + " : ";
+        popupTitle.textContent = "Group " + node.gprId + " : ";
 
+        view.style.display = 'none';
         const popupInfo = document.getElementById('popupInfo');
-        popupInfo.textContent = "Has " + nbNodeSub + " nodes in this group.";
-    }   
-    else {
-        popup.innerHTML = "<p id='title'> Node " + node.id + " : ";
-        const popupTitle =  document.getElementById('title');
-        popupTitle.style.display = "flex";
-        popupTitle.style.justifyContent = "center";
-        popupTitle.style.fontSize = "200%";
-        popupTitle.style.textDecoration = "underline";
+        popupInfo.style.display = 'block';
 
-        popup.innerHTML += "<div id='view'> </div>";        
-        
-        /*********View Table **************************/
-        const popupInfo = document.getElementById('view');
-        const table = document.createElement('table');
-        const thead = document.createElement('thead');
-        const tbody = document.createElement('tbody');
+        const endId = node.firstId+node.nodeNbInGrp-1;
+        popupInfo.innerHTML = "Has " + node.nodeNbInGrp + " nodes in this group."
+                        + "<br> Range : " + node.firstId + "-"  + endId +".";
+    }
+    else{
+        popupTitle.textContent = "Node " + node.id + " : ";
 
-        table.appendChild(thead);
-        table.appendChild(tbody);
+        view.style.display = 'block';
+        const popupInfo = document.getElementById('popupInfo');
+        popupInfo.style.display='none';
 
-        // Adding the entire table to the body tag
-        popupInfo.appendChild(table);
+        const tbody = document.getElementById('viewInfo');
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.lastChild);
+        }
 
-        const row_1 = document.createElement('tr');
-        const heading_1 = document.createElement('th');
-        heading_1.innerHTML = "View";
-        row_1.appendChild(heading_1);
-        thead.appendChild(row_1);
+        let row;
+        for (let i=0; i<node.info.view.length;i++){
+            if (!(i%5))
+                row = document.createElement('tr');
+            const rowData = document.createElement('td');    
+            rowData.textContent = node.info.view[i];
+            row.appendChild(rowData);
+            if (!(i%5) || i<node.info.view.length)
+                tbody.appendChild(row);
+        }
 
-
-        // Creating and adding data to second row of the table
-        const row_2 = document.createElement('tr');
-        const row_2_data_1 = document.createElement('td');
-        row_2_data_1.innerHTML = node.view[0];
-        const row_2_data_2 = document.createElement('td');
-        row_2_data_2.innerHTML = node.view[1];
-        const row_2_data_3 = document.createElement('td');
-        row_2_data_3.innerHTML = node.view[2];
-        const row_2_data_4 = document.createElement('td');
-        row_2_data_4.innerHTML = node.view[3];
-        const row_2_data_5 = document.createElement('td');
-        row_2_data_5.innerHTML = node.view[4];
-        row_2.appendChild(row_2_data_1);
-        row_2.appendChild(row_2_data_2);
-        row_2.appendChild(row_2_data_3);
-        row_2.appendChild(row_2_data_4);
-        row_2.appendChild(row_2_data_5);
-        tbody.appendChild(row_2);
     }
 }
 
 function nodeClearHover(){
+    const popup =  document.querySelector(".popup");
     popup.style.display = "none";
 }
+
+function showData(infectArray){
+    document.getElementById("overlay").style.display = "block";
+    document.querySelector(".lessData").style.display = "block";
+    document.querySelector(".popup").style.display = "none";
+    document.getElementById("topNavLeft").style.display = "none";
+    document.getElementById("moreData").style.display = "none";
+}
+
+function hideData(){
+    document.getElementById("overlay").style.display = "none";
+    document.querySelector(".lessData").style.display = "none";
+    document.getElementById("topNavLeft").style.display = "block";
+    document.getElementById("moreData").style.display = "block";
+}
+
+chart = Highcharts.chart('infectionRate',
+Highcharts.merge(getGaugeOptions(),setGaugeData()));
+setInterval(gaugeUpdate(chart),2000);

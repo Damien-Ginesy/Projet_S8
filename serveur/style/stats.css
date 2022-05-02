@@ -65,9 +65,8 @@ h1, h2, h3, p{
 #but{
     display: flex;
     position: sticky;
-    justify-content: space-around;
-    margin-top: -5%;
-    padding: 104px;
+    justify-content: space-evenly;
+    margin: 10px;
     margin-left: 50px;
 }
 button{
@@ -217,3 +216,15 @@ span {
 }
 
 
+/* line chart */
+
+#sub_chart{
+    z-index: 4;
+}
+
+
+#chart{
+    height: 200px;
+    max-width: 400px;
+    margin: 0 auto;
+}
