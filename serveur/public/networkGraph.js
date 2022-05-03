@@ -3,19 +3,20 @@ const popupCross = document.getElementById('popupQuit');
 const moreData = document.getElementById('moreData');
 
 class NetworkGraph {
-    constructor(nodeNb,nodeFinalMax,infectedArray,viewArray){
+    constructor(nodesArray,nodeFinalMax,viewArray){
         this.canvas = document.querySelector("#particles-js");
         this.ctx = this.canvas.getContext('2d');
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+        //this.canvas.pcd = pcdlick();
 
-        this.nodeNb = nodeNb;
+        this.allNodes = nodesArray;
+        this.nodeNb = nodesArray.length;
         this.nodeFinalMax = nodeFinalMax;
         this.gpWin = 0;
         this.viewArray = viewArray;
         this.nodesWin = [];
         this.nodes = [];
-        this.infectedArray = infectedArray;
     }
 
     init(){
@@ -78,7 +79,8 @@ class NetworkGraph {
         const firstId = winFinal ? nodesWin[0].firstId : 0;
         for (let i=0;i<end;i++){
             const idx = i+firstId;
-            const infect = (winFinal && this.infectedArray.includes(idx))?1:0;
+            // colorier pr les win
+            const infect = (winFinal && this.allNodes[idx].malicieux)?1:0;
             const view = winFinal?this.viewArray[idx]:this.nodes;
             const info = {
                 'infect': infect,
@@ -147,23 +149,13 @@ function mousePosition(event) {
 /******************************************************************* */
 /*************************APPEL FONCTIONS*************************** */   
 /******************************************************************* */
-
-function getInfectedList(nbInfectedNode, nbNodeTot){
-    const infectList = [];
-    while(infectList.length!==nbInfectedNode){
-      const infectedNodeId = Math.floor(Math.random() * nbNodeTot);
-      if (!infectList.includes(infectedNodeId))
-        infectList.push(infectedNodeId);
-    }
-    return infectList;
-  }
   
 function getViewList(viewSize, nbNodeTot){
     const viewList = [];
     for (let i=0;i<nbNodeTot;i++){
       const viewNodeList = [];
       while(viewNodeList.length!==viewSize){
-        const inView = Math.floor(Math.random() * nbNodeTot)+1;
+        const inView = Math.floor(Math.random() * nbNodeTot);
         if ( (!viewNodeList.includes(inView)) && (inView!==i))
           viewNodeList.push(inView);
       }
@@ -172,32 +164,42 @@ function getViewList(viewSize, nbNodeTot){
     return viewList;
 }
 
-const nbNodeTot = 1000;
 const nodeFinalMax = 400;
-const nbInfectedNode = 4;
-const viewSize = 5;
+const viewSize = 1;
 
-const viewArray = getViewList(viewSize, nbNodeTot);
+initGraph = async() =>{
+    const query = await fetch('/nodeData');
+    const res = await query.json();
+    console.log(res);
+    const viewArray = getViewList(viewSize, res.allNode.length);
+    const c = new NetworkGraph(res.allNode, nodeFinalMax,viewArray);
+
+    c.init();
+    c.update();
+}
+
+initGraph();
+/* const viewArray = getViewList(viewSize, nbNodeTot);
 const infectArray = getInfectedList(nbInfectedNode ,nbNodeTot);
 
 c = new NetworkGraph(nbNodeTot,nodeFinalMax,infectArray,viewArray);
 c = c.init();
-c.update();
-
+c.update(); */
 
 /******************************************************************* */
 /*************************EVENT LISTENER**************************** */   
 /******************************************************************* */
-const breakException = {};
-
-pcd.addEventListener('click', function(event) {
-    if(c.gpWin<2)
-        return;
-    c.deleteNodesArray();
-    c.deleteNodesWinArray();
-    c.nodesSet(c.nodesWin[c.gpWin]);
-    }, false
-)
+/* const breakException = {};
+function pcdlick(){
+    pcd.addEventListener('click', function(event) {
+        if(c.gpWin<2)
+            return;
+        c.deleteNodesArray();
+        c.deleteNodesWinArray();
+        c.nodesSet(c.nodesWin[c.gpWin]);
+        }, false
+    )
+}
 
 popupCross.addEventListener('click', function(event) {
     nodeClearHover();
@@ -251,7 +253,7 @@ c.canvas.addEventListener('click', function(event){
         if(err!== breakException)
             throw err   
    }}, false
-)
+) */
 
 // Resize window 
 //window.addEventListener('resize',c.resizeCanvas,false);

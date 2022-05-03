@@ -35,22 +35,20 @@ app.post('/infoNoeud', async (req, res) => {
     res.sendStatus(200);
 })
 
+app.get('/nodeData', async (req,res)=>{
+    const allNode = await db.recupAllNoeud();
+    const nodesJson = {
+        allNode: allNode,
+    }
+    res.status(200).send(nodesJson);
+})
+
 app.get('/network', (req, res) => {
     res.render('network');
 })
 
 app.get('/stats', async(req,res)=>{
-    try{
-        const nodes = await db.recupTotalNoeud();
-        const noeudMalicieux = await db.recupTotalMalicieux();
-        const nodesJson = {
-            totalNoeud: nodes,
-            nbMalicieux: noeudMalicieux,
-        }
-        res.render('stats',{nodesJson});
-    }catch(err){
-        console.log(err);
-    }
+    res.render('stats');
 })
 
 app.get('/stats/:id', async(req,res)=>{
