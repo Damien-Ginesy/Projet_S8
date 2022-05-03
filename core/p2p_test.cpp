@@ -47,7 +47,6 @@ void on_GET_resp(const llhttp_t& parser, Basalt::net::HTTPClient::BufferView bod
 
 
 
-//doc p2p_test.cpp id viewSize bootstrap
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
