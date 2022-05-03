@@ -56,22 +56,8 @@ block body
 
     div#nodes 
         h1 Noeud : 
-        div.containeur
-            table
-                tr
-                    td 
-                        b Age
-                    td 12
-                    td 14
-                    td 2
-                    td 12
-                tr
-                    td 
-                        b Vue
-                    td N1
-                    td N4
-                    td N18
-                    td N54
+        div#father
+            div#subfather
             canvas#graph2
 
         
@@ -93,7 +79,7 @@ block body
     script.
                 
         /*-------------------------------------*/
-                    /* paramètres */
+                    /* params */
         /*-------------------------------------*/
 
         const pushData1 = [];   
@@ -137,6 +123,52 @@ block body
         pieChart(pushData1, chartId1); // creation of the global pie chart
         pieChart(pushData2, chartId2); // creation of the pie chart for nodes
 
+        
+        /*-------------------------------------*/
+            /*creation tables stats for nodes*/
+        /*-------------------------------------*/
+
+         /*-------------------------------------*/
+            /*params for tables for nodes*/
+        /*-------------------------------------*/
+
+
+        async function createTableForNodes(){
+            await getData();
+
+            const father = document.getElementById('subfather')
+            let tab = document.createElement("table");
+            father.append(tab); 
+
+            let tr1 = document.createElement('tr');
+            tab.append(tr1);
+
+            let td1 = document.createElement('td');
+            tr1.append(td1);
+            td1.append('Age')
+            
+            let td2 = document.createElement('td');
+            tr1.append(td2);
+            td2.append('5')
+
+            let td3 = document.createElement('td');
+            tr1.append(td3);
+            td3.append('12')
+
+            let tr2 = document.createElement('tr');
+            tab.append(tr2);
+
+            let td4 = document.createElement('td');
+            tr2.append(td4);
+            td4.append('Vue')
+
+        }
+
+        createTableForNodes();
+        
+
+
+
         /*-------------------------------------*/
         /* window display when click on buttons*/
         /*-------------------------------------*/
@@ -150,7 +182,6 @@ block body
         const nodes = document.getElementById("nodes");
 
         const buttonBar = document.getElementById("cont");
-
 
         const mainDiv = document.getElementById("chart");
 
@@ -189,6 +220,7 @@ block body
                 buttonBar.style.marginTop = "0px";
             }
         })
+
 
 
         /*-------------------------------------*/
@@ -252,9 +284,9 @@ block body
         }
 
 
-        function getNbNoeuds(){
-            return 0;
-        }
+        /*-------------------------------------*/
+                    /* get data */
+        /*-------------------------------------*/
 
         async function getData(){
             const query = await fetch('/nodeData');
@@ -262,11 +294,6 @@ block body
             const data = JSON.parse(res);
         };
         
-
-        /*-------------------------------------*/
-                    /* get data */
-        /*-------------------------------------*/
-        getData();
 
         async function getDataForPieCharts(){
             const query = await fetch('/statsData');
