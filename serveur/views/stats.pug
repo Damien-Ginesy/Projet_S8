@@ -55,7 +55,7 @@ block body
     div#chart
 
     div#nodes 
-        h1 Noeud : 
+        h1#nodeTitle Noeud : 
         div#father
             div#subfather
             canvas#graph2
@@ -86,6 +86,7 @@ block body
         const pushData2 = [];
         const chartId1 = document.querySelector('#graph1'); // first pie chart, global stats window
         const chartId2 = document.querySelector('#graph2'); // pie chart in second window
+
 
         /*-------------------------------------*/
                     /* pie chart */
@@ -128,13 +129,26 @@ block body
             /*creation tables stats for nodes*/
         /*-------------------------------------*/
 
+        const nameNode = [];
+
+        async function createTitleNodes(){
+
+            await getData();
+            const title = document.getElementById('nodeTitle');
+            title.append(nameNode);
+            
+        }
+
+        createTitleNodes();
+
          /*-------------------------------------*/
             /*params for tables for nodes*/
         /*-------------------------------------*/
 
-
+        const Data = []; // general data
+        
         async function createTableForNodes(){
-            await getData();
+            await getDataForPieCharts();
 
             const father = document.getElementById('subfather')
             let tab = document.createElement("table");
@@ -146,21 +160,23 @@ block body
             let td1 = document.createElement('td');
             tr1.append(td1);
             td1.append('Age')
-            
-            let td2 = document.createElement('td');
-            tr1.append(td2);
-            td2.append('5')
-
-            let td3 = document.createElement('td');
-            tr1.append(td3);
-            td3.append('12')
 
             let tr2 = document.createElement('tr');
             tab.append(tr2);
 
-            let td4 = document.createElement('td');
-            tr2.append(td4);
-            td4.append('Vue')
+            let td2 = document.createElement('td');
+            tr2.append(td2);
+            td2.append('Vue')
+
+
+            //- const total = data.allNode[0].vue.length();
+            const total = 3;
+            for (let pas = 0; pas < total+1; pas++) {
+                let td2 = document.createElement('td');
+                tr1.append(td2);
+                td2.append('5')
+            }
+ 
 
         }
 
@@ -292,6 +308,9 @@ block body
             const query = await fetch('/nodeData');
             const res = await query.text();
             const data = JSON.parse(res);
+            nameNode.push(data.allNode[0].nodeID.adresseVirtuelle);
+            Data.push(data)
+            console.log(data)
         };
         
 
