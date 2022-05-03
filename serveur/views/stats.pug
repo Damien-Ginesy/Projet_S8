@@ -86,9 +86,196 @@ block body
 
 
         
-
+    //- JavaScript Part
 
     script(src='https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js')
-    script(src='graphs.js')
+
+    script.
+                
+        /*-------------------------------------*/
+                    /* paramètres */
+        /*-------------------------------------*/
+
+        const pushData1 = [];   
+        const pushData2 = [];
+        const chartId1 = document.querySelector('#graph1'); // first pie chart, global stats window
+        const chartId2 = document.querySelector('#graph2'); // pie chart in second window
+
+        /*-------------------------------------*/
+                    /* pie chart */
+        /*-------------------------------------*/
+        
+        async function pieChart(pushData, chartId){
+
+            await getDataForPieCharts();
+
+            let data = {
+            labels: ['noeuds malicieux', 'noeuds bons'],
+            datasets: [{
+                data: pushData[0], // mettre les données du serveur
+                backgroundColor: ['#6b2d5c', '#E2C290']
+            }]
+            };
+            
+            const config = {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    maintainAspectRatio : true, // make the pie small
+                    labels: {
+                        display: true,
+                        labels: {
+                            fontSize: 500 //change the size of the labels
+                        }
+                    }
+                }
+            };
+
+            const graph1 = new Chart(chartId, config);
+        }
+
+        pieChart(pushData1, chartId1); // creation of the global pie chart
+        pieChart(pushData2, chartId2); // creation of the pie chart for nodes
+
+        /*-------------------------------------*/
+        /* window display when click on buttons*/
+        /*-------------------------------------*/
+
+
+        const prev = document.getElementById("prev");
+        const next = document.getElementById("next");
+        const global = document.getElementById("global");
+
+        const screen = document.getElementById("screen");
+        const nodes = document.getElementById("nodes");
+
+        const buttonBar = document.getElementById("cont");
+
+
+        const mainDiv = document.getElementById("chart");
+
+
+        nodes.style.display = 'none';
+
+        next.addEventListener("click", () => {
+        if(getComputedStyle(chartId1).display != "none"){
+            screen.style.display = "none";
+            mainDiv.style.display = "none";
+            nodes.style.display = 'block';
+            buttonBar.style.margin = "105px";
+        } 
+        })
+
+        prev.addEventListener("click", () => {
+            if(getComputedStyle(chartId1).display != "none"){
+            screen.style.display = "none";
+            mainDiv.style.display = "none";
+            nodes.style.display = 'block';
+            buttonBar.style.marginTop = "105px";
+        
+            } 
+        })
+        
+
+        global.addEventListener("click", () => {
+            if(getComputedStyle(chartId1).display != "none"){
+                screen.style.display = "block";
+                nodes.style.display = 'none';
+                mainDiv.style.display = "none";
+                buttonBar.style.marginTop = "0px";
+            }else{
+                screen.style.display = "block";
+                mainDiv.style.display = "none";
+                buttonBar.style.marginTop = "0px";
+            }
+        })
+
+
+        /*-------------------------------------*/
+                    /* header nav */
+        /*-------------------------------------*/
+
+        
+        function openNav() {
+        document.getElementById("myNav").style.width = "100%";
+        }
+        
+        
+        function closeNav() {
+        document.getElementById("myNav").style.width = "0%";
+        }
+
+
+        /*-------------------------------------*/
+                    /* line chart */
+        /*-------------------------------------*/
+
+        mainDiv.style.display = "none";
+
+        let tab = document.createElement("table");
+        tab.className = 'charts-css line show-4-secondary-axes show-heading';
+        tab.id = "my-chart";
+        mainDiv.append(tab);  
+        let tbody = document.createElement('tbody');
+        tab.append(tbody);
+
+        let caption = document.createElement('caption');
+        caption.textContent = "Graphique Basalt"
+        tab.append(caption)
+
+
+        let tr1 = document.createElement('tr');
+        tbody.append(tr1);
+        let td1 = document.createElement('td');
+        td1.style =  "--start: 0.0; --size: 0.4";
+        tr1.append(td1);
+        let span = document.createElement('span');
+        span.className = "data"
+        td1.append(span);
+
+
+        let tr2 = document.createElement('tr');
+        tbody.append(tr2);
+        let td2 = document.createElement('td');
+        td2.style = "--start: 0.4; --size: 0.4" ;
+        tr2.append(td2);
+        let span2 = document.createElement('span');
+        span2.className = "data"
+        td2.append(span2);
+
+
+
+        function openChart(){
+        screen.style.display = "none";
+        nodes.style.display = "none";
+        mainDiv.style.display = "block";
+        }
+
+
+        function getNbNoeuds(){
+            return 0;
+        }
+
+        async function getData(){
+            const query = await fetch('/nodeData');
+            const res = await query.text();
+            const data = JSON.parse(res);
+        };
+        
+
+        /*-------------------------------------*/
+                    /* get data */
+        /*-------------------------------------*/
+        getData();
+
+        async function getDataForPieCharts(){
+            const query = await fetch('/statsData');
+            const res = await query.text();
+            const data = JSON.parse(res);
+            const dataToPush = [data.nbSains, data.nbMalicieux];
+            pushData1.push(dataToPush);
+            pushData2.push(dataToPush);
+        };
+        
  
     
