@@ -13,16 +13,14 @@ block body
         a(href="accueil")
             h3 Accueil
 
-        
-
-      
-
+    
     h1#title Statistiques Basalt APP
 
     h1#basalt_left BASALT APP
 
     div#screen
-        canvas#graph1 
+        canvas#graph1
+
         div#myNav.overlay
             a.closebtn(href='javascript:void(0)' onclick='closeNav()') &times;
             .overlay-content
@@ -99,7 +97,7 @@ block body
             let data = {
             labels: ['noeuds malicieux', 'noeuds bons'],
             datasets: [{
-                data: pushData[0], // mettre les données du serveur
+                data: pushData[0], 
                 backgroundColor: ['#6b2d5c', '#E2C290']
             }]
             };
@@ -205,7 +203,7 @@ block body
         nodes.style.display = 'none';
 
         next.addEventListener("click", () => {
-        if(getComputedStyle(chartId1).display != "none"){
+        if(getComputedStyle(chartId1).display !== "none"){
             screen.style.display = "none";
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
@@ -214,7 +212,7 @@ block body
         })
 
         prev.addEventListener("click", () => {
-            if(getComputedStyle(chartId1).display != "none"){
+            if(getComputedStyle(chartId1).display !== "none"){
             screen.style.display = "none";
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
@@ -225,7 +223,7 @@ block body
         
 
         global.addEventListener("click", () => {
-            if(getComputedStyle(chartId1).display != "none"){
+            if(getComputedStyle(chartId1).display !== "none"){
                 screen.style.display = "block";
                 nodes.style.display = 'none';
                 mainDiv.style.display = "none";
@@ -311,13 +309,13 @@ block body
             nameNode.push(data.allNode[0].nodeID.adresseVirtuelle);
             Data.push(data)
             console.log(data)
+            //- const data = await query.json();
         };
         
 
         async function getDataForPieCharts(){
             const query = await fetch('/statsData');
-            const res = await query.text();
-            const data = JSON.parse(res);
+            const data = await query.json();
             const dataToPush = [data.nbSains, data.nbMalicieux];
             pushData1.push(dataToPush);
             pushData2.push(dataToPush);
