@@ -4,7 +4,7 @@ import {DatabaseAccess} from './db'
 import {InfoNoeud} from "./Interface/InfoNoeud";
 
 const app = express();
-const port: number = 3001;
+const port: number = 3000;
 
 app.set('views', './views');
 app.use(express.static(__dirname + '/../public'));
@@ -60,7 +60,7 @@ app.get('/statsData', async(req,res)=>{
     }
     // const data = JSON.stringify(nodesJson);
     res.status(200).json(nodesJson);
-    
+
 })
 
 

@@ -22,7 +22,33 @@ block body
     h1#basalt_left BASALT APP
 
     div#screen
-        canvas#graph1 
+        canvas#graph1
+        script.
+            const ctx = document.querySelector('#graph1')
+
+            const data = {
+                labels: ['noeuds malicieux', 'noeuds bons'],
+                datasets: [{
+                    data: [#{}, nbBon], // mettre les données du serveur
+                    backgroundColor: ['#6b2d5c', '#E2C290']
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    maintainAspectRatio: true, // make the pie small
+                    labels: {
+                        display: true,
+                        labels: {
+                            fontSize: 500 //change the size of the labels
+                        }
+                    }
+                }
+            };
+
+            const graph1 = new Chart(ctx, config);
         div#myNav.overlay
             a.closebtn(href='javascript:void(0)' onclick='closeNav()') &times;
             .overlay-content
@@ -189,7 +215,7 @@ block body
         nodes.style.display = 'none';
 
         next.addEventListener("click", () => {
-        if(getComputedStyle(chartId1).display != "none"){
+        if(getComputedStyle(chartId1).display !== "none"){
             screen.style.display = "none";
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
@@ -198,7 +224,7 @@ block body
         })
 
         prev.addEventListener("click", () => {
-            if(getComputedStyle(chartId1).display != "none"){
+            if(getComputedStyle(chartId1).display !== "none"){
             screen.style.display = "none";
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
@@ -209,7 +235,7 @@ block body
         
 
         global.addEventListener("click", () => {
-            if(getComputedStyle(chartId1).display != "none"){
+            if(getComputedStyle(chartId1).display !== "none"){
                 screen.style.display = "block";
                 nodes.style.display = 'none';
                 mainDiv.style.display = "none";
@@ -290,15 +316,13 @@ block body
 
         async function getData(){
             const query = await fetch('/nodeData');
-            const res = await query.text();
-            const data = JSON.parse(res);
+            const data = await query.json();
         };
         
 
         async function getDataForPieCharts(){
             const query = await fetch('/statsData');
-            const res = await query.text();
-            const data = JSON.parse(res);
+            const data = await query.json();
             const dataToPush = [data.nbSains, data.nbMalicieux];
             pushData1.push(dataToPush);
             pushData2.push(dataToPush);
