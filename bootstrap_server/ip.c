@@ -272,7 +272,7 @@ void ip_print(unsigned char *ip){
 void ip_and_port_from_struct_sockaddr(
     struct sockaddr sockaddr_in,
     int *ip_out,
-    unsigned short *port_out
+    uint16_t *port_out
 ){
     
     // ip

@@ -19,7 +19,7 @@
 
 int socket_listen_and_bind(int Nb_node,char *port);
 
-int socket_bind(int Nb_proc, ushort* port);
+int socket_bind(int Nb_proc, uint16_t* port);
 
 int socket_and_connect(char *hostname, char *port,char* ip_str) ;
 

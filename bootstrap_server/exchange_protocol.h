@@ -1,6 +1,8 @@
 #ifndef __EXCHANGE_PROTOCOL_H__
 #define __EXCHANGE_PROTOCOL_H__
 
+#include <inttypes.h>
+
 /* --- Exchange protocol ---
 
     Basalt Node -> Bootstrap server :
@@ -16,22 +18,22 @@
 */
 
 struct node_network_info{
-    int ip;
-    unsigned short port;
-    int virtual_ip;
+    uint32_t ip;
+    uint16_t port;
+    uint32_t virtual_ip;
 };
 
 struct bootstrap_req{
-    unsigned int view_size;
-    int ip;
-    unsigned short port;
-    unsigned int attack_id; // = 0 for non malicious node
+    uint32_t view_size;
+    uint32_t ip;
+    uint16_t port;
+    uint32_t attack_id; // = 0 for non malicious node
 };
 
 struct bootstrap_res{
-    int ip;
-    unsigned int view_size;
-    unsigned int malicious_view_size; 
+    uint32_t ip;
+    uint32_t view_size;
+    uint32_t malicious_view_size; 
 };
 
 
