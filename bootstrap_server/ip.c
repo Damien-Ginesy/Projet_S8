@@ -3,6 +3,12 @@
 #include <string.h>
 #include <time.h>
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <arpa/inet.h>
+
 #include "ip.h"
 
 int mask1_allocated_adrr_size; // * 1 = size in char
@@ -133,16 +139,18 @@ char ip_is_alloc(unsigned char *ip, char mask){
     unsigned char *mask_allocated_adrr;
     int mask_allocated_adrr_curser; // size in ip 
 
-    ip_alloc_get_registerd_net_ip_by_mask(
-        &mask_allocated_adrr,
-        &mask_allocated_adrr_curser,
-        mask
-    );
+    for(int g_mask = 1; g_mask <= mask; g_mask++){
+        
+        ip_alloc_get_registerd_net_ip_by_mask(
+            &mask_allocated_adrr,
+            &mask_allocated_adrr_curser,
+            g_mask
+        );
 
-
-    for(int i = 0; i < mask_allocated_adrr_curser; i++){
-        if(memcmp(ip, mask_allocated_adrr+(mask*i), mask*sizeof(char)) == 0){
-            return 1;
+        for(int i = 0; i < mask_allocated_adrr_curser; i++){
+            if(memcmp(ip, mask_allocated_adrr+(g_mask*i), g_mask*sizeof(char)) == 0){
+                return 1;
+            }
         }
     }
 
@@ -217,12 +225,67 @@ int ip_ip2int(unsigned char *ip){
     return *((int *)ip);
 }
 
+int ip_str2intip(char *str){
+    
+    unsigned char ip[4];
+    int ip_index = 3;
+
+    char nbr_buffer[3];
+    int nbr_buffer_index = 0;
+
+    char c;
+
+    for(int i = 0; i < strlen(str); i++){
+        c = str[i];
+
+        if(c == '.'){
+            nbr_buffer[nbr_buffer_index++] = '\0';
+            ip[ip_index--] = (unsigned char) atoi(nbr_buffer);
+            nbr_buffer_index = 0;
+        }else{
+            nbr_buffer[nbr_buffer_index++] = c;
+        }
+    }
+
+    nbr_buffer[nbr_buffer_index++] = '\0';
+    ip[ip_index--] = (unsigned char) atoi(nbr_buffer);
+
+    return ip_ip2int(ip);
+}
+
+void ip2srt(char *str_out, unsigned char *ip){
+    sprintf(
+        str_out,
+        "%d.%d.%d.%d",
+        ip[3], ip[2], ip[1], ip[0]
+    );
+}
+
 void ip_print(unsigned char *ip){
     for(int i = 3; i > 0; i--){
         printf("%d.", ip[i]);
     }
     printf("%d", ip[0]);
     
+}
+
+void ip_and_port_from_struct_sockaddr(
+    struct sockaddr sockaddr_in,
+    uint32_t *ip_out,
+    uint16_t *port_out
+){
+    
+    // ip
+    struct sockaddr_in* pV4Addr = (struct sockaddr_in*)&sockaddr_in;
+    struct in_addr ipAddr = pV4Addr->sin_addr;
+    char str[INET_ADDRSTRLEN];
+    inet_ntop( AF_INET, &ipAddr, str, INET_ADDRSTRLEN );
+
+    *ip_out = ip_str2intip(str);
+
+    // port
+    *port_out = pV4Addr->sin_port;
+
 }
 
 // Test

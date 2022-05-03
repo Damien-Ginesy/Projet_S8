@@ -1,22 +1,34 @@
-CFLAGS=-Wall -std=gnu99
+CFLAGS=-g -Wall -std=gnu99 -DDEBUG=1
 LDFLAGS=-lpthread
 
-all: bootstrap_server
+all: obj bin bootstrap_server client
 
-bootstrap_server : bootstrap_server.c
-	gcc $(CFLAGS) -o bootstrap_server bootstrap_server.c
+bootstrap_server : bootstrap_server.c obj/bootstrap.o obj/ip.o obj/socket_IO.o obj/attack.o
+	gcc $(CFLAGS) -o bin/$@ $?
 
-socket_IO.o : socket_IO.c socket_IO.h
-	gcc $(CFLAGS) -o socket_IO.o -c socket_IO.c
+client : Node.c obj/socket_IO.o obj/ip.o
+	gcc $(CFLAGS) -o bin/$@ $?
 
-ip.o : ip.c ip.h
-	gcc $(CFLAGS) -o ip.o -c ip.c
+obj/socket_IO.o : socket_IO.c
+	gcc $(CFLAGS) -o $@ -c $?
 
-bootstrap.o : bootstrap.c bootstrap.h
-	gcc $(CFLAGS) -o bootstrap.o -c bootstrap.c
+obj/ip.o : ip.c
+	gcc $(CFLAGS) -o $@ -c $?
 
-test : test.c ip.o bootstrap.o
-	gcc $(CFLAGS) -o test test.c ip.o bootstrap.o
+obj/attack.o : attack.c
+	gcc $(CFLAGS) -o $@ -c $?
+
+obj/bootstrap.o : bootstrap.c
+	gcc $(CFLAGS) -o $@ -c $?
+
+test : test.c obj/ip.o obj/bootstrap.o obj/attack.o
+	gcc $(CFLAGS) -o bin/$@ $?
 
 clean :
-	rm -f bootstrap_server test *.o
+	rm -f bootstrap_server bin/* obj/* *.report
+
+obj:
+	@mkdir obj
+
+bin:
+	@mkdir bin

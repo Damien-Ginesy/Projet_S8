@@ -8,6 +8,11 @@
 
 
 #include "bootstrap.h"
+#include "attack.h"
+
+int node_nbr = 0;
+struct node_info *node_tab = NULL;
+int node_current = 0;
 
 // ----- parse_simu_params
 
@@ -23,52 +28,53 @@ int compute_attacks_nbr(int argc, char **argv){
 
 void parse_simu_params(int argc, char **argv){
 
-    attacks_nbr = compute_attacks_nbr(argc, argv);
-    printf("attacks_nbr = %d\n", attacks_nbr);
-    
-    attacks_info = malloc(attacks_nbr*sizeof(struct attack_info));
-    for(int i = 0; i < attacks_nbr; i++){
-        attacks_info[i].mask = 0;
-        attacks_info[i].count_member = 0;
-        attacks_info[i].attack_list = NULL;
+    if(argc < 2){
+        fprintf(stderr, "No argument where given. Running Example : \n\t./bootstrap_server eclipse 1 inst 2 24 10000\n");
+        exit(EXIT_FAILURE);
     }
+
+    attacks_alloc_tab(compute_attacks_nbr(argc, argv));
+    
 
     int nbr_net_ip_by_mask[3];
     nbr_net_ip_by_mask[0] = 0;
     nbr_net_ip_by_mask[1] = 0;
     nbr_net_ip_by_mask[2] = 0;
 
+    int natural_mask; // 8 16 24
     int arg_i = 1; // ignoring executable name
     int attack_i = 0;
     while(1){
         if(strcmp(argv[arg_i], "eclipse") == 0){
             arg_i++;
-
-            attacks_info[attack_i].id = atoi(argv[arg_i++]);
+            
+            attacks_set_id_by_index(attack_i, atoi(argv[arg_i++]));
 
             attack_i++;
 
         }else if(strcmp(argv[arg_i], "inst") == 0){
             arg_i++;
 
-            attacks_info[attack_i].id = atoi(argv[arg_i++]);
+            attacks_set_id_by_index(attack_i, atoi(argv[arg_i++]));
 
-            attacks_info[attack_i].mask = atoi(argv[arg_i++]);
+            natural_mask = atoi(argv[arg_i++]);
             
-            //ip_alloc_network_ip(attacks_info[attack_i].network_ip, attacks_info[attack_i].mask);
 
-            switch (attacks_info[attack_i].mask){
+            switch (natural_mask){
                 
                 case 8:
                     nbr_net_ip_by_mask[0]++;
+                    attacks_set_mask_by_index(attack_i, 1);
                     break;
 
                 case 16:
                     nbr_net_ip_by_mask[1]++;
+                    attacks_set_mask_by_index(attack_i, 2);
                     break;
                 
                 case 24:
                     nbr_net_ip_by_mask[2]++;
+                    attacks_set_mask_by_index(attack_i, 3);
                     break;
                 
                 default:
@@ -82,7 +88,6 @@ void parse_simu_params(int argc, char **argv){
         }else{ // nbr nodes
 
             node_nbr = atoi(argv[arg_i]);
-            printf("node_nbr = %s\n", argv[arg_i]);
 
             if(node_nbr == 0){
                 fprintf(stderr, "Non valid params : Node_nbr = %s\n", argv[arg_i]);
@@ -98,8 +103,10 @@ void parse_simu_params(int argc, char **argv){
 
         }
     }
-    
+
     ip_alloc_init(nbr_net_ip_by_mask[0], nbr_net_ip_by_mask[1], nbr_net_ip_by_mask[2], node_nbr);
+
+    node_tab = malloc(node_nbr * sizeof(struct node_info));
 
 }
 
@@ -108,75 +115,43 @@ void test_parse_simu_params(int argc, char **argv){
     ip_print_after_init();
 }
 
-// initialisation
-attack_point *initialisation()
-{
-    attack_point *attack_point = malloc(sizeof(*attack_point));
-    if (attack_point == NULL)
-    {
-        exit(EXIT_FAILURE);
-    }
+void generate_view(
+    int view_size,
+    struct node_network_info *view,
+    int requester_virtual_ip
+){
 
-    attack_point->premier = NULL;
+    int tab_choosen_indexes[view_size];
+    int index;
 
-    return attack_point;
-}
+    char choosen;
 
-// insertion in chain list
-void insertion(attack_point *attack_point,struct node_network_info *attacker_info)
-{
-	// new attacker creation
-    attack_list *new_attacker = malloc(sizeof(*new_attacker));
-    if (new_attacker == NULL)
-    {
-        exit(EXIT_FAILURE);
-    }
-
-	new_attacker->attacker_info = attacker_info;
+    for(int i = 0; i < view_size; i++){
         
+        choosen = 1;
 
-	// attacker insertion in the chain
-		new_attacker->suivant = attack_point->premier;
-        attack_point->premier = new_attacker;
-		
-    
-}
+        // get unchoosen index
+        while(choosen){
 
-// add node_network_info data
-struct node_network_info *add_node_network_info(int ip,unsigned short port,int virtual_ip)
-{
-    // new attacker creation
-    struct node_network_info *node_network_info = malloc(sizeof(*node_network_info));
-    if (node_network_info == NULL)
-    {
-        exit(EXIT_FAILURE);
+            index = rand()%node_nbr;
+
+            choosen = 0;
+            for(int j = 0; j<i; j++){
+                if(
+                    tab_choosen_indexes[j] == index ||
+                    node_tab[index].network.virtual_ip == requester_virtual_ip
+                ){
+                    choosen = 1;
+                    break;
+                }
+            }
+
+        }
+
+        tab_choosen_indexes[i] = index;
+
+        memcpy(view+i, &(node_tab[index].network), sizeof(struct node_network_info));
+
     }
-    node_network_info->ip = ip;
-    node_network_info->port = port;
-    node_network_info->virtual_ip = virtual_ip;
-    
-    return node_network_info;
-}
 
-// add node_info data
-struct node_info *add_node_info(struct node_network_info *network,int view_size,int attack_id)
-{
-    // new attacker creation
-    struct node_info *node_info = malloc(sizeof(*node_info));
-    if (node_info == NULL)
-    {
-        exit(EXIT_FAILURE);
-    }
-    node_info->attaque_id = attack_id;
-    node_info->network = network;
-    node_info->view_size = view_size;
-    return node_info;
 }
-
-// update attack_info
-void update_attack_info(attack_point *attack_point,struct node_network_info *network)
-{
-    attacks_info->count_member++;
-    insertion(attack_point,network);
-}
-// -----

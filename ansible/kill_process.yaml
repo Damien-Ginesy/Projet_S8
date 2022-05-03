@@ -3,15 +3,18 @@
   hosts : all
   tasks :
     - name: Get running basalt processes 
-      command : "bash -c 'pgrep prog'"
+      command : "bash -c 'pgrep bootstrap'"
       register: grep_resultat 
  
     - name: affiche la liste des processus 
       debug: 
         msg: "Process id is : {{grep_resultat.stdout}}"
 
+    - name: killing basalt processes 
+      command : "bash -c 'pkill bootstrap'"
+    
     - name: Check killing basalt processes 
-      command : "bash -c 'echo $?'"
+      command : "bash -c 'echo #?'"
       register: check_resultat 
     
     - name: affiche le code retour si 0 ça marche sinon non ! 
