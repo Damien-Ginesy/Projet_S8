@@ -9,17 +9,17 @@ bootstrap_server : bootstrap_server.c obj/bootstrap.o obj/ip.o obj/socket_IO.o o
 client : Node.c obj/socket_IO.o obj/ip.o
 	gcc $(CFLAGS) -o bin/$@ $?
 
-socket_IO.o : socket_IO.c
-	gcc $(CFLAGS) -o obj/$@ -c $?
+obj/socket_IO.o : socket_IO.c
+	gcc $(CFLAGS) -o $@ -c $?
 
-ip.o : ip.c
-	gcc $(CFLAGS) -o obj/$@ -c $?
+obj/ip.o : ip.c
+	gcc $(CFLAGS) -o $@ -c $?
 
-attack.o : attack.c
-	gcc $(CFLAGS) -o obj/$@ -c $?
+obj/attack.o : attack.c
+	gcc $(CFLAGS) -o $@ -c $?
 
-bootstrap.o : bootstrap.c
-	gcc $(CFLAGS) -o obj/$@ -c $?
+obj/bootstrap.o : bootstrap.c
+	gcc $(CFLAGS) -o $@ -c $?
 
 test : test.c obj/ip.o obj/bootstrap.o obj/attack.o
 	gcc $(CFLAGS) -o bin/$@ $?

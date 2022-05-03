@@ -101,7 +101,7 @@ int socket_and_connect(char *hostname, char *port,char* ip_str){
 	while (tmp != NULL) {
 		if (tmp->ai_addr->sa_family == AF_INET) {
 			struct sockaddr_in *sockin_ptr = (struct sockaddr_in *)tmp->ai_addr;
-			u_short port_number = sockin_ptr->sin_port;
+			uint16_t port_number = sockin_ptr->sin_port;
 			strcpy(ip_str,inet_ntoa(sockin_ptr->sin_addr));
 			printf("Address is %s:%hu\n", ip_str, htons(port_number));
 			printf("Connecting...");

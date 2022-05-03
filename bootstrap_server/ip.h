@@ -30,8 +30,8 @@ void ip_print(unsigned char *ip);
 // other tools
 void ip_and_port_from_struct_sockaddr(
     struct sockaddr sockaddr_in,
-    int *ip_out,
-    unsigned short *port_out
+    uint32_t *ip_out,
+    uint16_t *port_out
 );
 
 // Tests
