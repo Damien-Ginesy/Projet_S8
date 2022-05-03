@@ -6,6 +6,8 @@
 #include <inttypes.h>
 #include <string.h>
 #include <asio.hpp>
+#include <misc.h>
+#include <Array.hpp>
 
 namespace Basalt
 {
@@ -31,7 +33,7 @@ namespace Basalt
             static Header fromBytes(const uint8_t* in){
                 return {
                     .type = (MessageType)in[0],
-                    .size = (uint32_t)(in[1] | (in[2] << 8) | (in[3] << 16) | (in[4]<<24))
+                    .size = lendian32(*(uint32_t*)(in+1))
                 };
             }
             /* The raw data size of a serialized Header object */ 
@@ -40,9 +42,9 @@ namespace Basalt
             void toBytes(uint8_t out[]) const {
                 out[0] = (uint8_t)      type;
                 out[1] = (uint8_t)      (size & 0xff);
-                out[2] = (uint8_t)(     (size >> 8) & 0xff);
-                out[3] = (uint8_t)(     (size >> 16) & 0xff);
-                out[4] = (uint8_t)(     (size >> 24) & 0xff);
+                out[2] = (uint8_t)     ((size >> 8) & 0xff);
+                out[3] = (uint8_t)     ((size >> 16) & 0xff);
+                out[4] = (uint8_t)     ((size >> 24) & 0xff);
             }
         };
         /* Represents a message */
@@ -66,7 +68,45 @@ namespace Basalt
             Message& operator<<(uint64_t b); /* Appends a 64-bit int to the Message in little endian order */
             Message& operator<<(const char* str); /* Appends a string to the message */
             Message& operator<<(const std::string& str); /* Appends a string to the message */
-            
+            template<typename T, size_t N>
+            Message& operator<<(const std::array<T, N>& in){
+                for(const T& x: in)
+                    *this << x;
+                return *this;
+            }
+            template<typename T, size_t N>
+            Message& operator<<(const std::array<T, N>&& in){
+                for(const T& x: in)
+                    *this << x;
+                return *this;
+            }
+            template<size_t N>
+            Message& operator>>(std::array<byte, N>& out){
+                _header.size -= N;
+                for(size_t i=0; i<N; i++) 
+                    out[i] = _payload[_header.size+i];
+                _payload.resize(_header.size);
+                return *this;
+            }
+            Message& operator>>(Array<byte>& out);
+            template<typename T>
+            Message& operator<<(const Array<T>& in){
+                for(const T& x: in)
+                    *this << x;
+                return *this;                
+            }
+            template<typename T>
+            Message& operator<<(const Array<T>&& in){
+                for(const T& x: in)
+                    *this << x;
+                return *this;                
+            }
+            template<typename T>
+            Message& operator<<(Array<T>::View in){
+                for(const T& x: in)
+                    *this << x;
+                return *this;
+            }
             Message& operator>>(uint8_t& b); 
             Message& operator>>(uint16_t& b);
             Message& operator>>(uint32_t& b);
@@ -74,9 +114,9 @@ namespace Basalt
             void operator>>(char* out);
             void operator>>(std::string& out);
             /* Returns the total size of the message (header included) */
-            uint32_t size() const { return _payload.size() + Header::dataSize; }
+            uint32_t size() const { return (uint32_t)_payload.size() + Header::dataSize; }
             /* Returns the size of the payload */
-            uint32_t payloadSize() const { return _payload.size(); }
+            uint32_t payloadSize() const { return (uint32_t)_payload.size(); }
             /* Returns the type of the message */
             MessageType get_type() const { return _header.type; }
             /* Sets the type of the message */

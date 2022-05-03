@@ -19,7 +19,7 @@ namespace Basalt
         bool operator==(const NodeId& other) const;
         /* The size of the actual data, once serialized to raw bytes */
         /* Represents a default invalid id */
-        static inline NodeId null() { return NodeId{asio::ip::address_v4(0), 0, 0xffff}; }
+        static inline NodeId null() { return NodeId{asio::ip::address_v4(0), 0, 0xffffffff}; }
         /* Represents the NodeId object, in JSON format */
         std::string to_string() const;
     };

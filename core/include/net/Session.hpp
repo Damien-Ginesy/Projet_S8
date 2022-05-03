@@ -1,5 +1,5 @@
 #pragma once
-#include <asio.hpp>
+#include <asio/ip/tcp.hpp>
 #include <iostream>
 #include <net/Message.hpp>
 #include <map>
@@ -10,7 +10,7 @@ namespace Basalt
     namespace net
     {
         /* A type that binds message types to callback functions */
-        using CallbackMap = std::unordered_map<MessageType, void(*)(Message&)>;
+        using CallbackMap = std::unordered_map<MessageType, void(*)(asio::ip::tcp::endpoint, Message&)>;
 
         /* Represents a communication session between two peers */
         struct Session final

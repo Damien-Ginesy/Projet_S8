@@ -48,6 +48,13 @@ namespace Basalt
             out = ((uint64_t)a << 32) | b;
             return *this;
         }
+        Message& Message::operator>>(Array<byte>& out){
+            _header.size -= out.size();
+            for(size_t i=0; i<out.size(); i++)
+                out[i] = _payload[_header.size+i];
+            _payload.resize(_header.size);
+            return *this;
+        }
         void Message::operator>>(char* out){
             std::memcpy(out, _payload.data(), _header.size);
             _payload.resize(_header.size = 0);
@@ -58,7 +65,7 @@ namespace Basalt
             _payload.resize(_header.size = 0);
         }
         Message& Message::operator<<(const char* str){
-            unsigned len = strlen(str);
+            unsigned len = (uint32_t)strlen(str);
             _payload.resize(_header.size + len);
             std::memcpy(_payload.data()+_header.size, str, len);
             _header.size += len;
@@ -67,6 +74,7 @@ namespace Basalt
         Message& Message::operator<<(const std::string& str){
             return *this << str.c_str();
         }
+        
         asio::error_code Message::writeTo(tcp::socket& sock) const{
             asio::error_code ec;
             uint8_t buf[Header::dataSize];
@@ -85,10 +93,10 @@ namespace Basalt
         void Message::append(const uint8_t *input, size_t n){
             _payload.resize(_header.size + n);
             std::memcpy(_payload.data() + _header.size, input, n);
-            _header.size += n;
+            _header.size += (uint32_t)n;
         }
         void Message::pop(uint8_t *output, size_t n){
-            _header.size -= n;
+            _header.size -= (uint32_t)n;
             std::memcpy(output, _payload.data()+_header.size, n);
             _payload.resize(_header.size);
         }

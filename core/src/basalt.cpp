@@ -1,7 +1,9 @@
 #include "basalt.hpp"
-#include "SHA256Hash.hpp"
+#include <hash64.h>
 #include <net/basalt_net.hpp>
 #include <asio/steady_timer.hpp>
+#include <asio/ip/tcp.hpp>
+#include <asio/ip/address_v4.hpp>
 #include <misc.h>
 
 namespace Basalt
@@ -41,18 +43,13 @@ namespace Basalt
     LoopedFunction *mainLoop, *resetLoop;
     static std::thread runner;
     std::mutex mutex;
-    uint32_t iterCount = 0;
     HTTPLogger *logger = nullptr;
 
-    Node::Hash_t hashFunc(const NodeId& id, uint32_t seed) {
-        uint8_t data[8];
-        toLittleEndian(id.id, 4, data);
-        toLittleEndian(seed, 4, data+4);
-        return SHA256Hash(data, 8);
+    Hash_t rank(uint32_t id, uint32_t seed) {
+        return hash64(id, seed);
     }
     void update(){
         std::lock_guard guard(mutex);
-        iterCount++;
         node->update();
         if(logger)
         {
@@ -66,36 +63,52 @@ namespace Basalt
             }
         }
     }
+    #if IS_BYZANTINE==0
     void reset(){
         std::lock_guard guard(mutex);
         node->reset();
     }
+    #endif
     // message handlers
-    void on_pull_req(net::Message& req){
+    void on_pull_req(asio::ip::tcp::endpoint sender, net::Message& req){
+        using namespace asio::ip;
         std::lock_guard guard(mutex);
         node->on_pull_req(req);
     }
-    void on_push_req(net::Message& req){
+    void on_push_resp(asio::ip::tcp::endpoint sender, net::Message& resp){
+        resp.set_type(net::SESSION_END);
+    }
+    #if IS_BYZANTINE==0
+    void on_push_req(asio::ip::tcp::endpoint sender, net::Message& req){
         std::lock_guard guard(mutex);
         node->on_push_req(req);
     }
-    void on_pull_resp(net::Message& resp){
+    void on_pull_resp(asio::ip::tcp::endpoint sender, net::Message& resp){
         std::lock_guard guard(mutex);
         node->on_pull_resp(resp);
     }
-    void on_push_resp(net::Message& resp){
-        resp.set_type(net::SESSION_END);
-    }
+    #endif
 
-    void basalt_init(NodeId id, const Array<NodeId>& bs, duration<double> updateDelay, duration<double> resetDelay){
+    #if IS_BYZANTINE==0
+    void basalt_init(NodeId id, const Array<NodeId>& bs, unsigned k, duration<double> updateDelay, duration<double> resetDelay){
         /* init node here */
-        node = new Node(id, bs, bs.size()>>1, hashFunc);
+        node = new Node(id, bs, k, rank);
+
         net::CallbackMap callbacks {
             {net::PULL_REQ, on_pull_req},
             {net::PUSH_REQ, on_push_req},
             {net::PULL_RESP, on_pull_resp},
             {net::PUSH_RESP, on_push_resp}
         };
+    #else
+    void basalt_init(NodeId id, const Array<NodeId>& bs, Array<NodeId>& friends, 
+            unsigned k, duration<double> updateDelay, duration<double> resetDelay){
+        node = new Node(id, bs, friends);
+        net::CallbackMap callbacks {
+            {net::PULL_REQ, on_pull_req},
+            {net::PUSH_RESP, on_push_resp}
+        };
+    #endif
         using namespace asio::ip;
         tcp::endpoint ep(tcp::v4(), id._port);
         net::net_init(callbacks, ep);
@@ -103,7 +116,9 @@ namespace Basalt
         using namespace asio::chrono;
 
         mainLoop = new LoopedFunction(ctx, duration_cast<milliseconds>(updateDelay), update);
+        #if IS_BYZANTINE==0
         resetLoop = new LoopedFunction(ctx, duration_cast<milliseconds>(resetDelay), reset);
+        #endif
         runner = std::thread([](){ ctx.run(); });
     }
     void basalt_set_logger(HTTPLogger* log){

@@ -7,8 +7,11 @@
 #include <random>
 #include <algorithm>
 #include <HTTPLogger.hpp>
-#include <SHA256Hash.hpp>
 #include <misc.h>
+#include <semaphore>
+
+
+std::binary_semaphore sem(0);
 
 #define ERROR_EXIT(x)   { std::cerr << x << '\n'; exit(EXIT_FAILURE); }
 
@@ -49,14 +52,6 @@ void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>
         std::cout << id.to_string() << '\n';
 }
 
-
-Basalt::Node::Hash_t hashFunc(const Basalt::NodeId& id, uint32_t seed) {
-        uint8_t data[8];
-        Basalt::toLittleEndian(id.id, 4, data);
-        Basalt::toLittleEndian(seed, 4, data+4);
-        return SHA256Hash(data, 8);
-}
-
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
@@ -66,17 +61,36 @@ int main(int argc, char const *argv[])
     Array<NodeId> bs(2);
     bs[0] = NodeId {address_v4(0x7F000001), 3001, 1};
     bs[1] = NodeId {address_v4(0x7F000001), 3002, 2};
-    Node n(id, bs, 1, hashFunc, false, false);
+    if(argc < 2){
+        std::cerr << "Provide at least the hostname\n";
+        return EXIT_FAILURE;
+    }
+    const char* host = argv[1];
+    const char* url = argc>2?argv[2]: "/";
+    uint16_t port = argc>3? atoi(argv[3]):80;
+    Array<NodeId> friends(2);
+    bs[0] = NodeId {address_v4(0x7F000001), 3003, 3};
+    bs[1] = NodeId {address_v4(0x7F000001), 3004, 4};
+    Node n(id, bs, friends);
     try
     {
-        HTTPLogger logger(1, "localhost", 3000, "/");
+        HTTPLogger logger(1, host, port, url);
         logger.setCallback([](const llhttp_t& parser, net::HTTPClient::BufferView body){
-            std::cout << "Received code " << parser.status_code << '\n';
+            std::cout << "\nLOG SERVER RESPONSE" << '\n';
+            if(parser.status_code == 200)
+            std::cout << STYLE_BOLD STYLE_GREEN "Received code 200";
+            else
+            std::cout << STYLE_BOLD STYLE_RED "Received code " << parser.status_code;
+            std::cout << STYLE_DEFAULT << std::endl;
             for(char b: body)
                 std::cout << b;
+            std::cout << '\n';
+            sem.release();
         });
-        logger << n.to_string();
-        std::getchar();
+        std::string msg = n.to_string();
+        std::cout << msg << '\n';
+        logger << msg;
+        sem.acquire();
     }
     catch(const std::runtime_error& ec)
     {
