@@ -30,9 +30,9 @@ struct attack_info{
 };
 
 // simu params
-int node_nbr;
-int attacks_nbr;
-struct attack_info *attacks_info;
+extern int node_nbr;
+extern int attacks_nbr;
+extern struct attack_info *attacks_info;
 
 
 

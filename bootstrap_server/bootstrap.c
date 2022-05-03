@@ -9,6 +9,10 @@
 
 #include "bootstrap.h"
 
+int node_nbr = 0;
+int attacks_nbr = 0;
+struct attack_info *attacks_info = NULL;
+
 // ----- parse_simu_params
 
 int compute_attacks_nbr(int argc, char **argv){
@@ -40,6 +44,7 @@ void parse_simu_params(int argc, char **argv){
     nbr_net_ip_by_mask[1] = 0;
     nbr_net_ip_by_mask[2] = 0;
 
+    int natural_mask; // 8 16 24
     int arg_i = 1; // ignoring executable name
     int attack_i = 0;
     while(1){
@@ -55,21 +60,24 @@ void parse_simu_params(int argc, char **argv){
 
             attacks_info[attack_i].id = atoi(argv[arg_i++]);
 
-            attacks_info[attack_i].mask = atoi(argv[arg_i++]);
+            natural_mask = atoi(argv[arg_i++]);
             
 
-            switch (attacks_info[attack_i].mask){
+            switch (natural_mask){
                 
                 case 8:
                     nbr_net_ip_by_mask[0]++;
+                    attacks_info[attack_i].mask = 1;
                     break;
 
                 case 16:
                     nbr_net_ip_by_mask[1]++;
+                    attacks_info[attack_i].mask = 2;
                     break;
                 
                 case 24:
                     nbr_net_ip_by_mask[2]++;
+                    attacks_info[attack_i].mask = 3;
                     break;
                 
                 default:
