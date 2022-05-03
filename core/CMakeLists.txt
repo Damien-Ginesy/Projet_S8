@@ -62,3 +62,5 @@ target_link_libraries(ranking_tests basalt)
 
 add_executable(byzantine_test byzantine_test.cpp)
 target_link_libraries(byzantine_test byzantine_basalt)
+add_executable(honest_node honest_node.cpp)
+target_link_libraries(byzantine_test byzantine_basalt)

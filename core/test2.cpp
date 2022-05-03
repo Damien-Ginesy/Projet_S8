@@ -19,5 +19,6 @@ int main(int argc, char const *argv[])
 
     cli.GET("/", on_logger_resp);
     sem.acquire();
+
     return 0;
 }

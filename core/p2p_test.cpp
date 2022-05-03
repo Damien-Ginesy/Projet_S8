@@ -5,55 +5,81 @@
 #include <stdio.h>
 #include <random>
 
-void init(Basalt::NodeId& id, const char *filename,Basalt::Array<Basalt::NodeId>& bs){
+std::stringstream bsStream;
+Basalt::NodeId id;
+bool bsOK = false;
+std::binary_semaphore sem(0);
 
+void init(Basalt::Array<Basalt::NodeId>& bs){
+    
     using namespace Basalt;
-    std::ifstream inputFile(filename);
     using namespace asio::ip;
-    if(!inputFile.is_open()) {
-        perror(filename); exit(EXIT_FAILURE);
-    }
-    std::vector<NodeId> ids;
-    while (!inputFile.eof())
+    size_t i=0;
+    while (!bsStream.eof())
     {
         std::string ip;
-        uint16_t port, idVal;
-        inputFile >> ip >> port >> idVal;
+        uint16_t port;
+        uint32_t idVal;
+        bsStream >> ip >> port >> idVal;
         if(ip.empty()) continue;
-        if(idVal != id.id){
-            NodeId id { make_address_v4(ip), port, idVal };
-            ids.push_back(id);
-        }
-        else{
-            id._addr = make_address_v4(ip);
-            id._port = port;
-        }
+        bs[i++] = NodeId { make_address_v4(ip), port, idVal};
     }
-    inputFile.close();
-    std::random_device rng;
-    std::sample(ids.begin(), ids.end(), bs.begin(), bs.size(), rng);
 }
 void on_logger_response(const llhttp_t& parser, Basalt::net::HTTPClient::BufferView body){
     std::cout << "[LOGGER] Received code " << parser.status_code << '\n';
 }
+void on_POST_resp(const llhttp_t& parser, Basalt::net::HTTPClient::BufferView body){
+    std::stringstream s;
+    using namespace asio::ip;
+    std::cout << parser.status_code << '\n';
+    for(char c: body) s << c;
+    std::string ip;
+    uint32_t idVal;
+    s >> ip >> idVal;
+    id._addr = make_address_v4(ip);
+    id.id = idVal;
+
+    sem.release();
+}
+void on_GET_resp(const llhttp_t& parser, Basalt::net::HTTPClient::BufferView body){
+    if(bsOK = (parser.status_code == 200))
+        for(char c: body) bsStream << c;
+    sem.release();
+}
+
+
 
 //doc p2p_test.cpp id viewSize bootstrap
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
     using namespace asio::ip;
-    NodeId id = {address_v4(0), 0, (uint16_t)atoi(argv[1])};
+    id = {address_v4(0), (uint16_t)atoi(argv[1]), 0};
     size_t viewSize = atoll(argv[2]);
+
     std::cout << "View size: " << viewSize << '\n';
     Array<NodeId> bs(viewSize);
-    init(id, argv[3], bs);
-    HTTPLogger log(5, "localhost", 8080);
-    log.setCallback(on_logger_response);
-    std::cout << "Starting basalt..." << '\n';
-    using namespace std::chrono_literals;
-    basalt_set_logger(&log);
-    basalt_init(id, bs, (uint32_t)(viewSize>>1),1s, 5s);
-    std::this_thread::sleep_for(2min);
-    basalt_stop();
+
+    net::HTTPClient cli(std::string(argv[3]), 8080);
+    std::stringstream s;
+    s << "{\"type\":0,\"port\":" << argv[1] << "}\n";
+    std::string body = s.str();
+
+    cli.POST("/log", net::HTTPClient::BufferView(body.data(), body.size()), on_POST_resp, "application/json");
+    sem.acquire();
+    std::cout << id.to_string() << "\n=================\n";
+
+    do
+    {
+        cli.GET("/", on_GET_resp);
+        sem.acquire();
+    } while (!bsOK);
+
+    init(bs);
+
+    for(const auto& id: bs)
+        std::cout << id.to_string() << '\n';
+
+    
     return 0;
 }
