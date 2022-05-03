@@ -259,7 +259,8 @@ int main(int argc, char *argv[]) {
       // sending booststrap_res
       struct bootstrap_res bootstrap_res;
 
-      bootstrap_res.ip = node_tab[i].network.ip;
+      bootstrap_res.ip = node_tab[i].network.virtual_ip;
+      bootstrap_res.real_ip = node_tab[i].network.ip;
       bootstrap_res.view_size = node_tab[i].view_size;
       bootstrap_res.malicious_view_size = malicious_view_size;
 

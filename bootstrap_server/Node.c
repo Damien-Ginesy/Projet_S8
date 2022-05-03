@@ -27,8 +27,6 @@ int main(int argc, char  *argv[]){
         ip and port are obtined directely by the server at the accept.
         So there is no need to correctly specify them.
     */
-    bootstrap_req.ip = 0;
-    bootstrap_req.port = 0;
 
     bootstrap_req.view_size = atoi(argv[4]);
 
@@ -70,6 +68,14 @@ int main(int argc, char  *argv[]){
         unsigned char ip[4];
         char vip_str[16];
         unsigned char vip[4];
+
+        ip_int2ip(bootstrap_res.real_ip, ip);
+        ip2srt(ip_str, ip);
+        printf("real ip : %s\n", ip_str);
+
+        ip_int2ip(bootstrap_res.ip, ip);
+        ip2srt(ip_str, ip);
+        printf("virtual ip : %s\n", ip_str);
 
         // -- view
         printf("View :\n");
