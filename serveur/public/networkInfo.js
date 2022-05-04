@@ -17,7 +17,7 @@ function nodeHover(node, finalWin){
                         + "<br> Range : " + node.firstId + "-"  + endId +".";
     }
     else{
-        popupTitle.textContent = "Node " + node.id + " : ";
+        popupTitle.textContent = "Node " + node.info.idx + " : ";
 
         view.style.display = 'block';
         const popupInfo = document.getElementById('popupInfo');
@@ -29,11 +29,14 @@ function nodeHover(node, finalWin){
         }
 
         let row;
+        const viewArray = node.info.view;
+        console.log(viewArray)
         for (let i=0; i<node.info.view.length;i++){
             if (!(i%5))
                 row = document.createElement('tr');
             const rowData = document.createElement('td');    
-            rowData.textContent = node.info.view[i];
+            rowData.innerHTML = viewArray[i].nodeID.adresseReelle +
+                "<br>" + viewArray[i].nodeID.port;
             row.appendChild(rowData);
             if (!(i%5) || i<node.info.view.length)
                 tbody.appendChild(row);
@@ -47,7 +50,7 @@ function nodeClearHover(){
     popup.style.display = "none";
 }
 
-function showData(infectArray){
+function showData(){
     document.getElementById("overlay").style.display = "block";
     document.querySelector(".lessData").style.display = "block";
     document.querySelector(".popup").style.display = "none";
@@ -62,6 +65,5 @@ function hideData(){
     document.getElementById("moreData").style.display = "block";
 }
 
-chart = Highcharts.chart('infectionRate',
-Highcharts.merge(getGaugeOptions(),setGaugeData()));
-setInterval(gaugeUpdate(chart),2000);
+chart = Highcharts.chart('infectionRate', Highcharts.merge(getGaugeOptions(),setGaugeData()));
+setInterval(gaugeUpdate(chart),1000);

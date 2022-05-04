@@ -40,7 +40,7 @@ app.get('/nodeData', async (req,res)=>{
     const nodesJson = {
         allNode: allNode,
     }
-    res.status(200).send(nodesJson);
+    res.status(200).json(nodesJson);
 })
 
 app.get('/network', (req, res) => {

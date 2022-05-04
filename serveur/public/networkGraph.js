@@ -1,4 +1,3 @@
-const pcd = document.getElementById('topNavLeft');
 const popupCross = document.getElementById('popupQuit');
 const moreData = document.getElementById('moreData');
 
@@ -8,7 +7,6 @@ class NetworkGraph {
         this.ctx = this.canvas.getContext('2d');
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
-        //this.canvas.pcd = pcdlick();
 
         this.allNodes = nodesArray;
         this.nodeNb = nodesArray.length;
@@ -81,12 +79,14 @@ class NetworkGraph {
             const idx = i+firstId;
             // colorier pr les win
             const infect = (winFinal && this.allNodes[idx].malicieux)?1:0;
-            const view = winFinal?this.viewArray[idx]:this.nodes;
+            const view = winFinal?this.allNodes[idx].vue:this.nodes;
+            const id = winFinal?this.allNodes[idx].nodeID:idx;
             const info = {
+                'idx':idx,
                 'infect': infect,
                 'view':view,
             }
-            const node = Node.nodeInit(idx,cvsDim, this.nodes, end, winFinal, info);
+            const node = Node.nodeInit(id,cvsDim, this.nodes, end, winFinal, info);
             this.nodes.push(node);
         }
     }
@@ -137,6 +137,7 @@ class NetworkGraph {
         }
         requestAnimationFrame(this.update.bind(this));
     }
+
 }
 
 function mousePosition(event) {
@@ -149,111 +150,103 @@ function mousePosition(event) {
 /******************************************************************* */
 /*************************APPEL FONCTIONS*************************** */   
 /******************************************************************* */
-  
-function getViewList(viewSize, nbNodeTot){
-    const viewList = [];
-    for (let i=0;i<nbNodeTot;i++){
-      const viewNodeList = [];
-      while(viewNodeList.length!==viewSize){
-        const inView = Math.floor(Math.random() * nbNodeTot);
-        if ( (!viewNodeList.includes(inView)) && (inView!==i))
-          viewNodeList.push(inView);
-      }
-      viewList.push(viewNodeList);
-    }
-    return viewList;
-}
-
-const nodeFinalMax = 400;
-const viewSize = 1;
 
 initGraph = async() =>{
-    const query = await fetch('/nodeData');
-    const res = await query.json();
-    console.log(res);
-    const viewArray = getViewList(viewSize, res.allNode.length);
-    const c = new NetworkGraph(res.allNode, nodeFinalMax,viewArray);
+    const nodeFinalMax = 400;
+    const data = await fetch('/nodeData');
+    const res = await data.json();
+    const c = new NetworkGraph(res.allNode, nodeFinalMax);
 
     c.init();
     c.update();
+
+    pcdClick(c);
+    moreDataClick();
+    mouseOver(c);
+    quitPopup();
+    clickOnNode(c);
 }
 
 initGraph();
-/* const viewArray = getViewList(viewSize, nbNodeTot);
-const infectArray = getInfectedList(nbInfectedNode ,nbNodeTot);
-
-c = new NetworkGraph(nbNodeTot,nodeFinalMax,infectArray,viewArray);
-c = c.init();
-c.update(); */
 
 /******************************************************************* */
 /*************************EVENT LISTENER**************************** */   
 /******************************************************************* */
-/* const breakException = {};
-function pcdlick(){
-    pcd.addEventListener('click', function(event) {
+
+function pcdClick(c){
+    document.getElementById('topNavLeft').addEventListener('click',function(event){
         if(c.gpWin<2)
             return;
         c.deleteNodesArray();
         c.deleteNodesWinArray();
         c.nodesSet(c.nodesWin[c.gpWin]);
+    })
+};
+
+function quitPopup(){
+    const popupCross = document.getElementById('popupQuit');
+    popupCross.addEventListener('click', function(event) {
+        nodeClearHover();
+    })
+}
+
+function moreDataClick(){
+    const moreData = document.getElementById('moreData');
+    moreData.addEventListener('click', function(event) {
+        showData();
+    })
+}
+
+function mouseOver(c){
+    c.canvas.addEventListener("mousemove", function(event){
+        const breakException = {};
+        const mouse = mousePosition(event,this);
+        const nodeWin = c.nodesWin[c.gpWin];
+        const final = nodeWin.length===1?1:0;
+        try{
+            c.nodes.forEach((el, idx)=>{
+                if(Node.mouseInNode(el.circle, mouse) && !final){
+                    nodeHover(nodeWin[el.id],final);
+                    throw breakException;
+                }
+                else if (Node.mouseInNode(el.circle, mouse) && final){
+                    //console.log(c.nodes[idx], idx);
+                    //Node.nodeHighlightLine(idx,c.nodes, c.ctx,c.nodesWin[c.gpWin]);
+                    nodeHover(el,final);
+                    throw breakException;
+                }
+            })
+    
+        }catch(err){
+            if(err!== breakException)
+                throw err
+        }
         }, false
     )
 }
 
-popupCross.addEventListener('click', function(event) {
-    nodeClearHover();
-})
-
-moreData.addEventListener('click', function(event) {
-    showData(infectArray);
-})
-
-c.canvas.addEventListener("mousemove", function(event){
-    const mouse = mousePosition(event);
-    const nodeWin = c.nodesWin[c.gpWin];
-    const final = nodeWin.length===1?1:0;
-    try{
-        c.nodes.forEach((el, idx)=>{
-            if(Node.mouseInNode(el.circle, mouse) && !final){
-                nodeHover(nodeWin[el.id],final);
-                throw breakException;
-            }
-            else if (Node.mouseInNode(el.circle, mouse) && final){
-                console.log(c.nodes[idx], idx);
-                Node.nodeHighlightLine(idx,c.nodes, c.ctx,c.nodesWin[c.gpWin]);
-                nodeHover(el,final);
-                throw breakException;
-            }
-        })
-
-    }catch(err){
-        if(err!== breakException)
-            throw err
-    }
-    }, false
-)
-
-c.canvas.addEventListener('click', function(event){
-    mouse = mousePosition(event);
-    const nodeWin = c.nodesWin[c.gpWin];
-    const final = nodeWin.length===1?1:0;
-    try{
-        c.nodes.forEach(el=>{
-            if(Node.mouseInNode(el.circle, mouse) && !final){
-                c.addWin(nodeWin[el.id]);
-                throw breakException;
-            }
-            else if (Node.mouseInNode(el.circle, mouse) && final){
-                //window.location.href = "/stats/"+el.id;
-                throw breakException;
-            }
-        })
-   }catch(err){
-        if(err!== breakException)
-            throw err   
-   }}, false
-) */
-
+function clickOnNode(c){
+    c.canvas.addEventListener('click', function(event){
+        const breakException = {};
+        mouse = mousePosition(event);
+        const nodeWin = c.nodesWin[c.gpWin];
+        const final = nodeWin.length===1?1:0;
+        try{
+            c.nodes.forEach(el=>{
+                if(Node.mouseInNode(el.circle, mouse) && !final){
+                    c.addWin(nodeWin[el.id]);
+                    throw breakException;
+                }
+                else if (Node.mouseInNode(el.circle, mouse) && final){
+                    //window.location.href = "/stats/"+el.id;
+                    throw breakException;
+                }
+            })
+        }catch(err){
+            if(err!== breakException)
+                throw err   
+   }})
+}
+/*
 // Resize window 
-//window.addEventListener('resize',c.resizeCanvas,false);
+//window.addEventListener('resize',c.resizeCanvas,false);*/

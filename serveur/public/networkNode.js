@@ -8,50 +8,31 @@ class Node {
     static nodeInit(id, cvsDim,nodes, n, winFinal, info){
         let circle;
         if (winFinal){
-
-            /* Si circulaire */ /* modifier la répartition */
-            //circle = Node.setPosition(id, cvsDim,'circular', n);
-            /* si aléatoire */ /* enlever n + winFinal et le remplacer par r */
-            circle = Node.setPosition(id, cvsDim,'default',20);
+            circle = Node.setPosition(cvsDim,22);
             while(this.checkBorder(circle, cvsDim) || this.checkOverlap(circle,nodes)){
                 // changer l'argument
-                circle = Node.setPosition(id, cvsDim,'default',20);
+                circle = Node.setPosition(cvsDim,22);
             }
         }
         else{
-            circle = Node.setPosition(id, cvsDim,'default',n);
+            circle = Node.setPosition(cvsDim,n);
             while(this.checkBorder(circle, cvsDim) || this.checkOverlap(circle,nodes)){
-                circle = Node.setPosition(id, cvsDim,'default',n);
+                circle = Node.setPosition(cvsDim,n);
             }
         }
         const c=new Node(id,circle, info);
         return c;
     }
 
-    static setPosition(i, cvsDim,shape, n){
-        let circle;
-        switch(shape){
-            case "circular":
-                // A modifier
-                const baseRadius = Math.min(cvsDim.width,cvsDim.height)/(n/59);
-                const angle = Math.PI / n;
-                const s = Math.sin(angle);
-                const r = baseRadius * s / (1-s);
-                const phi = angle * i * 2;
-                const cx = cvsDim.width/2+(baseRadius + r) * Math.cos(phi);
-                const cy = cvsDim.height/2+(baseRadius + r) * Math.sin(phi);
-                circle = {'x' : cx, 'y' : cy, 'r': r, 'sx': 0, 'sy': 0};
-                return circle;
-            default:
-                /* A MODIFIER */
-                const rad = n===20 ? n : Math.min(cvsDim.height,cvsDim.width)/10,
-                    xspd = n===20 ? 0 : Math.floor((Math.random()*0.2))+0.5,
-                    yspd = n===20 ? 0 : Math.floor((Math.random()*0.2))+0.5,
-                    x = Math.floor((Math.random()*cvsDim.width)),
-                    y = Math.floor((Math.random()*cvsDim.height));
-                circle = {'x' : x, 'y' :y, 'r': rad, 'sx': xspd, 'sy': yspd};
-                return circle;
-        }
+    static setPosition(cvsDim,n){
+        /* A MODIFIER */
+        const rad = n===22 ? n : Math.min(cvsDim.height,cvsDim.width)/10,
+            xspd = n===22 ? 0 : Math.floor((Math.random()*0.2))+0.5,
+            yspd = n===22 ? 0 : Math.floor((Math.random()*0.2))+0.5,
+            x = Math.floor((Math.random()*cvsDim.width)),
+            y = Math.floor((Math.random()*cvsDim.height));
+        const circle = {'x' : x, 'y' :y, 'r': rad, 'sx': xspd, 'sy': yspd};
+        return circle;
     }
 
     // contour du canvas
@@ -128,6 +109,19 @@ class Node {
         ctx.closePath(); 
     }
 
+    static drawLine(c1x,c1y,c2x,c2y, ctx){
+        ctx.beginPath();
+        ctx.moveTo(c2x,c2y);
+        ctx.lineTo(c1x,c1y);
+        ctx.stroke();
+        ctx.closePath(); 
+    }
+
+    static getIdxById(id, nodesArray){
+        return nodesArray.findIndex((element)=> 
+            JSON.stringify(id) === JSON.stringify(element.id))
+    }
+
     static nodeDrawLine(idx,nodes, ctx,win){
         const winFinal = win.length === 1;
         if (!winFinal){
@@ -138,31 +132,25 @@ class Node {
                 const mx = nodes[idx].circle.x;
                 const my= nodes[idx].circle.y;
                 ctx.globalAlpha = 0.1;
-                ctx.beginPath();
-                ctx.moveTo(element.circle.x,element.circle.y);
-                ctx.lineTo(mx,my);
-                ctx.stroke();
-                ctx.closePath();   
+                this.drawLine(mx,my,element.circle.x,element.circle.y,ctx); 
             });
         }
         else{
             nodes[idx].info.view.forEach(element => {
-                if (element < win[0].firstId || element >= win[0].firstId+win[0].nodeNbInGrp)
+                const eleIdx = this.getIdxById(element.nodeID,nodes)
+                
+                if (eleIdx < win[0].firstId || eleIdx >= win[0].firstId+win[0].nodeNbInGrp)
                     return;
-                const mx = nodes[idx].circle.x;
-                const my= nodes[idx].circle.y;
-                const nodeIdx = element - win[0].firstId;
+                const mx = nodes[eleIdx].circle.x;
+                const my= nodes[eleIdx].circle.y;
+                const nodeIdx = eleIdx - win[0].firstId;
                 ctx.globalAlpha = 0.1;
-                ctx.beginPath();
-                ctx.moveTo(nodes[nodeIdx].circle.x,nodes[nodeIdx].circle.y);
-                ctx.lineTo(mx,my);
-                ctx.stroke();
-                ctx.closePath();   
+                this.drawLine(mx,my,nodes[nodeIdx].circle.x,nodes[nodeIdx].circle.y,ctx);  
             });
         }
     }
 
-    static nodeHighlight(idx,nodes, ctx, win){
+    static nodeHighlightLine(idx,nodes, ctx, win){
         nodes[idx].info.view.forEach(element => {
             if (element < win[0].firstId || element >= win[0].firstId+win[0].nodeNbInGrp)
                 return;
@@ -170,7 +158,7 @@ class Node {
             const mx = nodes[idx].circle.x;
             const my= nodes[idx].circle.y;
             const nodeIdx = element - win[0].firstId;
-            console.log('in : ', nodeIdx)
+            console.log('in : ', nodes[nodeIdx].id)
             ctx.beginPath();
             ctx.moveTo(nodes[nodeIdx].circle.x,nodes[nodeIdx].circle.y);
             ctx.lineTo(mx,my);
