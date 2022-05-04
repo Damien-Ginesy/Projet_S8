@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import random
 import logging, os
 
-logging.getLogger('werkzeug').setLevel(logging.CRITICAL)
+# logging.getLogger('werkzeug').setLevel(logging.CRITICAL)
 
 
 @dataclass
@@ -31,6 +31,7 @@ def serve():
             ls += x.ip + " " + str(x.port) + " " + str(x.id) + "\n"
         resp = Response(ls)
         resp.headers['Content-Type'] = 'text/plain'
+        print(ls)
         return resp
     else:
         return "wait\n", 206
@@ -43,10 +44,10 @@ def log():
     ip = request.remote_addr
     id = (i:=i+1)
     NodeList.append(Node(ip, port, id, type))
-    print("Logged " + ip + ":" + port + " (strategy=" + type + ") as vId=" + str(id))
+    print("Logged " + ip + ":" + str(port) + " (strategy=" + str(type) + ") as vId=" + str(id))
     if i == lim:
         print("Ready to serve bootstrap!")
-    return str(id) + " " + ip + "\n"
+    return "%s %i\n" % (ip, id)
 
 
 

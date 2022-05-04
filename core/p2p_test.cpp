@@ -56,13 +56,17 @@ int main(int argc, char const *argv[])
 
     std::cout << "View size: " << viewSize << '\n';
     Array<NodeId> bs(viewSize);
-
     net::HTTPClient cli(std::string(argv[3]), 8080);
     std::stringstream s;
     s << "{\"type\":0,\"port\":" << argv[1] << "}\n";
     std::string body = s.str();
 
+    asio::error_code err = 
     cli.POST("/log", net::HTTPClient::BufferView(body.data(), body.size()), on_POST_resp, "application/json");
+    if(err){
+        std::cout << "Couldn't send request: " << err.message() << '\n';
+        return EXIT_FAILURE;
+    }
     sem.acquire();
     std::cout << id.to_string() << "\n=================\n";
 
