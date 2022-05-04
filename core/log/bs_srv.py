@@ -23,7 +23,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def serve():
-    bs_size = request.args.get('bs_size');
+    bs_size = int(request.args.get('bs_size'));
     if i >= lim or bs_size>lim:
         bs = random.sample(NodeList, bs_size)
         ls = ""
