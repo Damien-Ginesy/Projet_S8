@@ -3,6 +3,9 @@ project(basalt VERSION 0.1.0)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
@@ -57,8 +60,8 @@ target_link_libraries(p2p_test basalt)
 add_executable(test2 test2.cpp)
 target_link_libraries(test2 basalt)
 
-add_executable(ranking_tests ranking_tests.cpp)
-target_link_libraries(ranking_tests basalt)
+#add_executable(ranking_tests ranking_tests.cpp)
+#target_link_libraries(ranking_tests basalt)
 
 add_executable(byzantine_test byzantine_test.cpp)
 target_link_libraries(byzantine_test byzantine_basalt)
