@@ -58,7 +58,7 @@ void parse_simu_params(int argc, char **argv){
             attacks_set_id_by_index(attack_i, atoi(argv[arg_i++]));
 
             natural_mask = atoi(argv[arg_i++]);
-            
+                
 
             switch (natural_mask){
                 

@@ -68,7 +68,7 @@ int main(int argc, char const *argv[])
 
     do
     {
-        cli.GET("/", on_GET_resp);
+        cli.GET("/?bs_size=" + std::string(argv[2]), on_GET_resp);
         sem.acquire();
     } while (!bsOK);
 
