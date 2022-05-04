@@ -38,16 +38,16 @@ def serve():
 @app.route('/log', methods=['POST'])
 def log():
     global i
-    type = request.form.getlist('type')[0]
-    port = request.form.getlist('port')[0]
+    type = request.json['type']
+    port = request.json['port']
     ip = request.remote_addr
     id = (i:=i+1)
     NodeList.append(Node(ip, port, id, type))
     print("Logged " + ip + ":" + port + " (strategy=" + type + ") as vId=" + str(id))
     if i == lim:
         print("Ready to serve bootstrap!")
-    return str(id) + "\n"
+    return str(id) + " " + ip + "\n"
 
 
 
-app.run(port=8080)
+app.run(host="0.0.0.0", port=8080)
