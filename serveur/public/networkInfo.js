@@ -30,15 +30,14 @@ function nodeHover(node, finalWin){
 
         let row;
         const viewArray = node.info.view;
-        console.log(viewArray)
         for (let i=0; i<node.info.view.length;i++){
-            if (!(i%5))
+            if (!(i%3))
                 row = document.createElement('tr');
             const rowData = document.createElement('td');    
             rowData.innerHTML = viewArray[i].nodeID.adresseReelle +
                 "<br>" + viewArray[i].nodeID.port;
             row.appendChild(rowData);
-            if (!(i%5) || i<node.info.view.length)
+            if (!(i%3) || i<node.info.view.length)
                 tbody.appendChild(row);
         }
 
@@ -65,5 +64,25 @@ function hideData(){
     document.getElementById("moreData").style.display = "block";
 }
 
-chart = Highcharts.chart('infectionRate', Highcharts.merge(getGaugeOptions(),setGaugeData()));
-setInterval(gaugeUpdate(chart),1000);
+const chart = Highcharts.chart('infectionRate', Highcharts.merge(getGaugeOptions(),setGaugeData()));
+
+setInterval(function () {
+    // Speed
+    let point,
+      newVal,
+      inc;
+  
+    if (!chart) 
+        return;
+
+    point = chart.series[0].points[0];
+    inc = Math.round((Math.random() - 0.5) * 100);
+    newVal = point.y + inc;
+
+    if (newVal < 0 || newVal > 100) {
+        newVal = point.y - inc;
+    }
+
+    point.update(newVal);
+
+}, 1000);

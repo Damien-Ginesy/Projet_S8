@@ -25,7 +25,7 @@ function getGaugeOptions(){
             stops: [
                 [0.3, '#55BF3B'], // green
                 [0.5, '#DDDF0D'], // yellow
-                [0.9, '#DF5353'] // red
+                [0.8, '#DF5353'] // red
             ],
             lineWidth: 0,
             tickWidth: 0,
@@ -82,23 +82,3 @@ function setGaugeData(){
         }]
     })
 }
-
-
-function gaugeUpdate(chart){
-    var point,
-        newVal,
-        inc;
-    
-    if (chart) {
-        point = chart.series[0].points[0];
-        inc = Math.round((Math.random() - 0.5) * 100);
-        newVal = point.y + inc;
-    
-        if (newVal < 0 || newVal > 100) {
-        newVal = point.y - inc;
-        }
-    
-        point.update(newVal);
-    }
-}
-
