@@ -16,14 +16,15 @@ class Node:
 NodeList = []
 i = 0
 
-lim = 3 #au minimum bs_size + 1
-bs_size = 2
+lim = 3 #au minimum bs_size
+bs_size = 3
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def serve():
-    if i >= lim:
+    bs_size = request.args.get('bs_size');
+    if i >= lim or bs_size>lim:
         bs = random.sample(NodeList, bs_size)
         ls = ""
         for x in bs:
@@ -34,7 +35,7 @@ def serve():
     else:
         return "wait\n", 206
 
-@app.route('/log', methods=['GET','POST'])
+@app.route('/log', methods=['POST'])
 def log():
     global i
     type = request.form.getlist('type')[0]
@@ -45,7 +46,7 @@ def log():
     print("Logged " + ip + ":" + port + " (strategy=" + type + ") as vId=" + str(id))
     if i == lim:
         print("Ready to serve bootstrap!")
-    return "successfully logged as vId=" + str(id) + "\n"
+    return str(id) + "\n"
 
 
 
