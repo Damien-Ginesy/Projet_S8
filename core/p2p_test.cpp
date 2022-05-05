@@ -5,6 +5,8 @@
 #include <string.h>
 
 std::stringstream bsStream;
+using namespace std::literals::chrono_literals;
+
 Basalt::NodeId id;
 bool bsOK = false;
 std::binary_semaphore sem(0);
@@ -89,7 +91,7 @@ int main(int argc, char const *argv[])
     for(const auto& id: bs)
         std::cout << id.to_string() << '\n';
 
-    HTTPLogger log(5, "localhost", 8081);
+    HTTPLogger log(5, "127.0.0.1", 8081);
     log.setCallback(on_logger_response);
     std::cout << "Starting basalt..." << '\n';
     basalt_set_logger(&log);

@@ -37,8 +37,8 @@ namespace Basalt
 			Hash_t&& currentHash = _rankingFunc(_view[i].id.id, _view[i].seed);
 			for (const NodeId& p : candidates) {
 				if(p.id == _id.id) continue;
-				if(_view[i].id == p){ _view[i].hits++; continue; }
-				Hash_t&& P_Hash = _rankingFunc(_view[i].id.id, _view[i].seed);
+				if(_view[i].id.id == p.id){ _view[i].hits++; continue; }
+				Hash_t&& P_Hash = _rankingFunc(p.id, _view[i].seed);
 				if(_view[i].id == NodeId::null() || P_Hash < currentHash){
 					currentHash = P_Hash;
 					_view[i].hits = 1;
@@ -79,7 +79,7 @@ namespace Basalt
 			req >> (*c);
 		std::cout << "Received push from" << candidates[0].to_string() << '\n';
 		updateSamples(candidates);
-		req.set_type(net::PUSH_RESP);		
+		req.set_type(net::PUSH_RESP);
 	}
 	void Node::on_pull_resp(net::Message& resp){
 		// read the view from the message and update
@@ -90,7 +90,7 @@ namespace Basalt
 		resp.set_type(net::SESSION_END);
 	}
 	Node::Node(NodeId id, const Array<NodeId>& bs, uint32_t k, RankFunc_t h,
-		bool isByzantine, bool isSgx): 
+		bool isByzantine, bool isSgx):
 		_id(id), _isSGX(isSgx),_rankingFunc(h), _k(k)
 	{
 		_view = Array<ViewEntry>(bs.size());
@@ -146,7 +146,7 @@ namespace Basalt
 			p = _view[i].hits < _view[p].hits? i:p;
 		_view[p].hits++;
 		return _view[p].id;
-	}  
+	}
 	void Node::update() {
 		NodeId p = selectPeer();
 		#if IS_BYZANTINE==0
@@ -187,5 +187,5 @@ namespace Basalt
 		req.set_type(net::PULL_RESP);
 	}
 	#endif
-	
+
 } // namespace Basalt
