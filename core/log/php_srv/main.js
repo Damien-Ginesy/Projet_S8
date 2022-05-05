@@ -2,7 +2,8 @@
 let IdTarget = 1;
 
 let l, dl; //var global boucle
-l = setInterval(getData, 500);
+l = setInterval(getData, 1000);
+getData();
 
 let identifiant = [];
 let nodeArray;
@@ -42,7 +43,7 @@ function plot(){
 
 function getData(){
   var req = new XMLHttpRequest();
-  req.open('GET', '/log.txt', true);
+  req.open('GET', '/log.log', true);
   req.onload  = function() {
      obj = JSON.parse(req.response);
      nodeArray = [];
@@ -50,6 +51,7 @@ function getData(){
       nodeArray.push(obj[n])
      }
      plot();
+     updateNodesInfo();
   };
   req.send(null);
 }
