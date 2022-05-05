@@ -100,13 +100,13 @@ namespace Basalt
                     *this << x;
                 return *this;
             }
-            /*
+
             template<typename T>
-            Message& operator<<(Array<T>::View in){
+            Message& operator<<(typename Array<T>::View in){
                 for(const T& x: in)
                     *this << x;
                 return *this;
-            }*/
+            }
             Message& operator>>(uint8_t& b);
             Message& operator>>(uint16_t& b);
             Message& operator>>(uint32_t& b);
