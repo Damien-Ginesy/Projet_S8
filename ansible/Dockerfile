@@ -85,8 +85,8 @@ mkdir basalt_project; \
 cd basalt_project; \
 cp -r /home/dev/bootstrap_server ./; \
 cd bootstrap_server/bootstrap/; \
-npm install > /dev/null; \
-npm run start ; \
+#npm install > /dev/null; \
+#npm run start ; \
 # TEST LAUNCHER DIRECT
 # cd ~/basalt_project/bootstrap_server/; \
 # chmod ugo+rwx launcher.sh;\
