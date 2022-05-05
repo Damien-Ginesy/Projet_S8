@@ -16,7 +16,7 @@ class Node:
 NodeList = []
 i = 0
 
-lim = 3 #au minimum bs_size
+lim = 30 #au minimum bs_size
 bs_size = 3
 
 app = Flask(__name__)

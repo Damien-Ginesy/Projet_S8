@@ -1,9 +1,13 @@
 #!/bin/bash
 
-gnome-terminal -- ./bin/p2p_test 3000 4 127.0.0.1:8080
-gnome-terminal -- ./bin/p2p_test 3001 4 127.0.0.1:8080
-gnome-terminal -- ./bin/p2p_test 3002 4 127.0.0.1:8080
-gnome-terminal -- ./bin/p2p_test 3003 4 127.0.0.1:8080
-gnome-terminal -- ./bin/p2p_test 3004 4 127.0.0.1:8080
-gnome-terminal -- ./bin/p2p_test 3005 4 127.0.0.1:8080
-gnome-terminal -- ./bin/p2p_test 3006 4 127.0.0.1:8080
+echo "Lancement..."
+v=10
+m=50
+for i in {1..50}
+do
+#gnome-terminal -- run
+./bin/p2p_test $((3000 + $i)) $v 127.0.0.1:8080 > /dev/null &
+done
+echo "$m noeuds lancé !"
+wait
+echo "Terminé !"

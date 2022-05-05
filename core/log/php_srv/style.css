@@ -1,0 +1,11 @@
+canvas {
+    /*width: 100vw;*/
+    margin: auto;
+  }
+  body {margin: auto; padding: 40px; width: 80%; overflow-x: hidden;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15pt;
+  }
+  h1 {
+      font-size: 20pt;
+  }
