@@ -9,10 +9,10 @@
         mode: 0644
 
     - name : compile
-      command : "bash -c 'cd /home/peer; rm -rf basalt_project; mkdir basalt_project; mv src.zip basalt_project/src.zip; cd basalt_project; unzip src.zip; cd bootstrap_server; make; ' "
-      
+      command : "bash -c 'cd /home/peer; rm -rf basalt_project; mkdir basalt_project; mv src.zip basalt_project/src.zip; cd basalt_project; unzip src.zip; cd cpp_sim/build; make; ' "
+      register: output 
     # - name : execution
-    #   command : "bash -c 'cd /home/peer/basalt_project/bootstrap_server; ./bootstrap_server eclipse 1 inst 2 8 100 8081 & sleep 2; ./node hosts 8081 ; ' " 
+    #   command : "bash -c 'cd /home/peer/basalt_project/cpp_sim/bin; ./basalt_ccp_sim eclipse 1 inst 2 8 100 8081 & sleep 2; ' " 
     #   register: output 
 
     - name: affiche output node

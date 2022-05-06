@@ -3,4 +3,4 @@
 pgrep bootstrap;
 pkill bootstrap;
 # TEST ans see OUTPUT
-pkill node;
+#pkill node;
