@@ -1,17 +1,25 @@
 #! /bin/bash
 
-bootstrap_port=8096
+#$1 : hostname
+#$2 : port
 
-
-bin/bootstrap_server eclipse 1 inst 2 24 10 $bootstrap_port &
-
-bin/client localhost $bootstrap_port 0 2 > 1.report &
-bin/client localhost $bootstrap_port 0 3 > 2.report &
-bin/client localhost $bootstrap_port 0 2 > 3.report &
-bin/client localhost $bootstrap_port 0 2 > 4.report &
-bin/client localhost $bootstrap_port 1 2 > 5.report &
-bin/client localhost $bootstrap_port 1 2 > 6.report &
-bin/client localhost $bootstrap_port 2 2 > 7.report &
-bin/client localhost $bootstrap_port 2 2 > 8.report &
-bin/client localhost $bootstrap_port 2 2 > 9.report &
-bin/client localhost $bootstrap_port 2 2 > 10.report &
+j=0;
+for (( i=0; i<$(($3 / 3)); i++ ))
+    do
+        bin/client $1 $2 0 2  > $j.report &
+        ((j++));
+        bin/client $1 $2 1 2  > $j.report &
+        ((j++));
+        bin/client $1 $2 2 2  > $j.report &
+        ((j++));
+    done
+if [[ $(($3 % 3)) == "1" ]]; then
+    bin/client $1 $2 0 2  $j.report &
+    ((j++));
+fi
+if [[ $(($3 % 3)) == "2" ]]; then
+    bin/client $1 $2 0 2  > $j.report &
+    ((j++));
+    bin/client $1 $2 0 2  > $j.report ;
+    ((j++));
+fi

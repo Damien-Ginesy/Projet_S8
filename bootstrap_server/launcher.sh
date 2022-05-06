@@ -107,17 +107,37 @@ cd ~/basalt_project/bootstrap_server/;
 echo "${bootstrap_param[@]}";
 make clean;
 make;
-stdbuf -o0 ./bootstrap_server "${bootstrap_param[@]}" > output.txt &
+stdbuf -o0 ./bin/bootstrap_server "${bootstrap_param[@]}" &
 #test d'un noeud
 sleep 2;
-./node launcher $PORT;
+
+# bin/client launcher $PORT 0 2 > 1.report &
+# bin/client launcher $PORT 0 3 > 2.report &
+# bin/client launcher $PORT 0 2 > 3.report &
+# bin/client launcher $PORT 0 2 > 4.report &
+# bin/client launcher $PORT 1 2 > 5.report &
+# bin/client launcher $PORT 1 2 > 6.report &
+# bin/client launcher $PORT 2 2 > 7.report &
+# bin/client launcher $PORT 2 2 > 8.report &
+# bin/client launcher $PORT 2 2 > 9.report &
+# bin/client launcher $PORT 2 2 > 10.report &
+# bin/client launcher $PORT 0 2 > 11.report &
+# bin/client launcher $PORT 0 3 > 12.report &
+# bin/client launcher $PORT 0 2 > 13.report &
+# bin/client launcher $PORT 0 2 > 14.report &
+# bin/client launcher $PORT 1 2 > 15.report &
+# bin/client launcher $PORT 1 2 > 16.report &
+# bin/client launcher $PORT 2 2 > 17.report &
+# bin/client launcher $PORT 2 2 > 18.report &
+# bin/client launcher $PORT 2 2 > 19.report &
+
 
 echo "${basalt_param[@]}";
 
 
 
 # test BASALT ALGO
-su peer < ./basalt_launcher.sh;
+#su peer < ./basalt_launcher.sh "${basalt_param[@]}" > outputbasalt.txt;
 # cd /home/peer/; 
 # mkdir basalt_project;
 # cd basalt_project;
