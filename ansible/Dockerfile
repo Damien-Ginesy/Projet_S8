@@ -71,6 +71,6 @@ mkdir basalt_project; \
 cd basalt_project; \
 cp -r /home/dev/bootstrap_server ./; \
 cd bootstrap_server/bootstrap/; \
-# npm install > /dev/null; \
-# npm run start & \
+npm install > /dev/null; \
+npm run start & \
 bash

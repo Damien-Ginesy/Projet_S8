@@ -24,7 +24,7 @@ app.post('/bootstrap', (req, res) => {
 
     var cmd = "chmod ugo+rwx ../launcher.sh; ../launcher.sh "
     cmd += "--port " + port;
-    cmd += "--ip " + ip;
+    cmd += " --ip " + ip;
 
     for (let index = 0; index < option1.length; index++) {
         if (index % 3 == 0) {
@@ -59,7 +59,7 @@ app.post('/bootstrap', (req, res) => {
 
 
 
-    /*exec(cmd, (error, stdout, stderr) => {
+    exec(cmd, (error, stdout, stderr) => {
          if (error) {
              console.log(`error: ${error.message}`);
          }
@@ -68,11 +68,12 @@ app.post('/bootstrap', (req, res) => {
              
          }
          console.log(`stdout: ${stdout}`);
-     });*/
+     });
 });
 app.post('/stop', (req, res) => {
 
-    exec("ls -la", (error, stdout, stderr) => {
+    var cmd = "chmod ugo+rwx ../stop_simulation.sh; ../stop_simulation.sh "
+    exec(cmd, (error, stdout, stderr) => {
          if (error) {
              console.log(`error: ${error.message}`);
          }

@@ -122,7 +122,7 @@ cd ~/basalt_project/bootstrap_server/;
 echo "${bootstrap_param[@]}";
 make clean;
 make;
-stdbuf -o0 ./bin/bootstrap_server "${bootstrap_param[@]}" &
+stdbuf -o0 ./bin/bootstrap_server "${bootstrap_param[@]}" > output.txt &
 #test d'un noeud
 sleep 2;
 
@@ -167,6 +167,3 @@ su peer basalt_launcher.sh "${basalt_param[@]}";
 #pratic kill process after clic
 # ansible-playbook /home/dev/kill_process.yaml; 
 # ansible all -a "echo ""code retour du dernier pgrep est :""$?;'"; 
-
-chmod ugo+rwx stop_simulation.sh;
-./stop_simulation.sh;
