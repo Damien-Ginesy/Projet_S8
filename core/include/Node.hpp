@@ -72,8 +72,8 @@ namespace Basalt
         /* Message handlers */
         void on_pull_req(net::Message&) const; /* pull request handler */
         #if IS_BYZANTINE==0
-        void on_pull_resp(net::Message&); /* pull response handler */
-        void on_push_req(net::Message&); /* push request handler */
+        void on_pull_resp(net::Message&, const asio::ip::tcp::endpoint& sender); /* pull response handler */
+        void on_push_req(net::Message&, const asio::ip::tcp::endpoint& sender); /* push request handler */
         #endif
         constexpr int is_byzantine() const { return IS_BYZANTINE; }
         std::string to_string() const;

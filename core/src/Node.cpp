@@ -72,20 +72,21 @@ namespace Basalt
 			std::cerr << "Coudln't send request: " << err.message() << '\n';
 		}
 	}
-	void Node::on_push_req(net::Message& req){
+	void Node::on_push_req(net::Message& req, const asio::ip::tcp::endpoint& sender){
 		// update our view, and make a PULL_RESP respoonse
 		Array<NodeId> candidates(_view.size() + 1);
 		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--)
 			req >> (*c);
-		std::cout << "Received push from" << candidates[0].to_string() << '\n';
+		candidates[0]._addr = sender.address().to_v4();
 		updateSamples(candidates);
 		req.set_type(net::PUSH_RESP);
 	}
-	void Node::on_pull_resp(net::Message& resp){
+	void Node::on_pull_resp(net::Message& resp, const asio::ip::tcp::endpoint& sender){
 		// read the view from the message and update
 		Array<NodeId> candidates(_view.size() + 1);
 		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--)
 			resp >> (*c);
+		candidates[0]._addr = sender.address().to_v4();
 		updateSamples(candidates);
 		resp.set_type(net::SESSION_END);
 	}
@@ -163,7 +164,6 @@ namespace Basalt
 		// read sender
 		NodeId sender;
 		req >> sender;
-		std::cout << "Received pull from " << sender.to_string() << '\n';
 		// put our view in the response
 		req << _id;
 		for(const ViewEntry& e: _view)
