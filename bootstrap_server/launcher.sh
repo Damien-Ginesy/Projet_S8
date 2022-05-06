@@ -2,7 +2,7 @@
 
 # les arguments du script : 
 # Ansible_command --port 3000 --machine USERNAME 192.0.0.1 45  --machine 192.0.0.12 35  --machine 192.0.0.111 77 --attack "type d'attaque" "attack ID" "NBr des noeuds" "Mask si inst"  --info 11 12 23 34
-# Ansible_command --port 3000 --machine host_1  192.0.0.1 22  --machine host_2 192.0.0.1 44 --attack eclipse 1 33  --attack inst 1 44 8 --info --taille_vue 11 --nb_cycle_reset 32 --nb_reset 32 --nb_cycle_sec 11
+# Ansible_command --port 3000 --ip 172.17.0.12 --machine host_1  192.0.0.1 22  --machine host_2 192.0.0.1 44 --attack eclipse 1 33  --attack inst 1 44 8 --info --taille_vue 11 --nb_cycle_reset 32 --nb_reset 32 --nb_cycle_sec 11 --log_server_hostname "machain" --log server port 8084 (if not 80) 
 # En cas de modification de nbr de hosts
 #    * create_virtual_network.sh : echo "172.17.0.2" >> hosts;
 #    * Dockerfile : ssh-copy-id -i ~/.ssh/id_rsa.pub peer@172.17.0.2 < password;
@@ -28,7 +28,12 @@ for (( i=0; i<$nbrup; i++ ))
 
         --port)
             shift
-            PORT=$1;
+            BS_PORT=$1;
+            shift
+            ;;
+        --ip)
+            shift
+            BS_IP=$1;
             shift
             ;;
 
@@ -92,6 +97,16 @@ for (( i=0; i<$nbrup; i++ ))
             basalt_param[$k]=$CYCLE_NBR_SEC;
             ((k++));
             shift
+            shift
+            log_server_hostname="test";
+            basalt_param[$k]=$log_server_hostname;
+            ((k++));
+            shift
+            shift
+            log_server_port=8787;
+            basalt_param[$k]=$log_server_port;
+            ((k++));
+            shift
 
             ;;
         esac
@@ -101,7 +116,7 @@ cat /etc/ansible/hosts;
 echo $NODE_NBR;
 bootstrap_param[$j]=$NODE_NBR;
 ((j++));
-bootstrap_param[$j]=$PORT;
+bootstrap_param[$j]=$BS_PORT;
 ((j++));
 cd ~/basalt_project/bootstrap_server/;
 echo "${bootstrap_param[@]}";
@@ -137,7 +152,8 @@ echo "${basalt_param[@]}";
 
 
 # test BASALT ALGO
-#su peer < ./basalt_launcher.sh "${basalt_param[@]}" > outputbasalt.txt;
+su peer basalt_launcher.sh "${basalt_param[@]}";
+#su peer;
 # cd /home/peer/; 
 # mkdir basalt_project;
 # cd basalt_project;

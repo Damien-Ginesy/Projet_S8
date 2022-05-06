@@ -64,13 +64,13 @@ USER root
 # CMD is the default command that is going to be executed in the startup of every exection.
 # Only the last one is considered. So use it once.
 CMD \
-su peer < /etc/ansibleconf.sh; \
+su peer /etc/ansibleconf.sh; \
 cd ~;\
 #Launch the Launcher 
 mkdir basalt_project; \
 cd basalt_project; \
 cp -r /home/dev/bootstrap_server ./; \
 cd bootstrap_server/bootstrap/; \
-npm install > /dev/null; \
-npm run start ; \
+# npm install > /dev/null; \
+# npm run start & \
 bash

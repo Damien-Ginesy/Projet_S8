@@ -2,6 +2,7 @@
 
 #copie des dossiers utiles 
 cp -r ../bootstrap_server ./;
+cp -r ../bin ./;
 # Création des machines hosts et main
 
 #hosts 

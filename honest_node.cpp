@@ -1,5 +1,5 @@
 #include <basalt.hpp>
-#include <semaphore>
+
 #include <bootstrap_server_structs.h>
 #include <endian.hpp>
 
