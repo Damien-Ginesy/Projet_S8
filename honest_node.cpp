@@ -1,7 +1,21 @@
 #include <basalt.hpp>
 #include <exchange_protocol.h>
-#include <endian.hpp>
+// #include <endian.hpp>
 #include <thread>
+
+asio::error_code resolve(asio::ip::tcp::resolver& resolver, std::string hostname, std::string service, asio::ip::tcp::endpoint& out)
+{
+    asio::error_code ec;
+    auto results =  resolver.resolve(hostname, service, ec);
+    if(ec) return ec;
+    for(const auto& r: results){
+        if(r.endpoint().address().is_v4()) {
+            out = r.endpoint();
+            break;
+        }
+    }
+    return asio::error_code();
+}
 
 int main(int argc, char const *argv[])
 {
@@ -26,49 +40,51 @@ int main(int argc, char const *argv[])
     const unsigned k = atol(argv[4]);
     const unsigned cyclesPerSec = atoi(argv[5]);
     tcp::resolver resolver(ctx);
-    asio::error_code ec;
-    auto results =  resolver.resolve(argv[6], argv[7], ec);
-    if(ec){
-        std::cerr << "Couldn't resolve " << argv[6] << ": " << ec.message() << std::endl;
-        return EXIT_FAILURE;
-    }
     tcp::endpoint bootstrapServer;
-    for(const auto& r: results){
-        if(r.endpoint().address().is_v4()) {
-            bootstrapServer = r.endpoint();
-            break;
-        }
-    }
-    std::cout << bootstrapServer << '\n';
-    tcp::socket sock(ctx);
+    asio::error_code ec = resolve(resolver, argv[6], argv[7], bootstrapServer);
+    tcp::socket bsServerSock(ctx);
 
-    sock.connect(bootstrapServer, ec);
+    bsServerSock.connect(bootstrapServer, ec);
     if(ec){
         std::cerr << "Couldn't connect to bootstrap server: " << ec.message() << std::endl;
         return EXIT_FAILURE;
     }
     bootstrap_req req {viewSize, port, 0};
-    Basalt::write_n(sock, sizeof(req), &req);
+    Basalt::write_n(bsServerSock, sizeof(req), &req);
     bootstrap_res resp;
-    std::cout << resp.malicious_view_size << '\n';
-    Basalt::read_n(sock, sizeof(resp), &resp);
+    Basalt::read_n(bsServerSock, sizeof(resp), &resp);
     Basalt::NodeId id { make_address_v4(resp.real_ip), port, resp.ip};
     std::cout << id.to_string() << '\n';
-
+    std::cout << sizeof(node_network_info) << '\n';
     Basalt::Array<Basalt::NodeId> bootstrap(viewSize);
-    std::cout << "Bootstrap:\n=========" << '\n';
+    std::cout << "Bootstrap:\n==================\n";
     for (auto& p: bootstrap)
     {
         node_network_info info;
-        Basalt::read_n(sock, sizeof(resp), &info);
+        Basalt::read_n(bsServerSock, sizeof(info), &info);
         p = Basalt::NodeId {make_address_v4(info.ip), info.port, info.virtual_ip};
         std::cout << p.to_string() << '\n';
     }
     
 
     // init here
+    const std::chrono::milliseconds mainDelay(1000 / cyclesPerSec);
+    const std::chrono::milliseconds resetDelay(cyclesBeforeReset * mainDelay);
+    const char *logServerHostname = NULL;
+    uint16_t logServerPort = 80;
+    switch (argc)
+    {
+    case 10: logServerPort = (uint16_t)atoi(argv[9]);
+    case 9: logServerHostname = argv[8];
+    }
+    Basalt::HTTPLogger logger(k, logServerHostname, logServerPort, "/infoNoeud");
+    Basalt::basalt_set_logger(&logger);
+    
+    Basalt::basalt_init(id, bootstrap, k, mainDelay, resetDelay);
 
+    while(1) 
+        std::this_thread::sleep_for(10s);
+    Basalt::basalt_stop();
 
-    // while(true) std::this_thread::sleep_for(10s);
     return 0;
 }
