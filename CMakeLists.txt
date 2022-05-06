@@ -11,6 +11,9 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 add_subdirectory(core)
 include_directories(core/include)
+include_directories(bootstrap_server)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 add_executable(honest_node honest_node.cpp)
 target_link_libraries(honest_node basalt)

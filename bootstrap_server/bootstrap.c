@@ -135,11 +135,15 @@ void generate_view(
 
             index = rand()%node_nbr;
 
+            if(node_tab[index].network.virtual_ip == requester_virtual_ip){
+                choosen = 1;
+                continue;
+            }
+
             choosen = 0;
             for(int j = 0; j<i; j++){
                 if(
-                    tab_choosen_indexes[j] == index ||
-                    node_tab[index].network.virtual_ip == requester_virtual_ip
+                    tab_choosen_indexes[j] == index
                 ){
                     choosen = 1;
                     break;
