@@ -116,7 +116,27 @@
     body {
       background: #b4b4b4;
     }
-
+    #button{
+      font-family: 'Open Sans Condensed', sans-serif;
+      text-transform: uppercase;
+      outline: none;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      box-sizing: border-box;
+      width: 100%;
+      background-color: #f00606;
+      padding: 10px;
+      color: white;
+      border: 1px solid #db3434;
+      border-radius: 3px;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: -75px;
+      cursor: pointer;
+      position: relative;
+      
+    }
     #registration-form {
       font-family: 'Open Sans Condensed', sans-serif;
       width: 1200px;
@@ -143,7 +163,6 @@
     }
 
     .fieldset form {
-      border: 1px solid #2f2f2f;
       margin: 0 auto;
       display: block;
       width: 100%;
@@ -237,7 +256,7 @@
       position: relative;
       top: 0;
     }
-
+    
     #registration-form input[type=submit]:hover {
       background-color: #2980b9;
     }
@@ -313,7 +332,8 @@
                 <a href="#" id="remove_fields"><i class="fa fa-trash "></i> Remove </a>
 
               </div>
-              <input type="text" name="port" class="survey_options" size="50" placeholder="port">
+              <input type="text" name="ip" class="survey_options" size="50" placeholder="bootstrap_ip">
+              <input type="text" name="port" class="survey_options" size="50" placeholder="bootstrap_port">
 
             </div>
           </div>
@@ -360,12 +380,21 @@
               <div class='row'>
                 <input type=text name="info" placeholder="Nb de cycles par seconde">
               </div>
+              <div class='row'>
+                <input type=text name="info" placeholder="Log server hostname">
+              </div>
+              <div class='row'>
+                <input type=text name="info" placeholder="Log server port">
+              </div>
             </div>
           </div>
         </div>
         <input type="submit" value="START">
-
       </form>
+      <form action="stop" method="post">
+        <button id ="button"  >STOP</button>
+      </form>
+
     </div>
   </div>
 
