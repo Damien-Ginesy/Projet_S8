@@ -66,7 +66,7 @@ namespace Basalt
 		req << _id;
 		using namespace asio::ip;
 		tcp::endpoint ep(dest._addr, dest._port);
-		std::cout << "Attempting pull to " << dest.to_string() << '\n';
+		std::cout << "Attempting pull to " << dest._addr << ':' << dest._port << '\n';
 		asio::error_code err = net::send_request(ep, req);
 		if(err){
 			std::cerr << "Coudln't send request: " << err.message() << '\n';
@@ -110,7 +110,7 @@ namespace Basalt
 		for(const ViewEntry& e: _view)
 			req << e.id;
 		asio::ip::tcp::endpoint ep(dest._addr, dest._port);
-		std::cout << "Attempting push to " << dest.to_string() << '\n';
+		std::cout << "Attempting push to " << dest._addr << ':' << dest._port << '\n';
 		asio::error_code err = net::send_request(ep, req);
 		if(err){
 			std::cerr << "Coudln't send request: " << err.message() << '\n';
