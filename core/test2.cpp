@@ -1,24 +1,21 @@
 #include <basalt.hpp>
 #include <semaphore>
 
-std::binary_semaphore sem(0);
-
-void on_logger_resp(const llhttp_t& parser, Basalt::net::HTTPClient::BufferView body){
-    std::cout << "Code: " << parser.status_code << '\n';
-    for(char c: body)
-        std::cout << c;
-    sem.release();
-}
-
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
     using namespace std::chrono_literals;
 
-    net::HTTPClient cli("example.org");
+    uint16_t port = atoi(argv[1]);
 
-    cli.GET("/", on_logger_resp);
-    sem.acquire();
+    NodeId id {asio::ip::make_address_v4((uint32_t)0), port, (uint32_t)(port % 10)};
+    port = (uint16_t)atoi(argv[2]);
+    Array<NodeId> bs(1);
+    bs[0] = NodeId { asio::ip::make_address_v4(0x7F000001), port, (uint32_t)(port % 10) };
 
+    basalt_init(id, bs, 1, 1s, 3s);
+    std::this_thread::sleep_for(10s);
+    basalt_stop();
+    
     return 0;
 }

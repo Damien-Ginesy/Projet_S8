@@ -11,7 +11,17 @@
 
 namespace Basalt
 {
-    using Hash_t = uint64_t;
+    struct Hash_t{
+        uint64_t _x[4];
+        bool operator<(const Hash_t& other) const {
+            int i;
+            for(i=0; (i<4) && (_x[i]==other._x[i]); ++i);
+            return (i<4) && (_x[i] < other._x[i]);
+        }
+        bool operator==(const Hash_t& other) const {
+            return (_x[0]==other._x[0]) &&(_x[1]==other._x[1]) &&(_x[2]==other._x[2]) &&(_x[3]==other._x[3]);
+        }
+    };
     using RankFunc_t = Hash_t (*) (uint32_t, uint32_t);
     /* An entry in the Basalt Node's view */
     struct ViewEntry{
@@ -23,7 +33,6 @@ namespace Basalt
     /* Represents a Basalt protocol Node */
     class Node
     {
-    public: using Hash_t = uint64_t;
     private:
         Array<ViewEntry> _view; /* Local view of the network */
         NodeId _id; /* The node's id */
@@ -63,8 +72,8 @@ namespace Basalt
         /* Message handlers */
         void on_pull_req(net::Message&) const; /* pull request handler */
         #if IS_BYZANTINE==0
-        void on_pull_resp(net::Message&); /* pull response handler */
-        void on_push_req(net::Message&); /* push request handler */
+        void on_pull_resp(net::Message&, const asio::ip::tcp::endpoint& sender); /* pull response handler */
+        void on_push_req(net::Message&, const asio::ip::tcp::endpoint& sender); /* push request handler */
         #endif
         constexpr int is_byzantine() const { return IS_BYZANTINE; }
         std::string to_string() const;
