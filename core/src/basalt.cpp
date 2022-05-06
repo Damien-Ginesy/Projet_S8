@@ -46,7 +46,12 @@ namespace Basalt
     HTTPLogger *logger = nullptr;
 
     Hash_t rank(uint32_t id, uint32_t seed) {
-        return hash64(id, seed);
+        return Hash_t {
+            hash64(id & 0xff000000, seed),
+            hash64(id & 0xffff0000, seed),
+            hash64(id & 0xffffff00, seed),
+            hash64(id, seed),
+        };
     }
     void update(){
         std::lock_guard guard(mutex);

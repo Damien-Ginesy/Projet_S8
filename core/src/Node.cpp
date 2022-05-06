@@ -34,11 +34,11 @@ namespace Basalt
 	#if IS_BYZANTINE==0
 	void Node::updateSamples(const Array<NodeId>& candidates){
 		for(uint32_t i=0; i<_view.size() ; ++i){
-			Hash_t&& currentHash = _rankingFunc(_view[i].id.id, _view[i].seed);
+			Hash_t currentHash = _rankingFunc(_view[i].id.id, _view[i].seed);
 			for (const NodeId& p : candidates) {
 				if(p.id == _id.id) continue;
 				if(_view[i].id.id == p.id){ _view[i].hits++; continue; }
-				Hash_t&& P_Hash = _rankingFunc(p.id, _view[i].seed);
+				Hash_t P_Hash = _rankingFunc(p.id, _view[i].seed);
 				if(_view[i].id == NodeId::null() || P_Hash < currentHash){
 					currentHash = P_Hash;
 					_view[i].hits = 1;

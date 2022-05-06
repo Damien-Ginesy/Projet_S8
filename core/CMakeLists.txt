@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.8.0)
-project(basalt VERSION 0.1.0)
+project(basalt_lib VERSION 0.1.0)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+if(!win32)
+    set(THREADS_PREFER_PTHREAD_FLAG ON)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")    
+endif(!win32)
+
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -13,7 +17,7 @@ include_directories(include)
 
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-set(src_dir "${CMAKE_SOURCE_DIR}/src")
+set(src_dir "src")
 set(core_sources
     ${src_dir}/misc.cpp
     ${src_dir}/NodeId.cpp
@@ -66,5 +70,3 @@ target_link_libraries(test2 basalt)
 add_executable(byzantine_test byzantine_test.cpp)
 target_link_libraries(byzantine_test byzantine_basalt)
 
-add_executable(honest_node honest_node.cpp)
-target_link_libraries(honest_node basalt)

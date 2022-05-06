@@ -39,9 +39,9 @@ int main(int argc, char const *argv[])
     }
     Request req { little_endian(viewSize), 0};
     Response resp;
-    Basalt::write_n(sock, sizeof(req), reinterpret_cast<uint8_t*>(&req));
+    Basalt::write_n(sock, sizeof(req), &req);
 
-    Basalt::read_n(sock, sizeof(resp), reinterpret_cast<uint8_t*>(&resp));
+    Basalt::read_n(sock, sizeof(resp), &resp);
     Basalt::NodeId id { make_address_v4(resp.realIp), 0, resp.virtualIp};
     id._port = (uint16_t)(id.id - (id.id >> 16));
     std::cout << id.to_string() << '\n';
