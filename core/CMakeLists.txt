@@ -64,9 +64,6 @@ target_link_libraries(p2p_test basalt)
 add_executable(test2 test2.cpp)
 target_link_libraries(test2 basalt)
 
-#add_executable(ranking_tests ranking_tests.cpp)
-#target_link_libraries(ranking_tests basalt)
-
 add_executable(byzantine_test byzantine_test.cpp)
 target_link_libraries(byzantine_test byzantine_basalt)
 

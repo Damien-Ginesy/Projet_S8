@@ -17,23 +17,24 @@
 
 */
 
-struct node_network_info{
+typedef struct node_network_info{
     uint32_t ip;
     uint16_t port;
     uint32_t virtual_ip;
-};
+} node_network_info;
 
-struct bootstrap_req{
+typedef struct bootstrap_req{
     uint32_t view_size;
+    uint16_t port;
     uint32_t attack_id; // = 0 for non malicious node
-};
+} bootstrap_req;
 
-struct bootstrap_res{
+typedef struct bootstrap_res{
     uint32_t ip;
     uint32_t real_ip;
     uint32_t view_size;
     uint32_t malicious_view_size; 
-};
+} bootstrap_res;
 
 
 #endif

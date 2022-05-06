@@ -30,6 +30,8 @@ int main(int argc, char  *argv[]){
 
     bootstrap_req.view_size = atoi(argv[4]);
 
+    bootstrap_req.port = 3000;
+
 
     // Send Data to Node
     send_data(sock_fd,(char*) &bootstrap_req,sizeof(bootstrap_req),"sending bootstrap_req");
