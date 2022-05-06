@@ -25,6 +25,7 @@ struct node_network_info{
 
 struct bootstrap_req{
     uint32_t view_size;
+    uint16_t port;
     uint32_t attack_id; // = 0 for non malicious node
 };
 
