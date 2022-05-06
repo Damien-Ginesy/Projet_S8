@@ -1,7 +1,6 @@
 #pragma once
 #pragma once
 
-
 #include <vector>
 #include <inttypes.h>
 #include <string.h>
@@ -13,7 +12,7 @@ namespace Basalt
 {
     namespace net
     {
-        /* All the different types of message */        
+        /* All the different types of message */
         typedef enum {
             PULL_REQ,
             PUSH_REQ,
@@ -36,7 +35,7 @@ namespace Basalt
                     .size = lendian32(*(uint32_t*)(in+1))
                 };
             }
-            /* The raw data size of a serialized Header object */ 
+            /* The raw data size of a serialized Header object */
             static constexpr size_t dataSize = 5;
             /* Dumps a Header object to raw bytes */
             void toBytes(uint8_t out[]) const {
@@ -83,7 +82,7 @@ namespace Basalt
             template<size_t N>
             Message& operator>>(std::array<byte, N>& out){
                 _header.size -= N;
-                for(size_t i=0; i<N; i++) 
+                for(size_t i=0; i<N; i++)
                     out[i] = _payload[_header.size+i];
                 _payload.resize(_header.size);
                 return *this;
@@ -93,21 +92,22 @@ namespace Basalt
             Message& operator<<(const Array<T>& in){
                 for(const T& x: in)
                     *this << x;
-                return *this;                
+                return *this;
             }
             template<typename T>
             Message& operator<<(const Array<T>&& in){
                 for(const T& x: in)
                     *this << x;
-                return *this;                
+                return *this;
             }
+
             template<typename T>
-            Message& operator<<(Array<T>::View in){
+            Message& operator<<(typename Array<T>::View in){
                 for(const T& x: in)
                     *this << x;
                 return *this;
             }
-            Message& operator>>(uint8_t& b); 
+            Message& operator>>(uint8_t& b);
             Message& operator>>(uint16_t& b);
             Message& operator>>(uint32_t& b);
             Message& operator>>(uint64_t& b);

@@ -22,6 +22,6 @@ namespace Basalt
         byte b[] = {(byte)(x&0xff), (byte)(x>>8)};
         return *(uint16_t*)b;
     }
-    asio::error_code read_n(asio::ip::tcp::socket& sock, size_t n, uint8_t* out);
-    asio::error_code write_n(asio::ip::tcp::socket& sock, size_t n, const uint8_t* in);
+    asio::error_code read_n(asio::ip::tcp::socket& sock, size_t n, void* out);
+    asio::error_code write_n(asio::ip::tcp::socket& sock, size_t n, const void* in);
 } // namespace Basalt

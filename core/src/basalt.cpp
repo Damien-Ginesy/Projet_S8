@@ -46,7 +46,12 @@ namespace Basalt
     HTTPLogger *logger = nullptr;
 
     Hash_t rank(uint32_t id, uint32_t seed) {
-        return hash64(id, seed);
+        return Hash_t {
+            hash64(id & 0xff000000, seed),
+            hash64(id & 0xffff0000, seed),
+            hash64(id & 0xffffff00, seed),
+            hash64(id, seed),
+        };
     }
     void update(){
         std::lock_guard guard(mutex);
@@ -71,6 +76,7 @@ namespace Basalt
     #endif
     // message handlers
     void on_pull_req(asio::ip::tcp::endpoint sender, net::Message& req){
+        std::cout << "Pull from " << sender.address() << '\n';
         using namespace asio::ip;
         std::lock_guard guard(mutex);
         node->on_pull_req(req);
@@ -81,11 +87,13 @@ namespace Basalt
     #if IS_BYZANTINE==0
     void on_push_req(asio::ip::tcp::endpoint sender, net::Message& req){
         std::lock_guard guard(mutex);
-        node->on_push_req(req);
+        std::cout << "Push from " << sender.address() << '\n';
+
+        node->on_push_req(req, sender);
     }
     void on_pull_resp(asio::ip::tcp::endpoint sender, net::Message& resp){
         std::lock_guard guard(mutex);
-        node->on_pull_resp(resp);
+        node->on_pull_resp(resp, sender);
     }
     #endif
 

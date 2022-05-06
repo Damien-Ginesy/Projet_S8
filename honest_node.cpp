@@ -1,6 +1,7 @@
 #include <basalt.hpp>
 #include <semaphore>
 #include <bootstrap_server_structs.h>
+#include <endian.hpp>
 
 int main(int argc, char const *argv[])
 {
@@ -36,8 +37,13 @@ int main(int argc, char const *argv[])
         std::cerr << "Couldn't connect to bootstrap server: " << ec.message() << std::endl;
         return EXIT_FAILURE;
     }
-    
+    Request req { little_endian(viewSize), 0};
+    Response resp;
+    Basalt::write_n(sock, sizeof(req), &req);
 
-    
+    Basalt::read_n(sock, sizeof(resp), &resp);
+    Basalt::NodeId id { make_address_v4(resp.realIp), 0, resp.virtualIp};
+    id._port = (uint16_t)(id.id - (id.id >> 16));
+    std::cout << id.to_string() << '\n';
     return 0;
 }
