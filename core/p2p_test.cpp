@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])
     std::cout << "View size: " << viewSize << '\n';
     Array<NodeId> bs(viewSize);
 
-    char bs_url[32];
+    char bs_url[64];
     strcpy(bs_url, argv[3]);
     char * bs_domain = strtok(bs_url,":");
     char * bs_port = strtok(NULL,":");
@@ -91,7 +91,14 @@ int main(int argc, char const *argv[])
     for(const auto& id: bs)
         std::cout << id.to_string() << '\n';
 
-    HTTPLogger log(1, "127.0.0.1", 8081);
+
+
+    char logger_url[64];
+    strcpy(logger_url, argv[4]);
+    char * logger_domain = strtok(logger_url,":");
+    char * logger_port = strtok(NULL,":");
+
+    HTTPLogger log(5, logger_domain, atoi(logger_port),"/infoNoeud");
     log.setCallback(on_logger_response);
     std::cout << "Starting basalt..." << '\n';
     basalt_set_logger(&log);

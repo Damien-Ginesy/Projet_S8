@@ -86,5 +86,5 @@ function ajouterNoeud(){
 
 function infectionRate(vue){
 
-  
+
 }
