@@ -1,11 +1,12 @@
 #include <basalt.hpp>
-
-#include <bootstrap_server_structs.h>
+#include <exchange_protocol.h>
 #include <endian.hpp>
+#include <thread>
 
 int main(int argc, char const *argv[])
 {
     using namespace asio::ip;
+    using namespace std::chrono_literals;
     constexpr int attackId = 0;
     asio::io_context ctx;
     /* params
@@ -54,12 +55,20 @@ int main(int argc, char const *argv[])
     Basalt::NodeId id { make_address_v4(resp.real_ip), port, resp.ip};
     std::cout << id.to_string() << '\n';
 
-    for (int i = 0; i < viewSize; i++)
+    Basalt::Array<Basalt::NodeId> bootstrap(viewSize);
+    std::cout << "Bootstrap:\n=========" << '\n';
+    for (auto& p: bootstrap)
     {
-        node_network_info resp;
-        Basalt::read_n(sock, sizeof(resp), &resp);
-        std::cout << resp.ip << " " << resp.port << " " << resp.virtual_ip << '\n';
+        node_network_info info;
+        Basalt::read_n(sock, sizeof(resp), &info);
+        p = Basalt::NodeId {make_address_v4(info.ip), info.port, info.virtual_ip};
+        std::cout << p.to_string() << '\n';
     }
     
+
+    // init here
+
+
+    // while(true) std::this_thread::sleep_for(10s);
     return 0;
 }
