@@ -128,7 +128,6 @@ int main(int argc, char const *argv[])
     HTTPLogger log(1, logger_host, atoi(logger_port), logger_route);
     log.setCallback(on_logger_response);
 
-
     //BASALT
     std::cout << "Starting basalt..." << '\n';
     basalt_set_logger(&log);
