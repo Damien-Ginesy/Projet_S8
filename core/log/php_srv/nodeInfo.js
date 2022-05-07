@@ -14,6 +14,8 @@ function buildNodeInfo(n){
   nodeInfo.id = "node-" + n;
   node = nodeArray[n];
 
+  if(node == "undefined") console.log("noeud "+n+" non loggé");return 0;
+
   loopID = "";
   loopSeed = "";
   loopHit = "";
@@ -50,6 +52,8 @@ function buildNodeInfo(n){
 function updateNodeInfo(n){
   elem = document.getElementById("node-" + n);
   node = nodeArray[n];
+
+  if(node == "undefined") console.log("noeud "+n+" non loggé");return 0;
 
   for (let i in node.vue) {
     v = node.vue[i];

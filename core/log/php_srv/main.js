@@ -45,13 +45,17 @@ function getData(){
   var req = new XMLHttpRequest();
   req.open('GET', '/log.log', true);
   req.onload  = function() {
-     obj = JSON.parse(req.response);
-     nodeArray = [];
-     for (let n in obj) {
-      nodeArray.push(obj[n])
-     }
-     plot();
-     updateNodesInfo();
+    nodeArray = [];
+    try {
+      obj = JSON.parse(req.response);
+      for (let n in obj) {
+       nodeArray.push(obj[n])
+      }
+      plot();
+      updateNodesInfo();
+    } catch (e) {
+    }
+
   };
   req.send(null);
 }
@@ -66,8 +70,10 @@ canvas.addEventListener('mousemove', e => {
 });
 canvas.addEventListener('click', e => {
   let n = getFocusedNode(canvas, e);
-  IdTarget = identifiant[n];
-  plot();
+  if (n!=-1){
+    IdTarget = identifiant[n];
+    plot();
+  }
 });
 
 function getFocusedNode(canvas, evt) {
