@@ -7,8 +7,8 @@
 std::stringstream bsStream;
 std::stringstream bsmStream;
 using namespace std::literals::chrono_literals;
-
 Basalt::NodeId id;
+
 bool bsOK = false;
 bool bsmOK = false;
 
@@ -138,11 +138,20 @@ int main(int argc, char const *argv[])
     Array<NodeId> friends(nbM);
     init(friends, bsmStream);
 
-    //Print bootstrap
+
 
     /*
+    //Print friends
+    std::cout << "---------------- friends ----------------\n";
     for(const auto& id: friends)
-        std::cout << id.to_string() << "a\n";
+        std::cout << id.to_string() << "\n";
+    std::cout << "-----------------------------------------\n";
+
+    //Print bootstrap
+    std::cout << "---------------- bs ----------------\n";
+    for(const auto& id: bs)
+        std::cout << id.to_string() << '\n';
+    std::cout << "------------------------------------\n";
     */
 
     //Logger HTTP
@@ -158,7 +167,7 @@ int main(int argc, char const *argv[])
     //BASALT
     std::cout << "Starting basalt..." << '\n';
     basalt_set_logger(&log);
-    basalt_init(id, bs, bs, (uint32_t)(viewSize>>2),1s, 5s);
+    basalt_init(id, bs, friends, (uint32_t)(viewSize>>2),1s, 5s);
     std::this_thread::sleep_for(10min);
     basalt_stop();
 

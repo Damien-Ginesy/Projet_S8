@@ -50,6 +50,16 @@ def serveM():
     else:
         return "wait\n", 206
 
+@app.route('/all', methods=['GET'])
+def serveAll():
+    ls = ""
+    for x in NodeList:
+        ls += x.ip + " " + str(x.port) + " " + str(x.id) + "\n"
+    resp = Response(ls)
+    resp.headers['Content-Type'] = 'text/plain'
+    print(ls)
+    return resp
+
 @app.route('/log', methods=['POST'])
 def log():
     global i

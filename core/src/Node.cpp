@@ -122,7 +122,7 @@ namespace Basalt
 	{
 		_friends = friends;
 		_view = Array<ViewEntry>(bs.size());
-		for(size_t i=0; i<bs.size(); ++i)
+		for(size_t i=0; i<bs.size(); i++)
 			_view[i] = ViewEntry{bs[i], _rng(), 0};
 	}
 
@@ -152,14 +152,14 @@ namespace Basalt
 	}
 	void Node::update() {
 		#if IS_BYZANTINE==0
-		//NodeId p = selectPeer();
-		//NodeId q = selectPeer();
-		//pull(p);
-		//push(q);
+		NodeId p = selectPeer();
+		NodeId q = selectPeer();
+		pull(p);
+		push(q);
 		#else
 		for (size_t spam = 0; spam < 1; spam++) {
-			//NodeId p = selectPeer();
-			//push(p);
+			NodeId p = selectPeer();
+			push(p);
 		}
 		#endif
 		_iter++;
