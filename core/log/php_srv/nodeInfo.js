@@ -14,6 +14,8 @@ function buildNodeInfo(n){
   nodeInfo.id = "node-" + n;
   node = nodeArray[n];
 
+  if(node == "undefined"){console.log("noeud "+n+" non loggé");return 0;}
+
   loopID = "";
   loopSeed = "";
   loopHit = "";
@@ -25,7 +27,7 @@ function buildNodeInfo(n){
   }
 
   nodeInfo.innerHTML = `
-  <h3>Noeud ${n}</h3> <p>(${node.nodeID.adresseReelle}:${node.nodeID.port}, ${node.malicieux == 0 ? "non" : ""} malicieux, non sgx, inf=?%)</p>
+  <h3>Noeud ${n}</h3> <p>(${node.nodeID.adresseReelle}:${node.nodeID.port}, ${node.malicieux == 0 ? "non" : ""} malicieux, non sgx, inf=<span class="infectionRate">?</span>%)</p>
   <div class="closeButton" onclick="this.parentElement.remove()">x</div>
   <table>
     <tr class="loopID">
@@ -51,6 +53,8 @@ function updateNodeInfo(n){
   elem = document.getElementById("node-" + n);
   node = nodeArray[n];
 
+  elem.getElementsByClassName("infectionRate")[0].innerText = Math.floor(infectionRate(node.vue));
+
   for (let i in node.vue) {
     v = node.vue[i];
     let tdID = elem.getElementsByClassName("loopID")[0].getElementsByTagName('td')[i];
@@ -63,6 +67,10 @@ function updateNodeInfo(n){
 
     if(tdID.innerText != valID){tdID.classList.add("newContent");}
     else {tdID.classList.remove("newContent");}
+
+    if(infectedNode.includes(valID)){tdID.classList.add("maliciousID")}
+    else {tdID.classList.remove("maliciousID");}
+
     if(tdSeed.innerText != valSeed){tdSeed.classList.add("newContent");}
     else {tdSeed.classList.remove("newContent");}
     if(tdHit.innerText != valHit){tdHit.classList.add("newContent");}
@@ -85,6 +93,11 @@ function ajouterNoeud(){
 }
 
 function infectionRate(vue){
-
-  
+  let n = 0;
+  let inf = 0;
+  for (let node of vue) {
+    if(infectedNode.includes(node.nodeID.adresseVirtuelle)) inf++;
+  n++;
+  }
+  return 100*(inf/n);
 }

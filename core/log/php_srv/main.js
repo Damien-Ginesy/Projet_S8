@@ -13,21 +13,35 @@ function plot(){
   clearInterval(dl);
 
   //On log tt le monde
-  for (let node of nodeArray) {
+  for (let node of Object.values(nodeArray)) {
     let idSource = node.nodeID.adresseVirtuelle;
 
     if (!identifiant.includes(idSource)) identifiant.push(idSource);
     if(node.malicieux != 0) if (!infectedNode.includes(idSource)) infectedNode.push(idSource);
 
-      for (let v of node.vue) {
-        idDestination = v.nodeID.adresseVirtuelle;
-        if (!identifiant.includes(idDestination)) identifiant.push(idDestination);
-      }
+    for (let v of node.vue) {
+      idDestination = v.nodeID.adresseVirtuelle;
+      if (!identifiant.includes(idDestination)) identifiant.push(idDestination);
+    }
   }
 
-  Graph.init(nodeArray.length);
+  let sum = 0;
+  for (let node of Object.values(nodeArray)) {
+    sum += infectionRate(node.vue);
+  }
 
-  for (let node of nodeArray) {
+  document.getElementById("globalInfectionRate").innerText = sum/Object.values(nodeArray).length;
+
+  /*
+  for (var id of identifiant) {
+    if(nodeArray[id] == "undefined")
+  }
+  */
+
+
+  Graph.init(identifiant.length);
+
+  for (let node of Object.values(nodeArray)) {
     let idSource = node.nodeID.adresseVirtuelle;
       for (let v of node.vue) {
         idDestination = v.nodeID.adresseVirtuelle;
@@ -45,13 +59,15 @@ function getData(){
   var req = new XMLHttpRequest();
   req.open('GET', '/log.log', true);
   req.onload  = function() {
-     obj = JSON.parse(req.response);
-     nodeArray = [];
-     for (let n in obj) {
-      nodeArray.push(obj[n])
-     }
-     plot();
-     updateNodesInfo();
+    nodeArray = {};
+    try {
+      nodeArray = JSON.parse(req.response);
+      plot();
+      updateNodesInfo();
+    } catch (e) {
+      console.log(e);
+    }
+
   };
   req.send(null);
 }
@@ -66,8 +82,10 @@ canvas.addEventListener('mousemove', e => {
 });
 canvas.addEventListener('click', e => {
   let n = getFocusedNode(canvas, e);
-  IdTarget = identifiant[n];
-  plot();
+  if (n!=-1){
+    IdTarget = identifiant[n];
+    plot();
+  }
 });
 
 function getFocusedNode(canvas, evt) {

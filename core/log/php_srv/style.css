@@ -1,5 +1,6 @@
 canvas {
   margin: auto;
+  position: fixed;
 }
 body {
   margin: auto; padding: 40px; width: 80%; overflow-x: hidden;
@@ -9,6 +10,8 @@ body {
 h1 {
     font-size: 20pt;
 }
+
+h4 {display: inline-block;}
 
 #nodesInfo {
   float:right;
@@ -21,6 +24,7 @@ h1 {
   border: 1px solid black;
   overflow: hidden;
   border-radius: 5px;
+  max-width: 600px;
 }
 .nodeInfo h3 {display: inline-block; margin-left: 20px;margin-bottom: 20px;}
 .nodeInfo p {display: inline-block; font-size: 11pt;}
@@ -62,3 +66,4 @@ h1 {
 }
 
 .nodeInfo table .newContent {color: black; font-weight: bold; background: #bdc3c7;}
+.nodeInfo table .maliciousID {color: #ff00ae;}
