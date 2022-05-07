@@ -10,6 +10,8 @@ h1 {
     font-size: 20pt;
 }
 
+h4 {display: inline-block;}
+
 #nodesInfo {
   float:right;
 }
@@ -62,3 +64,4 @@ h1 {
 }
 
 .nodeInfo table .newContent {color: black; font-weight: bold; background: #bdc3c7;}
+.nodeInfo table .maliciousID {color: #ff00ae;}
