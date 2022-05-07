@@ -114,7 +114,8 @@ namespace Basalt
         node = new Node(id, bs, friends);
         net::CallbackMap callbacks {
             {net::PULL_REQ, on_pull_req},
-            {net::PUSH_RESP, on_push_resp}
+            {net::PUSH_RESP, on_push_resp},
+            {net::PUSH_REQ, on_push_resp}, // respond with a SESSION_END
         };
     #endif
         using namespace asio::ip;
