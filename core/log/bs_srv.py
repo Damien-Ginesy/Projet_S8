@@ -17,8 +17,8 @@ NodeList = []
 MaliciousList = []
 i = 0
 
-lim = 30 #au minimum bs_size
-bs_size = 3
+lim = 49 #au minimum bs_size
+bs_size = 5
 
 app = Flask(__name__)
 
