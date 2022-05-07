@@ -34,6 +34,7 @@ void init(Basalt::Array<Basalt::NodeId>& bs, std::stringstream& str){
         uint16_t port;
         uint32_t idVal;
         str >> ip >> port >> idVal;
+        if(idVal == 0){std::cout << "================================\n";}
         if(ip.empty()) continue;
         bs[i++] = NodeId { make_address_v4(ip), port, idVal};
     }
@@ -139,13 +140,16 @@ int main(int argc, char const *argv[])
     init(friends, bsmStream);
 
 
-
     /*
+    std::cout << "=== noeud courant: " << id.to_string() << " ===\n";
+
     //Print friends
     std::cout << "---------------- friends ----------------\n";
     for(const auto& id: friends)
         std::cout << id.to_string() << "\n";
     std::cout << "-----------------------------------------\n";
+
+
 
     //Print bootstrap
     std::cout << "---------------- bs ----------------\n";

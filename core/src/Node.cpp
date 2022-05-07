@@ -69,7 +69,7 @@ namespace Basalt
 		std::cout << "Attempting pull to " << dest._addr << ':' << dest._port << '\n';
 		asio::error_code err = net::send_request(ep, req);
 		if(err){
-			std::cerr << "Couldn't send request: " << err.message() << '\n';
+			std::cerr << "Couldn't send request 1: "<< dest._port << err.message() << '\n';
 		}
 	}
 	void Node::on_push_req(net::Message& req, const asio::ip::tcp::endpoint& sender){
@@ -113,7 +113,7 @@ namespace Basalt
 		std::cout << "Attempting push to " << dest._addr << ':' << dest._port << '\n';
 		asio::error_code err = net::send_request(ep, req);
 		if(err){
-			std::cerr << "Couldn't send request: " << err.message() << '\n';
+			std::cerr << "Couldn't send request 2: "<< dest._port << err.message() << '\n';
 		}
 	}
 	#else
@@ -138,7 +138,7 @@ namespace Basalt
 		std::cout << "Attempting push to " << dest.to_string() << '\n';
 		asio::error_code err = net::send_request(ep, req);
 		if(err){
-			std::cerr << "Couldn't send request: " << err.message() << '\n';
+			std::cerr << "Couldn't send request 3: " << err.message() << '\n';
 		}
 	}
 
@@ -180,11 +180,12 @@ namespace Basalt
 	void Node::on_pull_req(net::Message& req) const{
 		// read sender
 		NodeId sender;
+		std::cout << "flag\n";
 		req >> sender;
 		std::cout << "Received pull from " << sender.to_string() << '\n';
 		// add our own id
 		req << _id;
-		Array<NodeId> candidates(_view.size());
+		Array<NodeId> candidates(_friends.size());
 		std::random_device rng;
 		std::sample(_friends.begin(), _friends.end(), candidates.begin(), candidates.size(), rng);
 		// put our view in the response
