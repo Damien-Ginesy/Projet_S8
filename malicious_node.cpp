@@ -1,6 +1,5 @@
 #include <basalt.hpp>
 #include <exchange_protocol.h>
-// #include <endian.hpp>
 #include <thread>
 
 asio::error_code resolve(asio::ip::tcp::resolver& resolver, std::string hostname, std::string service, asio::ip::tcp::endpoint& out)
@@ -42,6 +41,10 @@ int main(int argc, char const *argv[])
     tcp::resolver resolver(ctx);
     tcp::endpoint bootstrapServer;
     asio::error_code ec = resolve(resolver, argv[6], argv[7], bootstrapServer);
+    if(ec) {
+        std::cerr << "Couldn't resolve " << argv[6] << ':' << argv[7] << ": " << ec.message() << std::endl;
+        return EXIT_FAILURE;
+    }
     tcp::socket bsServerSock(ctx);
 
     bsServerSock.connect(bootstrapServer, ec);
@@ -49,10 +52,11 @@ int main(int argc, char const *argv[])
         std::cerr << "Couldn't connect to bootstrap server: " << ec.message() << std::endl;
         return EXIT_FAILURE;
     }
-    bootstrap_req req {viewSize, port, 0};
+    bootstrap_req req {viewSize, port, 1};
     Basalt::write_n(bsServerSock, sizeof(req), &req);
     bootstrap_res resp;
     Basalt::read_n(bsServerSock, sizeof(resp), &resp);
+    Basalt::Array<Basalt::NodeId> friends(resp.malicious_view_size);
     Basalt::NodeId id { make_address_v4(resp.real_ip), port, resp.ip};
     std::cout << id.to_string() << '\n';
     std::cout << sizeof(node_network_info) << '\n';
@@ -65,7 +69,12 @@ int main(int argc, char const *argv[])
         p = Basalt::NodeId {make_address_v4(info.ip), info.port, info.virtual_ip};
         std::cout << p.to_string() << '\n';
     }
-    
+    for(auto& f: friends)
+    {
+        node_network_info info;
+        Basalt::read_n(bsServerSock, sizeof(info), &info);
+        f = Basalt::NodeId { make_address_v4(info.ip), info.port, info.virtual_ip };
+    }
 
     // init here
     const std::chrono::milliseconds mainDelay(1000 / cyclesPerSec);
@@ -79,7 +88,7 @@ int main(int argc, char const *argv[])
     Basalt::basalt_set_logger(k, logServerHostname, logServerPort, "/infoNoeud");
     }
     
-    Basalt::basalt_init(id, bootstrap, k, mainDelay, resetDelay);
+    Basalt::basalt_init(id, bootstrap, friends, k, mainDelay, resetDelay);
 
     while(1) 
         std::this_thread::sleep_for(10s);

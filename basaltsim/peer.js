@@ -86,15 +86,14 @@ class Peer {
 
   //choix des pairs
   selectPeer(){
-    let index = [];
+    let r;
     let min = Math.min(...this.hits);
     for (var i = 0; i < viewSize; i++) {
       if(this.hits[i] == min){
-        index.push(i);
+        r = i;
+        break;
       }
     }
-    let r = index[parseInt(Math.random()*index.length)];
-
     this.hits[r]++;
     return this.view[r];
   }

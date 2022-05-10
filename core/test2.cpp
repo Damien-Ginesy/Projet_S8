@@ -1,5 +1,4 @@
 #include <basalt.hpp>
-#include <semaphore>
 
 int main(int argc, char const *argv[])
 {

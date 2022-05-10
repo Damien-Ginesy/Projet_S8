@@ -84,7 +84,8 @@ void urlParser(const char * const_url, char * host, char * route, char * port){
   if(f_route != NULL) strcpy(route , f_route);
 }
 
-//bin port viewSize bootstrap_url
+//bin port viewSize k delay_cycle delay_reset bootstrap_url http_url
+//00  1111 22222222 3 44444444444 55555555555 6666666666666 77777777
 int main(int argc, char const *argv[])
 {
     using namespace Basalt;
@@ -99,7 +100,7 @@ int main(int argc, char const *argv[])
     char bs_host[128] = "";
     char bs_route[128] = "/";
     char bs_port[10] = "";
-    urlParser(argv[3], bs_host, bs_route, bs_port);
+    urlParser(argv[6], bs_host, bs_route, bs_port);
 
     net::HTTPClient cli(bs_host, atoi(bs_port));
     std::stringstream s;
@@ -158,22 +159,25 @@ int main(int argc, char const *argv[])
     std::cout << "------------------------------------\n";
     */
 
+    HTTPLogger* log = NULL;
+    if(argc>7){
     //Logger HTTP
     char logger_host[128] = "";
     char logger_route[128] = "/";
     char logger_port[10] = "";
-    urlParser(argv[4], logger_host, logger_route, logger_port);
+    urlParser(argv[7], logger_host, logger_route, logger_port);
 
-    HTTPLogger log(1, logger_host, atoi(logger_port), logger_route);
-    log.setCallback(on_logger_response);
-
+    log = new HTTPLogger(10, logger_host, atoi(logger_port), logger_route);
+    basalt_set_logger(10, logger_host, atoi(logger_port), logger_route, on_logger_response);
+    }
 
     //BASALT
     std::cout << "Starting basalt..." << '\n';
-    basalt_set_logger(&log);
-    basalt_init(id, bs, friends, (uint32_t)(viewSize>>2),1s, 5s);
+    basalt_init(id, bs, friends, atoi(argv[3]),std::chrono::milliseconds(atoi(argv[4])), std::chrono::milliseconds(atoi(argv[5])));
     std::this_thread::sleep_for(10min);
     basalt_stop();
+
+    if(log != NULL) delete(log);
 
     return 0;
 }

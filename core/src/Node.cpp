@@ -10,7 +10,7 @@ namespace Basalt
 		std::stringstream out;
 		out << "{\"nodeID\":" << _id.to_string()
 		<< ", \"sgx\": " << (_isSGX? "true":"false")
-		<< ", \"age\": " << (_iter? "true":"false")
+		<< ", \"age\": " << _iter
 		<< ", \"vue\": [";
 		for(size_t i=0; i<_view.size()-1; ++i)
 			out << _view[i].to_string() << ", ";
@@ -35,6 +35,7 @@ namespace Basalt
 	void Node::updateSamples(const Array<NodeId>& candidates){
 		for(uint32_t i=0; i<_view.size() ; ++i){
 			Hash_t currentHash = _rankingFunc(_view[i].id.id, _view[i].seed);
+			if(candidates.size() <= (_view.size()+1)){ //pr etre sur
 			for (const NodeId& p : candidates) {
 				if(p.id == _id.id) continue;
 				if(_view[i].id.id == p.id){ _view[i].hits++; continue; }
@@ -45,6 +46,7 @@ namespace Basalt
 					_view[i].id = p;
 				}
 			}
+		}
 		}
 	}
 	Array<NodeId> Node::reset() {
@@ -74,7 +76,9 @@ namespace Basalt
 	}
 	void Node::on_push_req(net::Message& req, const asio::ip::tcp::endpoint& sender){
 		// update our view, and make a PULL_RESP respoonse
-		Array<NodeId> candidates(_view.size() + 1);
+
+		int size = std::min(_view.size() + 1, req.payloadSize()/sizeof(NodeId));
+		Array<NodeId> candidates(size);
 		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--)
 			req >> (*c);
 		candidates[0]._addr = sender.address().to_v4();
@@ -83,9 +87,12 @@ namespace Basalt
 	}
 	void Node::on_pull_resp(net::Message& resp, const asio::ip::tcp::endpoint& sender){
 		// read the view from the message and update
-		Array<NodeId> candidates(_view.size() + 1);
-		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--)
-			resp >> (*c);
+		int size =std:: min(_view.size() + 1, resp.payloadSize()/sizeof(NodeId));
+		Array<NodeId> candidates(size);
+		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--){
+				resp >> (*c);
+		}
+
 		candidates[0]._addr = sender.address().to_v4();
 		updateSamples(candidates);
 		resp.set_type(net::SESSION_END);
@@ -143,6 +150,9 @@ namespace Basalt
 	}
 
 	#endif
+
+	#if IS_BYZANTINE==0
+
 	NodeId Node::selectPeer(){
 		uint32_t p=0;
 		for(uint32_t i=1; i<_view.size(); ++i)
@@ -150,6 +160,16 @@ namespace Basalt
 		_view[p].hits++;
 		return _view[p].id;
 	}
+
+	#else
+
+	NodeId Node::selectPeer(){
+		uint32_t p = rand() % _view.size();
+		return _view[p].id;
+	}
+
+	#endif
+
 	void Node::update() {
 		#if IS_BYZANTINE==0
 		NodeId p = selectPeer();
@@ -171,6 +191,7 @@ namespace Basalt
 		req >> sender;
 		// put our view in the response
 		req << _id;
+
 		for(const ViewEntry& e: _view)
 			req << e.id;
 		// add our own id
@@ -180,7 +201,6 @@ namespace Basalt
 	void Node::on_pull_req(net::Message& req) const{
 		// read sender
 		NodeId sender;
-		std::cout << "flag\n";
 		req >> sender;
 		std::cout << "Received pull from " << sender.to_string() << '\n';
 		// add our own id

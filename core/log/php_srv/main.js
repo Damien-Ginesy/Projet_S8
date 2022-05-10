@@ -7,7 +7,7 @@ getData();
 
 let identifiant = [];
 let nodeArray;
-let infectedNode = [];
+let maliciousNode = [];
 
 function plot(){
   clearInterval(dl);
@@ -15,22 +15,25 @@ function plot(){
   //On log tt le monde
   for (let node of Object.values(nodeArray)) {
     let idSource = node.nodeID.adresseVirtuelle;
+    if(idSource == 0) {console.log(idSource + " contient zero source");}
 
     if (!identifiant.includes(idSource)) identifiant.push(idSource);
-    if(node.malicieux != 0) if (!infectedNode.includes(idSource)) infectedNode.push(idSource);
+    if(node.malicieux != 0) if (!maliciousNode.includes(idSource)) maliciousNode.push(idSource);
 
     for (let v of node.vue) {
       idDestination = v.nodeID.adresseVirtuelle;
+      if(idDestination == 0) {console.log(idSource + " contient zero");}
       if (!identifiant.includes(idDestination)) identifiant.push(idDestination);
     }
   }
 
   let sum = 0;
   for (let node of Object.values(nodeArray)) {
-    sum += infectionRate(node.vue);
+    if(!maliciousNode.includes(node.nodeID.adresseVirtuelle)) sum += infectionRate(node.vue);
   }
 
-  document.getElementById("globalInfectionRate").innerText = sum/Object.values(nodeArray).length;
+  sum = sum/(Object.values(nodeArray).length - maliciousNode.length);
+  document.getElementById("globalInfectionRate").innerText = sum;
 
   /*
   for (var id of identifiant) {
@@ -59,9 +62,9 @@ function getData(){
   var req = new XMLHttpRequest();
   req.open('GET', '/log.log', true);
   req.onload  = function() {
-    nodeArray = {};
     try {
-      nodeArray = JSON.parse(req.response);
+      let obj = JSON.parse(req.response);
+      nodeArray = obj;
       plot();
       updateNodesInfo();
     } catch (e) {

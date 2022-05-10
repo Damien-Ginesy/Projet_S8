@@ -89,8 +89,16 @@ static inline integral little_endian(integral x)
 
 // If native byte order is big endian: does nothing
 // otherwise: swaps the bytes of x
+#include <type_traits>
+#if __cplusplus >= 2020
 template<typename integral> requires std::is_integral<integral>::value
+#else
+template<typename integral>
+#endif
 static inline integral big_endian(integral x){
+    #if __cplusplus < 2020
+    static_assert(std::is_integral<integral>::value, "expected an integral type");
+    #endif
     #if __BYTE_ORDER == __BIG_ENDIAN
         return x;
     #elif __BYTE_ORDER == __LITTLE_ENDIAN
