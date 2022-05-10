@@ -60,8 +60,8 @@ export class DatabaseAccess {
         noeudEnregistrer.save().then(() => console.log("Modification réussi\n"));
     }
 
-    openDb(user:string,password:string) {
-        const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
+    openDb() {
+        const urlmongo = `mongodb+srv://Damien:EZi1eNGarEvEnzVo@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
         mongoose.connect(urlmongo);
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));

@@ -11,15 +11,8 @@ app.use(express.static(__dirname + '/../public'));
 app.use(express.json());
 app.set('view engine', 'pug');
 
-
-if (process.argv.length !== 4) {
-    console.error("Le programme attend en argument un User et un password pour la base de donnée\n");
-    process.exit();
-}
-
-
 const db = new DatabaseAccess();
-db.openDb(process.argv[2], process.argv[3]);
+db.openDb();
 
 app.post('/infoNoeud', async (req, res) => {
 
@@ -69,6 +62,19 @@ app.get('/stats/:id', async(req,res)=>{
 
 app.get('/accueil', (req, res) => {
     res.render('homepage');
+})
+
+app.post('/',async (req, res) => {
+    let noeud: any;
+    for (noeud of req.body) {
+        const existe: InfoNoeud | null = await db.recupNoeudExistant(noeud);
+        if (existe === null) {
+            db.addInfo(noeud);
+        } else {
+            await db.updateNoeud(noeud);
+        }
+    }
+    res.sendStatus(200);
 })
 
 app.get('/', (req, res) => {
