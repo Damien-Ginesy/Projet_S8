@@ -140,7 +140,12 @@ block body
                 title.setAttribute("id","monTitle");
                 title.style.display = 'inline';
                 title.append(nameNode[0].allNode[index].nodeID.adresseVirtuelle);
+                title.append('/' + "" + "port: ")
                 father.append(title)
+                let ipAddress = document.createElement("p")
+                ipAddress.append(nameNode[0].allNode[index].nodeID.port);
+                ipAddress.style.display = 'inline';
+                title.append(ipAddress)
             }else{
                 console.log('removed')
                 document.getElementById("monTitle").remove()
@@ -149,7 +154,12 @@ block body
                 title.style.display = 'inline';
                 title.setAttribute("id","monTitle");
                 title.append(nameNode[0].allNode[index].nodeID.adresseVirtuelle);
+                title.append('/' + "" + "port: ")
                 father.append(title);
+                let ipAddress = document.createElement("p")
+                ipAddress.append(nameNode[0].allNode[index].nodeID.port);
+                ipAddress.style.display = 'inline';
+                title.append(ipAddress)
             }    
             //- changeTitle = 0;
         }
@@ -188,11 +198,13 @@ block body
 
             const vueLength = Data[0].allNode[index].vue.length;
             
-            for (let pas = 0; pas < 3; pas++) {
+            for (let pas = 0; pas < vueLength; pas++) {
                 console.log(Data[0])
                 let td2 = document.createElement('td');
                 tr1.append(td2);
-                td2.append(Data[0].allNode[index].vue[pas].seed)
+                let seed = Data[0].allNode[index].vue[pas].seed.toString()
+                console.log(typeof(seed))
+                td2.append(seed.slice(0,2))
                 
                 let td3 = document.createElement('td');
                 td3.style.fontSize = 10
