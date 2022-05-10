@@ -201,7 +201,6 @@ namespace Basalt
 	void Node::on_pull_req(net::Message& req) const{
 		// read sender
 		NodeId sender;
-		std::cout << "flag\n";
 		req >> sender;
 		std::cout << "Received pull from " << sender.to_string() << '\n';
 		// add our own id

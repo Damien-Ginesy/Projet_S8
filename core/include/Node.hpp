@@ -78,6 +78,7 @@ namespace Basalt
         constexpr int is_byzantine() const { return IS_BYZANTINE; }
         std::string to_string() const;
         Array<ViewEntry>::View view() const;
+        uint32_t iter() const { return _iter; }
     };
     
 } // namespace Basalt
