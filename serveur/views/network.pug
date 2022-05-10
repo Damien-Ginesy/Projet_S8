@@ -1,0 +1,60 @@
+extends layout 
+
+block style
+    style
+        include ../style/network.css
+
+block title
+    title Basalt Serveur Supervision
+
+block body 
+    div
+        img#background(src="/images/background.jpg")
+        img#rectangle(src="/images/vintage.png")
+
+    .topNav
+        #topNavLeft 
+            a
+                h3 Précédent
+        #headerTitle 
+            h3 BASALT APP
+        #topNavRight 
+            a(href="accueil")
+                h3#accueil Accueil
+            a(href="stats")
+                h3#reseaux Statistiques
+            a#moreData(onclick="showData()") 
+                h3 &lt;
+            a.lessData(onclick="hideData()") 
+                h3 &gt;
+    
+    #overlay
+        //- #globalData
+        //-     h2.infectTitle Taux d'infection
+        //-     figure.chartBox
+        figure.chartBox
+            #infectionRate
+
+
+
+    .popup 
+        p#popupQuit &times;
+        p#popupTitle 
+        p#popupInfo 
+        #view 
+            table 
+                thead 
+                    tr
+                        th View
+                tbody#viewInfo 
+
+    canvas#particles-js
+    // script(src='particlesNetwork.js')
+    script(src='networkNode.js')
+    script(src='networkGraph.js')
+    script(src="https://code.highcharts.com/highcharts.js")
+    script(src="https://code.highcharts.com/highcharts-more.js")
+    script(src="https://code.highcharts.com/modules/solid-gauge.js")
+    script(src="https://code.highcharts.com/modules/accessibility.js")
+    script(src="gaugeChart.js")
+    script(src="networkInfo.js") 

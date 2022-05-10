@@ -1,5 +1,5 @@
 export interface NodeID{
-    port: String,
-    adresseReelle: String,
+    port: number,
+    adresseReelle: string,
     adresseVirtuelle: number,
 }

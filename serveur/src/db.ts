@@ -1,51 +1,68 @@
-import {Schema, model, Model} from "mongoose";
-import mongoose from "mongoose";
+// @ts-ignore
+import mongoose, {model, Model, Schema} from "mongoose";
 import {InfoNoeud} from "./Interface/InfoNoeud";
 
- export class DatabaseAccess {
+export class DatabaseAccess {
 
-    private noeudSchema:Schema = new Schema({
-        nodeID:{
-            port:{type:String, required:true},
-            adresseReelle:{type:String, required:true},
-            adresseVirtuelle:{type:String, required:true},
+    private noeudSchema: Schema = new Schema(
+        {
+            nodeID: {
+                port: {type: Number, required: true},
+                adresseReelle: {type: String, required: true},
+                adresseVirtuelle: {type: Number, required: true},
+            },
+            vue: [{
+                nodeID: {
+                    port: {type: String, required: true},
+                    adresseReelle: {type: String, required: true},
+                    adresseVirtuelle: {type: String, required: true},
+                },
+                seed: {type: Number, required: true},
+                hitCount: {type: Number, required: true},
+            }],
+            age: {type: Number, required: false},
+            malicieux: {type: Number, required: true},
         },
-        vue:[{
-            nodeID:{
-                port:{type:String, required:true},
-                adresseReelle:{type:String, required:true},
-                adresseVirtuelle:{type:String, required:true},
-            },
-            seed:{type:Number, required: true},
-            hitCount:{type:Number, required:true},
-        }],
-        age:{type:Number, required:true},
-        malicieux:{type:Boolean, required:true},
-    });
+    );
 
-    private noeudModel:Model<InfoNoeud> = model<InfoNoeud>('Info_Noeuds', this.noeudSchema);
+    private noeudModel: Model<InfoNoeud> = model<InfoNoeud>('Info_Noeuds', this.noeudSchema);
 
-    constructor(user:string, password:string) {
-        const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
-        this.openDb(urlmongo);
-    }
-
-    addInfo(infoNoeud:string){
-        const infoNoeudData = JSON.parse(infoNoeud);
-        const noeud:InfoNoeud = new this.noeudModel({
-            nodeID:{
-                port: infoNoeudData.nodeID.port,
-                adresseReelle:infoNoeudData.nodeID.adresseReelle,
-                adresseVirtuelle:infoNoeudData.nodeID.adresseVirtuelle,
-            },
-            age:infoNoeudData.age,
-            malicieux: infoNoeudData.malicieux,
+    addInfo(infoNoeud: any) {
+        const noeud: InfoNoeud = new this.noeudModel({
+            nodeID: infoNoeud.nodeID,
+            vue: infoNoeud.vue,
+            malicieux: infoNoeud.malicieux,
         });
-        noeud.save();
+        noeud.save().then(() => console.log("Ajout réussi\n"));
     }
 
-    private openDb(url: string) {
-        mongoose.connect(url);
+    recupNoeudExistant(infoNoeud: any): Promise<any> {
+        return this.noeudModel.findOne({nodeID: infoNoeud.nodeID}).exec();
+    }
+
+    recupTotalNoeudSain():Promise<number>{
+        return this.noeudModel.find().countDocuments({malicieux:0}).exec();
+    }
+
+    recupTotalMalicieux():Promise<number>{
+        return this.noeudModel.find().countDocuments({malicieux:{$ne:0}}).exec();
+    }
+
+    recupAllNoeud():Promise<Array<InfoNoeud>>{
+        return this.noeudModel.find().limit(100).exec();
+    }
+
+    async updateNoeud(noeud: any) {
+        const noeudEnregistrer: InfoNoeud = await this.recupNoeudExistant(noeud);
+        noeudEnregistrer.vue = noeud.vue;
+        noeudEnregistrer.age = noeud.age;
+        noeudEnregistrer.malicieux = noeud.malicieux;
+        noeudEnregistrer.save().then(() => console.log("Modification réussi\n"));
+    }
+
+    openDb(user:string,password:string) {
+        const urlmongo = `mongodb+srv://${user}:${password}@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
+        mongoose.connect(urlmongo);
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));
         db.once('open', () => {
