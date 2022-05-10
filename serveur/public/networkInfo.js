@@ -77,7 +77,7 @@ setInterval(async function () {
     point = chart.series[0].points[0];
     const data = await fetch('/nodeStat');
     const dataJson = await data.json();
-    const taux = Math.floor(dataJson.noeudMalicieux/(dataJson.noeudSain)*100);
+    const taux = Math.floor(dataJson.noeudMalicieux/(dataJson.noeudSain+dataJson.noeudMalicieux)*100);
     newVal = taux;
 
     if (newVal < 0 || newVal > 100) {
