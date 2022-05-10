@@ -28,6 +28,17 @@ app.post('/infoNoeud', async (req, res) => {
     res.sendStatus(200);
 })
 
+app.get('/nodeStat', async (req, res) => {
+    const noeudMalicieux = await db.recupTotalMalicieux();
+    const noeudSain = await db.recupTotalNoeudSain();
+    const noeudTot = noeudMalicieux+ noeudSain;
+    const data = {
+        tauxInfection: noeudMalicieux/noeudTot*100,
+    }
+    res.status(200).json(data);
+})
+
+
 app.get('/nodeData', async (req,res)=>{
     const allNode = await db.recupAllNoeud();
     const nodesJson = {
