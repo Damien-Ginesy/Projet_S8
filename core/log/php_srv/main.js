@@ -1,8 +1,9 @@
 //Parametres graphiques
 let IdTarget = 1;
+let graphEnabled = false;
 
 let l, dl; //var global boucle
-l = setInterval(getData, 1000);
+l = setInterval(getData, 500);
 getData();
 
 let identifiant = [];
@@ -41,7 +42,7 @@ function plot(){
   }
   */
 
-
+  if(graphEnabled){
   Graph.init(identifiant.length);
 
   for (let node of Object.values(nodeArray)) {
@@ -54,13 +55,15 @@ function plot(){
         }
       }
   }
-
   dl = setInterval(function(){Graph.draw()}, 10);
+  }
+
+
 }
 
 function getData(){
   var req = new XMLHttpRequest();
-  req.open('GET', '/log.log', true);
+  req.open('GET', 'http://localhost:8081/log.log', true);
   req.onload  = function() {
     try {
       let obj = JSON.parse(req.response);

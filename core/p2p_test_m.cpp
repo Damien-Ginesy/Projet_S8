@@ -159,7 +159,6 @@ int main(int argc, char const *argv[])
     std::cout << "------------------------------------\n";
     */
 
-    HTTPLogger* log = NULL;
     if(argc>7){
     //Logger HTTP
     char logger_host[128] = "";
@@ -167,7 +166,6 @@ int main(int argc, char const *argv[])
     char logger_port[10] = "";
     urlParser(argv[7], logger_host, logger_route, logger_port);
 
-    log = new HTTPLogger(10, logger_host, atoi(logger_port), logger_route);
     basalt_set_logger(10, logger_host, atoi(logger_port), logger_route, on_logger_response);
     }
 
@@ -176,8 +174,6 @@ int main(int argc, char const *argv[])
     basalt_init(id, bs, friends, atoi(argv[3]),std::chrono::milliseconds(atoi(argv[4])), std::chrono::milliseconds(atoi(argv[5])));
     std::this_thread::sleep_for(10min);
     basalt_stop();
-
-    if(log != NULL) delete(log);
 
     return 0;
 }
