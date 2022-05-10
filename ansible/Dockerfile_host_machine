@@ -35,6 +35,10 @@ apt-get install -y python3-pip;
 # --- ssh server
 RUN apt-get install -y openssh-server > /dev/null;
 
+# --- Libstdc++6
+RUN \
+apt-get install -y libstdc++6;
+
 # CMD is the default command that is going to be executed in the startup of every exection.
 # Only the last one is considered. So use it once.
 CMD \

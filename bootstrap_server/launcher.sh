@@ -152,8 +152,8 @@ echo "${basalt_param[@]}";
 
 
 # test BASALT ALGO
-su peer basalt_launcher.sh "${basalt_param[@]}";
-#su peer;
+#su peer basalt_launcher.sh "${basalt_param[@]}" > output_basalt.txt;
+su peer;
 # cd /home/peer/; 
 # mkdir basalt_project;
 # cd basalt_project;

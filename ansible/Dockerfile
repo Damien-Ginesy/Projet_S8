@@ -32,6 +32,10 @@ RUN apt-get install -y build-essential python3 python curl grep net-tools iputil
 RUN \
 apt-get install -y python3-pip;
 
+# --- Libstdc++6
+RUN \
+apt-get install -y libstdc++6;
+
 # --- ssh-client
 RUN apt-get install -y ssh-client sshpass;
 
