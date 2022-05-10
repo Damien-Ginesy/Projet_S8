@@ -97,16 +97,16 @@ class Graph {
       this.ctx.arc(node.x, node.y, 10, 0, 2 * Math.PI);
       if(focusedNode == parseInt(i)){
         this.ctx.fillStyle = "#3498db";
-      } else if(infectedNode.includes(identifiant[i]) && dest.includes(parseInt(i))){
+      } else if(maliciousNode.includes(identifiant[i]) && dest.includes(parseInt(i))){
         this.ctx.fillStyle = "#ff00ae";
-      } else if(infectedNode.includes(identifiant[i])){
+      } else if(maliciousNode.includes(identifiant[i])){
         this.ctx.fillStyle = "#9b59b6";
       } /*else if(orig.includes(parseInt(i))){
         this.ctx.fillStyle = "#e74c3c";
       } else if(dest.includes(parseInt(i))) {
           this.ctx.fillStyle = "#2ecc71";
       } */ else {
-        this.ctx.fillStyle = `rgb(255, ${255*(100-infectionRate(nodeArray[identifiant[i]].vue))/100}, 0)`;
+        this.ctx.fillStyle = `hsl(${(100-infectionRate(nodeArray[identifiant[i]].vue))}, 100%, 50%)`;
       }
       this.ctx.fill();
       this.ctx.stroke();
