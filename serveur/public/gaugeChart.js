@@ -68,7 +68,7 @@ function setGaugeData(){
         },
         series: [{
             name: 'Taux',
-            data: [80],
+            data: [0],
             dataLabels: {
               format:
                 '<div style="text-align:center">' +

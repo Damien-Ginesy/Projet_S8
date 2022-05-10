@@ -66,21 +66,22 @@ function hideData(){
 
 const chart = Highcharts.chart('infectionRate', Highcharts.merge(getGaugeOptions(),setGaugeData()));
 
-setInterval(function () {
+setInterval(async function () {
     // Speed
     let point,
-      newVal,
-      inc;
-  
-    if (!chart) 
-        return;
+      newVal
 
+    if (!chart)
+        return;
+        
     point = chart.series[0].points[0];
-    inc = Math.round((Math.random() - 0.5) * 100);
-    newVal = point.y + inc;
+    const data = await fetch('/nodeStat');
+    const dataJson = await data.json();
+    const taux = Math.floor(dataJson.noeudMalicieux/(dataJson.noeudSain)*100);
+    newVal = taux;
 
     if (newVal < 0 || newVal > 100) {
-        newVal = point.y - inc;
+        newVal = point.y;
     }
 
     point.update(newVal);
