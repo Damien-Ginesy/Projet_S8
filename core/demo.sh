@@ -4,8 +4,8 @@
 
 echo "Lancement..."
 
-h=85
-m=15
+h=99
+m=1
 
 #param basalt
 view_size=10

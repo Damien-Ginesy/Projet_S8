@@ -168,8 +168,7 @@ int main(int argc, char const *argv[])
     urlParser(argv[7], logger_host, logger_route, logger_port);
 
     log = new HTTPLogger(10, logger_host, atoi(logger_port), logger_route);
-    log->setCallback(on_logger_response);
-    basalt_set_logger(log);
+    basalt_set_logger(10, logger_host, atoi(logger_port), logger_route, on_logger_response);
     }
 
     //BASALT

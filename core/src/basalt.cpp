@@ -130,8 +130,11 @@ namespace Basalt
         #endif
         runner = std::thread([](){ ctx.run(); });
     }
-    void basalt_set_logger(HTTPLogger* log){
-        logger = log;
+    void basalt_set_logger(size_t bufferSize, const std::string& hostname, uint16_t port, const std::string& apiEndpoint,
+            HTTPLogger::cbk_t callback)
+    {
+        logger = new HTTPLogger(bufferSize, hostname, port, apiEndpoint);
+        logger->setCallback(callback);
     }
     void basalt_stop(){
         net::net_finish();
@@ -141,6 +144,7 @@ namespace Basalt
         runner.join();
         delete mainLoop;
         delete resetLoop;
+        delete logger;
         delete node;
     }
 } // namespace Basalt
