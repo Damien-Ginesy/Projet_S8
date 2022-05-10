@@ -84,6 +84,7 @@ block body
         const pushData2 = [];
         const chartId1 = document.querySelector('#graph1'); // first pie chart, global stats window
         const chartId2 = document.querySelector('#graph2'); // pie chart in second window
+        let index = 0; // permits to know what is the node's number
 
 
         /*-------------------------------------*/
@@ -128,13 +129,29 @@ block body
         /*-------------------------------------*/
 
         const nameNode = [];
+        let changedTitle = 0;
 
         async function createTitleNodes(){
-
             await getData();
-            const title = document.getElementById('nodeTitle');
-            title.append(nameNode);
-            
+            if(changedTitle === 0){
+                console.log('ok les gars')
+                const father = document.getElementById('nodeTitle');
+                let title = document.createElement("p");
+                title.setAttribute("id","monTitle");
+                title.style.display = 'inline';
+                title.append(nameNode[0].allNode[index].nodeID.adresseVirtuelle);
+                father.append(title)
+            }else{
+                console.log('removed')
+                document.getElementById("monTitle").remove()
+                const father = document.getElementById('nodeTitle');
+                let title = document.createElement("p");
+                title.style.display = 'inline';
+                title.setAttribute("id","monTitle");
+                title.append(nameNode[0].allNode[index].nodeID.adresseVirtuelle);
+                father.append(title);
+            }    
+            //- changeTitle = 0;
         }
 
         createTitleNodes();
@@ -144,12 +161,15 @@ block body
         /*-------------------------------------*/
 
         const Data = []; // general data
+
+        let changed = 0;
         
         async function createTableForNodes(){
             await getDataForPieCharts();
 
             const father = document.getElementById('subfather')
             let tab = document.createElement("table");
+            tab.setAttribute("id","monTab");
             father.append(tab); 
 
             let tr1 = document.createElement('tr');
@@ -166,19 +186,30 @@ block body
             tr2.append(td2);
             td2.append('Vue')
 
-
-            //- const total = data.allNode[0].vue.length();
-            const total = 3;
-            for (let pas = 0; pas < total+1; pas++) {
+            const vueLength = Data[0].allNode[index].vue.length;
+            
+            for (let pas = 0; pas < 3; pas++) {
+                console.log(Data[0])
                 let td2 = document.createElement('td');
                 tr1.append(td2);
-                td2.append('5')
+                td2.append(Data[0].allNode[index].vue[pas].seed)
+                
+                let td3 = document.createElement('td');
+                td3.style.fontSize = 10
+                tr2.append(td3);
+                td3.append(Data[0].allNode[index].vue[pas].nodeID.adresseVirtuelle)
+
             }
- 
+            changed = 1;
 
         }
 
-        createTableForNodes();
+        function deleteTableForNodes(){
+            if(changed === 1 )
+                document.getElementById("monTab").remove()
+        }
+
+        
         
 
 
@@ -208,7 +239,16 @@ block body
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
             buttonBar.style.margin = "105px";
+            
+            
+            deleteTableForNodes();
+
+            changedTitle = 1; // const to know if function was applied 
+            createTitleNodes();
+
+            createTableForNodes();
         } 
+            index = index+1; 
         })
 
         prev.addEventListener("click", () => {
@@ -217,8 +257,15 @@ block body
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
             buttonBar.style.marginTop = "105px";
+
+            changedTitle = 1; // const to know if function was applied 
+            createTitleNodes();
+
+            deleteTableForNodes();
+            createTableForNodes();
         
             } 
+            index = index-1;
         })
         
 
@@ -306,9 +353,8 @@ block body
             const query = await fetch('/nodeData');
             const res = await query.text();
             const data = JSON.parse(res);
-            nameNode.push(data.allNode[0].nodeID.adresseVirtuelle);
+            nameNode.push(data);
             Data.push(data)
-            console.log(data)
             //- const data = await query.json();
         };
         
