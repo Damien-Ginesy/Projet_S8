@@ -30,9 +30,16 @@ int main(int argc, char const *argv[])
     - cycles per second
     - bs server ip
     - bs server port
+    - attack group
     - log server hostname (if applicable)
     - log server port (if not 80)
      */
+    if(argc < 9){
+        std::cout << "Usage: ./malicious_node " 
+        "<view_size> <listen_port> <cycles_before_reset> <n_nodes_per_reset> <cycles_per_second> <bootstrap_hostname> "
+        "<bootstrap_port> <attack_group_id> [log server hostname] [log server port (defaults to 80]" << '\n';
+        return 1;
+    }
     const unsigned viewSize = atol(argv[1]);
     const uint16_t port = atoi(argv[2]);
     const unsigned cyclesBeforeReset = atol(argv[3]);
@@ -41,6 +48,7 @@ int main(int argc, char const *argv[])
     tcp::resolver resolver(ctx);
     tcp::endpoint bootstrapServer;
     asio::error_code ec = resolve(resolver, argv[6], argv[7], bootstrapServer);
+    const unsigned attackGroup = atoi(argv[8]);
     if(ec) {
         std::cerr << "Couldn't resolve " << argv[6] << ':' << argv[7] << ": " << ec.message() << std::endl;
         return EXIT_FAILURE;
@@ -52,7 +60,7 @@ int main(int argc, char const *argv[])
         std::cerr << "Couldn't connect to bootstrap server: " << ec.message() << std::endl;
         return EXIT_FAILURE;
     }
-    bootstrap_req req {viewSize, port, 1};
+    bootstrap_req req {viewSize, port, attackGroup};
     Basalt::write_n(bsServerSock, sizeof(req), &req);
     bootstrap_res resp;
     Basalt::read_n(bsServerSock, sizeof(resp), &resp);
@@ -83,8 +91,8 @@ int main(int argc, char const *argv[])
     uint16_t logServerPort = 80;
     switch (argc)
     {
-    case 10: logServerPort = (uint16_t)atoi(argv[9]);
-    case 9: logServerHostname = argv[8];
+    case 11: logServerPort = (uint16_t)atoi(argv[10]);
+    case 10: logServerHostname = argv[9];
     Basalt::basalt_set_logger(k, logServerHostname, logServerPort, "/infoNoeud");
     }
     
