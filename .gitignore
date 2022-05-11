@@ -50,3 +50,7 @@
 
 *.odp*
 *.docx*
+
+
+#node js
+node_modules

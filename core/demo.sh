@@ -4,14 +4,14 @@
 
 echo "Lancement..."
 
-h=99
-m=1
+h=990
+m=10
 
 #param basalt
-view_size=10
+view_size=40
 k=1
-delay_cycle=50
-delay_reset=250
+delay_cycle=100
+delay_reset=1000
 
 #bin port viewSize k delay_cycle delay_reset bootstrap_url http_url
 b=3000

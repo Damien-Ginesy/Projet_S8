@@ -6,5 +6,5 @@ export interface InfoNoeud extends Document{
     nodeID:Types.DocumentArray<NodeID>,
     vue: Types.DocumentArray<Vue>,
     age: number,
-    malicieux: Boolean,
+    malicieux: number,
 }

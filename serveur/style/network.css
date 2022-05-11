@@ -1,0 +1,212 @@
+body {
+    overflow-y: hidden; 
+    overflow-x: hidden; 
+    margin: 0; 
+    padding: 0;
+}
+
+#background{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: -4;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+#rectangle {
+    z-index: -3;
+    position: absolute;
+    width: calc(100vw - 40px);
+    height: calc(100vh - 60px);
+    top: 40px;
+    left: 20px;
+
+    background: white no-repeat;
+    background-size: cover;
+}
+
+#headerTitle{
+    float: center;    
+    position: fixed;
+    top: -20px;
+    left: 40%;
+    color: #f2f2f2;
+    font-size: 25px;
+}
+
+.topNav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+#topNavLeft{
+    float: right;
+    position: fixed;
+    top: -20px;
+    left: 5px;
+}
+
+#topNavRight{
+    float: right;
+    position: fixed;
+    top: -20px;
+    right: 5px;
+}
+
+canvas {
+    display: block;
+}
+
+
+#particles-js {
+    position: absolute;
+    width: calc(100vw - 40px);
+    height: calc(100vh - 60px);
+    top: 40px;
+    left: 20px;
+}
+
+.popup{
+    position: fixed;
+    top: 50px;
+    left:30px;
+    height: 30vh;
+    width: 20vw;
+    display: none;
+    background-image: url(/images/background.jpg);
+    opacity: 90%;
+    border-radius: 10%;
+    color: white;
+    z-index: 1000;
+}
+
+#popupTitle{
+    justify-content: center;
+    align-items: center;
+    font-size: 200%;
+    text-decoration: underline;
+    text-align: center;
+}
+
+#popupInfo{
+    text-align: center;
+    font-size: 100%;
+}
+
+#popupQuit{
+    float: right;
+    margin-right: 5%;
+    margin-top: 5%;
+    margin-bottom: 0%;
+    font-weight: bold;
+    font-size: 150%;
+    cursor: pointer;
+}
+
+table
+{   
+    position: absolute flex;
+    border-collapse: collapse;
+    display: inline !important;
+    margin-left:auto; 
+    margin-right:auto;
+}
+
+tr{
+    text-align: center;
+}
+
+td{
+    border: 1px solid white;
+    padding: 10px;
+    font-size: 100%;
+    text-align: center;
+}
+
+#view{
+    display: none;
+    overflow-x:auto;
+}
+
+#overlay {
+    position: fixed;
+    display: none;
+    width: calc(100vw - 40px);
+    height: calc(100vh - 60px);
+    top: 40px;
+    left: 20px;
+    background-color: rgba(0,0,0,0.8);
+    z-index: 2;
+    color: white;
+}
+
+.infectTitle{
+    margin: 2%;
+    text-align: center;
+    width:30%;
+}
+.chartBox{
+    display: flex;
+}
+
+.chartBox,
+.highcharts-data-table table {
+    float: left;
+    width: 600px;
+    margin: 0 auto;
+}
+
+.highcharts-data-table table {
+    font-family: Verdana, sans-serif;
+    border-collapse: collapse;
+    border: 1px solid #ebebeb;
+    margin: 10px auto;
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.highcharts-data-table caption {
+    padding: 1em 0;
+    font-size: 1.2em;
+    color: #555;
+}
+
+.highcharts-data-table th {
+    font-weight: 600;
+    padding: 0.5em;
+}
+
+.highcharts-data-table td,
+.highcharts-data-table th,
+.highcharts-data-table caption {
+    padding: 0.5em;
+}
+
+.highcharts-data-table thead tr,
+.highcharts-data-table tr:nth-child(even) {
+    background: #f8f8f8;
+}
+
+.highcharts-data-table tr:hover {
+    background: #f1f7ff;
+}
+
+.lessData{
+    display: none;
+}
+
+@media (max-width: 824px) {
+/*     #topNavRight a {
+        float: none;
+        display: block;
+        text-align: left;
+      } */
+}

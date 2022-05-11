@@ -119,7 +119,6 @@ int main(int argc, char const *argv[])
         std::cout << id.to_string() << '\n';
     */
 
-    HTTPLogger* log = NULL;
     if(argc>7){
     //Logger HTTP
     char logger_host[128] = "";
@@ -135,8 +134,6 @@ int main(int argc, char const *argv[])
     basalt_init(id, bs, atoi(argv[3]),std::chrono::milliseconds(atoi(argv[4])), std::chrono::milliseconds(atoi(argv[5])));
     std::this_thread::sleep_for(10min);
     basalt_stop();
-
-    if(log != NULL) delete(log);
 
     return 0;
 }
