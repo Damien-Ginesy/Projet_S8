@@ -80,10 +80,11 @@ block body
                     /* params */
         /*-------------------------------------*/
 
-        const pushData1 = [];   
+        const pushData1 = [];
         const pushData2 = [];
         const chartId1 = document.querySelector('#graph1'); // first pie chart, global stats window
         const chartId2 = document.querySelector('#graph2'); // pie chart in second window
+        let chart;
         let index = 0; // permits to know what is the node's number
 
 
@@ -98,7 +99,7 @@ block body
             let data = {
             labels: ['noeuds malicieux', 'noeuds bons'],
             datasets: [{
-                data: pushData[0], 
+                data: pushData[0],
                 backgroundColor: ['#6b2d5c', '#E2C290']
             }]
             };
@@ -117,7 +118,8 @@ block body
                 }
             };
 
-            const graph1 = new Chart(chartId, config);
+            chart = new Chart(chartId, config);
+            console.log(chart.data.datasets);
         }
 
         pieChart(pushData1, chartId1); // creation of the global pie chart
@@ -376,8 +378,16 @@ block body
             pushData1.push(dataToPush);
             pushData2.push(dataToPush);
         };
-        
-        setInterval(getDataForPieCharts, 1000)
+
+        async function updateData() {
+            await getDataForPieCharts();
+            console.log(pushData1);
+            chart.data.datasets[0].data.data = pushData1[-1];
+            console.log(chart.data.datasets[0]);
+            chart.update();
+        }
+
+        setInterval(updateData,5000);
         
  
     

@@ -49,7 +49,7 @@ export class DatabaseAccess {
     }
 
     recupAllNoeud():Promise<Array<InfoNoeud>>{
-        return this.noeudModel.find().limit(100).exec();
+        return this.noeudModel.find().exec();
     }
 
     async updateNoeud(noeud: any) {
