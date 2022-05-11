@@ -45,11 +45,11 @@ export class DatabaseAccess {
     }
 
     recupTotalMalicieux():Promise<number>{
-        return this.noeudModel.find().countDocuments({malicieux:1}).exec();
+        return this.noeudModel.find().countDocuments({malicieux:{$ne:0}}).exec();
     }
 
     recupAllNoeud():Promise<Array<InfoNoeud>>{
-        return this.noeudModel.find().exec();
+        return this.noeudModel.find().limit(100).exec();
     }
 
     async updateNoeud(noeud: any) {
