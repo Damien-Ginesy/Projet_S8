@@ -60,15 +60,15 @@ app.post('/bootstrap', (req, res) => {
 
 
     exec(cmd, (error, stdout, stderr) => {
-         if (error) {
-             console.log(`error: ${error.message}`);
-         }
-         if (stderr) {
-             console.log(`stderr: ${stderr}`);
-             
-         }
-         console.log(`stdout: ${stdout}`);
-     });
+        if (error) {
+            console.log(`error: ${error.message}`);
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            
+        }
+        console.log(`stdout: ${stdout}`);
+    });
 });
 app.post('/stop', (req, res) => {
 
