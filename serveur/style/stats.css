@@ -17,6 +17,31 @@ h1, h2, h3, p{
     margin: 0;
 }
 
+/**** Arrière-plan ****/
+#background{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+#rectangle {
+    z-index: 0;
+    position: absolute;
+    width: calc(100vw - 40px);
+    height: calc(100vh - 60px);
+    top: 40px;
+    left: 20px;
+
+    background: white no-repeat;
+    background-size: cover;
+}
+
+/**** GRAPH ****/
+
 #graph1{
     width: 40% !important;
     height: 40% !important;
@@ -36,9 +61,14 @@ h1, h2, h3, p{
     padding: 0;
 }
 
+/********** NAV **********/
 
-
-
+#header{
+    position: absolute;
+    z-index: 1;
+    color: white;
+    top: 0px;
+}
 
 #screen{
     border: solid 5px black;
@@ -51,7 +81,8 @@ h1, h2, h3, p{
 
 #title{
     text-align: center;
-    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 
@@ -107,18 +138,6 @@ h3{
     margin-top: 1%;
 }
 
-    
-#basalt_left{
-    position: absolute; /* postulat de départ */
-    top: 42%; left: -29vh;
-    transform: rotate(-90deg);
-    font-size: 11vh;
-    border: 7px solid black;
-    padding-left: 2vh;
-    letter-spacing: 1.5vh;
-    padding-right: 2vh;
-}
-
 #nodes{
     margin-left: 20%;
 }
@@ -156,7 +175,7 @@ span {
     font-size: 50%;
     font-family: 'Lato';
     margin-left: 70%;
-    z-index: 2;
+    z-index: -2;
    
 }
 
