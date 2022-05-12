@@ -379,9 +379,13 @@ block body
 
         async function getViewRate(){
             const vueNoeud = [];
+            const query = await fetch('/nodeData');
+            const data = await query.json();
+            //console.log(Data[0].allNode[index].vue[0].nodeID)
             Data[0].allNode[index].vue.forEach(el =>{
-                vueNoeud.push(el.nodeID);
+                vueNoeud.push(el.nodeID)
             })
+            //console.log(vueNoeud)
             const vueNoeudId = {
                 vueNoeud:vueNoeud
             }
@@ -394,6 +398,8 @@ block body
             });
             
             const infoVue = await infoNoeudVue.json();
+
+            //console.log(infoVue)
         }
         
 
