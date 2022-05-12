@@ -80,11 +80,13 @@ block body
                     /* params */
         /*-------------------------------------*/
 
-        let pushData1 = [];
-        let pushData2 = [];
+        let pushData1 = []; // Données pour les stats globale 
+        let pushData2 = []; // Données pour les stats d'un seul noeud
         const chartId1 = document.querySelector('#graph1'); // first pie chart, global stats window
         const chartId2 = document.querySelector('#graph2'); // pie chart in second window
-        let chart;
+        
+        let chart = []; // pie chart : chart globale puis chart individuel
+
         let index = 0; // permits to know what is the node's number
 
 
@@ -118,11 +120,11 @@ block body
                 }
             };
 
-            chart = new Chart(chartId, config);
+            chart.push(new Chart(chartId, config));
         }
 
         pieChart(pushData1, chartId1); // creation of the global pie chart
-        //pieChart(pushData2, chartId2); // creation of the pie chart for nodes
+        pieChart(pushData2, chartId2); // creation of the pie chart for nodes
 
         
         /*-------------------------------------*/
@@ -374,22 +376,45 @@ block body
             nameNode.push(data);
             Data.push(data)
         };
+
+        async function getViewRate(){
+            const vueNoeud = [];
+            Data[0].allNode[index].vue.forEach(el =>{
+                vueNoeud.push(el.nodeID);
+            })
+            const vueNoeudId = {
+                vueNoeud:vueNoeud
+            }
+            const infoNoeudVue = await fetch("/infoNoeudVue", {
+                method: "POST",
+                body: JSON.stringify(vueNoeudId),
+                headers:{
+                    "Content-Type": "application/json"
+                },
+            });
+            
+            const infoVue = await infoNoeudVue.json();
+        }
         
 
         async function getDataForPieCharts(){
+            /* global pie chart */
             const query = await fetch('/statsData');
             const data = await query.json();
             const dataToPush = [data.nbMalicieux,data.nbSains];
             pushData1 = [];
-            pushData2 = [];
             pushData1.push(dataToPush);
+            pushData2 = [];
             pushData2.push(dataToPush);
         };
 
         async function updateData() {
             await getDataForPieCharts();
-            chart.data.datasets[0].data = pushData1[0];
-            chart.update();
+            await getViewRate();
+            chart[0].data.datasets[0].data = pushData1[0];
+            chart[0].update();
+            chart[1].data.datasets[0].data = pushData2[0];
+            chart[1].update();
         }
 
         setInterval(updateData,1000);
