@@ -13,9 +13,9 @@ export class DatabaseAccess {
             },
             vue: [{
                 nodeID: {
-                    port: {type: String, required: true},
+                    port: {type: Number, required: true},
                     adresseReelle: {type: String, required: true},
-                    adresseVirtuelle: {type: String, required: true},
+                    adresseVirtuelle: {type: Number, required: true},
                 },
                 seed: {type: Number, required: true},
                 hitCount: {type: Number, required: true},
@@ -33,7 +33,7 @@ export class DatabaseAccess {
             vue: infoNoeud.vue,
             malicieux: infoNoeud.malicieux,
         });
-        noeud.save().then(() => console.log("Ajout réussi\n"));
+        noeud.save().then(() => console.log("Ajout réussi"));
     }
 
     recupNoeudExistant(infoNoeud: any): Promise<any> {
@@ -49,7 +49,14 @@ export class DatabaseAccess {
     }
 
     recupAllNoeud():Promise<Array<InfoNoeud>>{
-        return this.noeudModel.find().limit(100).exec();
+        return this.noeudModel.find().exec();
+    }
+
+    async recupNoeudVue(vueNoeud: Array<object>): Promise<number[]> {
+        const dataNoeudVue = [];
+        dataNoeudVue[0] = await this.noeudModel.find().countDocuments({nodeID: {$in: vueNoeud},malicieux: 0}).exec();
+        dataNoeudVue[1] = await this.noeudModel.find().countDocuments({nodeID: {$in: vueNoeud},malicieux: {$ne: 0}}).exec();
+        return dataNoeudVue;
     }
 
     async updateNoeud(noeud: any) {
@@ -57,16 +64,21 @@ export class DatabaseAccess {
         noeudEnregistrer.vue = noeud.vue;
         noeudEnregistrer.age = noeud.age;
         noeudEnregistrer.malicieux = noeud.malicieux;
-        noeudEnregistrer.save().then(() => console.log("Modification réussi\n"));
+        noeudEnregistrer.save().then(() => console.log("Modification réussi"));
     }
 
     openDb() {
         const urlmongo = `mongodb+srv://Damien:EZi1eNGarEvEnzVo@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
         mongoose.connect(urlmongo);
         const db = mongoose.connection;
-        db.on('error', console.error.bind(console, 'Erreur lors de la connexion'));
+        db.on('error', () => {
+            console.error.bind(console, 'Erreur lors de la connexion');
+            process.exit(1);
+        });
         db.once('open', () => {
             console.log("Connexion à la base de donnée réussi");
+            //db.dropCollection("info_noeuds");
         });
+
     }
 }

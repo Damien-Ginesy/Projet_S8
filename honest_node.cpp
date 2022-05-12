@@ -22,6 +22,12 @@ int main(int argc, char const *argv[])
     using namespace asio::ip;
     using namespace std::chrono_literals;
     constexpr int attackId = 0;
+    if(argc < 8){
+        std::cout << "Usage: ./honest_node " 
+        "<view_size> <listen_port> <cycles_before_reset> <n_nodes_per_reset> <cycles_per_second> <bootstrap_hostname> "
+        "<bootstrap_port> [log server hostname] [log server port (defaults to 80]" << '\n';
+        return 1;
+    }
     asio::io_context ctx;
     /* params
     - view size
