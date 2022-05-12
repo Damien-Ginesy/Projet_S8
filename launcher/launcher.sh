@@ -118,13 +118,13 @@ bootstrap_param[$j]=$NODE_NBR;
 ((j++));
 bootstrap_param[$j]=$BS_PORT;
 ((j++));
-cd ~/basalt_project/bootstrap_server/;
+#cd ~/basalt_project/bootstrap_server/;
 echo "${bootstrap_param[@]}";
-make clean;
-make;
-stdbuf -o0 ./bin/bootstrap_server "${bootstrap_param[@]}" > output.txt &
-#test d'un noeud
-sleep 2;
+# make clean;
+# make;
+# stdbuf -o0 ./bin/bootstrap_server "${bootstrap_param[@]}" > output.txt &
+# #test d'un noeud
+# sleep 2;
 
 # bin/client launcher $PORT 0 2 > 1.report &
 # bin/client launcher $PORT 0 3 > 2.report &
@@ -147,13 +147,13 @@ sleep 2;
 # bin/client launcher $PORT 2 2 > 19.report &
 
 
-echo "${basalt_param[@]}";
+# echo "${basalt_param[@]}";
 
 
 
 # test BASALT ALGO
 #su peer basalt_launcher.sh "${basalt_param[@]}" > output_basalt.txt;
-su peer;
+# su peer;
 # cd /home/peer/; 
 # mkdir basalt_project;
 # cd basalt_project;

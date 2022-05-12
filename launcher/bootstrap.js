@@ -22,7 +22,7 @@ app.post('/bootstrap', (req, res) => {
     const port = req.body.port;
     const ip = req.body.ip;
 
-    var cmd = "chmod ugo+rwx ../launcher.sh; ../launcher.sh "
+    var cmd = "./launcher.sh "
     cmd += "--port " + port;
     cmd += " --ip " + ip;
 

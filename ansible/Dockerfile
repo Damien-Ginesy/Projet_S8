@@ -26,7 +26,7 @@ rm password.txt;
 RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
 
 # --- basic tools
-RUN apt-get install -y build-essential python3 curl grep net-tools iputils-ping zip > /dev/null;
+RUN apt-get install -y build-essential cmake python3 curl grep net-tools iputils-ping zip > /dev/null;
 
 # --- pip
 RUN \
@@ -68,19 +68,48 @@ USER root
 # CMD is the default command that is going to be executed in the startup of every exection.
 # Only the last one is considered. So use it once.
 CMD \
-su peer /etc/ansibleconf.sh; \
-cd ~; \
 
-# copy project components to local directory
+#
+mkdir /home/log/; \
+
+# configure ssh auth
+su peer /etc/ansibleconf.sh; \
+
+# Copy project components to local directory
 cp -r /home/dev/ /home/components/ ; \
+
+# Compile
+
+echo "compling code"; \
+
+#--- Compile bootstrap
+cd /home/components/bootstrap_server; \
+make > /dev/null; \
+# bin at : /home/components/bootstrap_server/bin/bootstrap_server
+
+# --- Compile basalt
+cd /home/components/ ; \
+cmake -B build/ > /dev/null; \
+cmake --build build/ > /dev/null ; \
+# bin at :
+#    /home/components/bin/honest_node
+#    /home/components/bin/malicious_node
 
 #Launch the metric server
 cd /home/components/serveur; \
 npm install > /dev/null 2> /dev/null; \
-npm start & \
+npm start > /home/log/metric 2> /dev/null & \
 
 #Launch the Launcher
-cd /home/components/bootstrap_server/bootstrap; \
+cd /home/components/launcher; \
 npm install > /dev/null 2> /dev/null; \
-npm run start & \
+npm run start > /home/log/launcher 2> /dev/null & \
+
+# Testing metric / basalt exchange
+/home/components/ansible/test_mertic_baslt_exchange.sh ; \
+
+# Log files
+printf "Log files :\n\tlauncher\t: /home/log/launcher\n\tmetric\t: /home/log/metric\n\tbootstrap\t: /home/log/bootstrap\n\n" ; \
+
+# terminal [Optional]
 bash
