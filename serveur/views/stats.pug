@@ -99,7 +99,7 @@ block body
             await getDataForPieCharts();
 
             let data = {
-            labels: ['noeuds bons', 'noeuds malicieux'],
+            labels: ['noeuds malicieux', 'noeuds sains'],
             datasets: [{
                 data: pushData[0],
                 backgroundColor: ['#6b2d5c', '#E2C290']
@@ -376,11 +376,10 @@ block body
             const vueNoeud = [];
             const query = await fetch('/nodeData');
             const data = await query.json();
-            //console.log(Data[0].allNode[index].vue[0].nodeID)
+
             Data[0].allNode[index].vue.forEach(el =>{
                 vueNoeud.push(el.nodeID)
             })
-            //console.log(vueNoeud)
             const vueNoeudId = {
                 vueNoeud:vueNoeud
             }
@@ -394,7 +393,7 @@ block body
 
             const infoVue = await infoNoeudVue.json();
 
-            //console.log(infoVue)
+            console.log(infoVue)
         }
 
 
