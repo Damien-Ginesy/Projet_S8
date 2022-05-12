@@ -28,6 +28,16 @@ app.post('/infoNoeud', async (req, res) => {
     res.sendStatus(200);
 })
 
+app.post('/infoNoeudVue',async (req, res) => {
+    const vueNoeud = req.body.vueNoeud;
+    const dataVue = await db.recupNoeudVue(vueNoeud);
+    const data = {
+        vueNoeudSain:dataVue[0],
+        vueNoeudMalicieux:dataVue[1],
+    };
+    res.status(200).json(data);
+})
+
 app.get('/nodeStat', async (req, res) => {
     const noeudMalicieux = await db.recupTotalMalicieux();
     const noeudSain = await db.recupTotalNoeudSain();

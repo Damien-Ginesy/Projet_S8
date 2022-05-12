@@ -52,6 +52,13 @@ export class DatabaseAccess {
         return this.noeudModel.find().exec();
     }
 
+    async recupNoeudVue(vueNoeud: Array<object>): Promise<number[]> {
+        const dataNoeudVue = [];
+        dataNoeudVue[0] = await this.noeudModel.find({nodeID: {$in: vueNoeud}}).countDocuments({malicieux: 0}).exec();
+        dataNoeudVue[1] = await this.noeudModel.find({nodeID: {$in: vueNoeud}}).countDocuments({malicieux: {$ne: 0}}).exec();
+        return dataNoeudVue;
+    }
+
     async updateNoeud(noeud: any) {
         const noeudEnregistrer: InfoNoeud = await this.recupNoeudExistant(noeud);
         noeudEnregistrer.vue = noeud.vue;
