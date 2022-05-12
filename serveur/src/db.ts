@@ -77,7 +77,7 @@ export class DatabaseAccess {
         });
         db.once('open', () => {
             console.log("Connexion à la base de donnée réussi");
-            //db.dropCollection("info_noeuds");
+            db.dropCollection("info_noeuds");
         });
 
     }
