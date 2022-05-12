@@ -9,14 +9,14 @@ block title
 
 block body
 
-    header 
+    //div
+        img#background(src="/images/background.jpg")
+        img#rectangle(src="/images/vintage.png")
+
+    #header 
+        h1#title Statistiques Basalt APP
         a(href="accueil")
             h3 Accueil
-
-    
-    h1#title Statistiques Basalt APP
-
-    h1#basalt_left BASALT APP
 
     div#screen
         canvas#graph1
@@ -43,11 +43,11 @@ block body
                         br
                         input#submit(type='submit' value='Effectuer les changements')
 
-        span#sub_header(onclick='openNav()')
+        //span#sub_header(onclick='openNav()')
             h1#open Ouvrir les options  
 
 
-    span#sub_chart(onclick='openChart()')
+    //span#sub_chart(onclick='openChart()')
         h1#openChart Changer de graphique  
 
     div#chart
@@ -135,7 +135,7 @@ block body
         let changedTitle = 0;
 
         async function createTitleNodes(){
-            await getData();
+            await getAllData()
             if(changedTitle === 0){
                 const father = document.getElementById('nodeTitle');
                 let title = document.createElement("p");
@@ -365,7 +365,7 @@ block body
                     /* get data */
         /*-------------------------------------*/
 
-        async function getData(){
+        async function getAllData(){
             const query = await fetch('/nodeData');
             const data = await query.json();
             nameNode.push(data);
@@ -393,7 +393,7 @@ block body
 
             const infoVue = await infoNoeudVue.json();
 
-            console.log(infoVue)
+            return infoVue;
         }
 
 
@@ -404,17 +404,26 @@ block body
             const dataToPush = [data.nbMalicieux,data.nbSains];
             pushData1 = [];
             pushData1.push(dataToPush);
-            pushData2 = [];
-            pushData2.push(dataToPush);
         };
 
-        async function updateData() {
-            await getDataForPieCharts();
-            await getViewRate();
-            chart[0].data.datasets[0].data = pushData1[0];
-            chart[0].update();
+        function setNodePieChart(infoVue){
+            const dataToPush = [infoVue.vueNoeudMalicieux,
+                                infoVue.vueNoeudSain];
+            pushData2 = [];
+            pushData2.push(dataToPush);
+            
             chart[1].data.datasets[0].data = pushData2[0];
             chart[1].update();
+        }
+
+        async function updateData() {
+            await getAllData();
+            await getDataForPieCharts();
+            const infoVue = await getViewRate();
+            setNodePieChart(infoVue)
+
+            chart[0].data.datasets[0].data = pushData1[0];
+            chart[0].update();
         }
 
         setInterval(updateData,1000);
