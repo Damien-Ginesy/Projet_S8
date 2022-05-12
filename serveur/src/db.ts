@@ -32,6 +32,7 @@ export class DatabaseAccess {
             nodeID: infoNoeud.nodeID,
             vue: infoNoeud.vue,
             malicieux: infoNoeud.malicieux,
+            age: infoNoeud.age,
         });
         noeud.save().then(() => console.log("Ajout réussi"));
     }
