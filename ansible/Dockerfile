@@ -26,7 +26,7 @@ rm password.txt;
 RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
 
 # --- basic tools
-RUN apt-get install -y build-essential python3 python curl grep net-tools iputils-ping zip > /dev/null;
+RUN apt-get install -y build-essential python3 curl grep net-tools iputils-ping zip > /dev/null;
 
 # --- pip
 RUN \
@@ -59,7 +59,7 @@ RUN npm --version
 # --- ansible config
 ADD ./ansible.cfg /etc/ansible/ansible.cfg
 
-# --- ansible conf file
+# --- ssh conf script for ansible
 ADD ./ansibleconf.sh /etc/ansibleconf.sh
 
 
@@ -69,12 +69,18 @@ USER root
 # Only the last one is considered. So use it once.
 CMD \
 su peer /etc/ansibleconf.sh; \
-cd ~;\
-#Launch the Launcher 
-mkdir basalt_project; \
-cd basalt_project; \
-cp -r /home/dev/bootstrap_server ./; \
-cd bootstrap_server/bootstrap/; \
-npm install > /dev/null; \
+cd ~; \
+
+# copy project components to local directory
+cp -r /home/dev/ /home/components/ ; \
+
+#Launch the metric server
+cd /home/components/serveur; \
+npm install > /dev/null 2> /dev/null; \
+npm start & \
+
+#Launch the Launcher
+cd /home/components/bootstrap_server/bootstrap; \
+npm install > /dev/null 2> /dev/null; \
 npm run start & \
 bash
