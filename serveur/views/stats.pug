@@ -80,11 +80,11 @@ block body
                     /* params */
         /*-------------------------------------*/
 
-        let pushData1 = []; // Données pour les stats globale 
+        let pushData1 = []; // Données pour les stats globale
         let pushData2 = []; // Données pour les stats d'un seul noeud
         const chartId1 = document.querySelector('#graph1'); // first pie chart, global stats window
         const chartId2 = document.querySelector('#graph2'); // pie chart in second window
-        
+
         let chart = []; // pie chart : chart globale puis chart individuel
 
         let index = 0; // permits to know what is the node's number
@@ -220,11 +220,6 @@ block body
             if(changed === 1)
                 document.getElementById("monTab").remove()
         }
-
-
-        
-
-
 
         /*-------------------------------------*/
         /* window display when click on buttons*/
@@ -396,12 +391,12 @@ block body
                     "Content-Type": "application/json"
                 },
             });
-            
+
             const infoVue = await infoNoeudVue.json();
 
             //console.log(infoVue)
         }
-        
+
 
         async function getDataForPieCharts(){
             /* global pie chart */
