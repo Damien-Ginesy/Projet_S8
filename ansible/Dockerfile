@@ -26,7 +26,7 @@ rm password.txt;
 RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
 
 # --- basic tools
-RUN apt-get install -y build-essential cmake python3 curl grep net-tools iputils-ping zip > /dev/null;
+RUN apt-get install -y build-essential cmake python3 curl grep net-tools iputils-ping zip git > /dev/null;
 
 # --- pip
 RUN \
@@ -63,6 +63,25 @@ ADD ./ansible.cfg /etc/ansible/ansible.cfg
 ADD ./ansibleconf.sh /etc/ansibleconf.sh
 
 
+# Getting code from GitHub & Compiling
+RUN \
+    echo "Compling / Downloading dependancies"; \
+    cd /home/; \
+    git clone --branch integration https://github.com/Damien-Ginesy/Projet_S8.git; \
+    cd /home/Projet_S8/bootstrap_server/; make > /dev/null; \
+    rm -rf /home/Projet_S8/build; \
+    cd /home/Projet_S8/; cmake -B build/ > /dev/null; cmake --build build/ > /dev/null; \
+    cd /home/Projet_S8/launcher/; npm install > /dev/null; \
+    cd /home/Projet_S8/serveur/; npm install > /dev/null;
+
+# bin at:
+    # bootstrap           :  /home/Projet_S8/bootstrap_server/bin/bootstrap_server
+    # basalt honest       :  /home/Projet_S8/bin/honest_node
+    # basalt malicious    :  /home/Projet_S8/bin/malicious_node
+    # launcher            : cd /home/Projet_S8/launcher npm run start
+    # metric              : cd /home/Projet_S8/serveur npm start
+
+
 USER root
 
 # CMD is the default command that is going to be executed in the startup of every exection.
@@ -75,38 +94,19 @@ mkdir /home/log/; \
 # configure ssh auth
 su peer /etc/ansibleconf.sh; \
 
-# Copy project components to local directory
-cp -r /home/dev/ /home/components/ ; \
 
-# Compile
 
-echo "compling code"; \
-
-#--- Compile bootstrap
-cd /home/components/bootstrap_server; \
-make > /dev/null; \
-# bin at : /home/components/bootstrap_server/bin/bootstrap_server
-
-# --- Compile basalt
-cd /home/components/ ; \
-cmake -B build/ > /dev/null; \
-cmake --build build/ > /dev/null ; \
-# bin at :
-#    /home/components/bin/honest_node
-#    /home/components/bin/malicious_node
 
 #Launch the metric server
-cd /home/components/serveur; \
-npm install > /dev/null 2> /dev/null; \
+cd /home/Projet_S8/serveur/; \
 npm start > /home/log/metric 2> /dev/null & \
 
 #Launch the Launcher
-cd /home/components/launcher; \
-npm install > /dev/null 2> /dev/null; \
+cd /home/Projet_S8/launcher/; \
 npm run start > /home/log/launcher 2> /dev/null & \
 
 # Testing metric / basalt exchange
-/home/components/ansible/test_mertic_baslt_exchange.sh ; \
+/home/Projet_S8/ansible/test_mertic_baslt_exchange.sh ; \
 
 # Log files
 printf "Log files :\n\tlauncher\t: /home/log/launcher\n\tmetric\t: /home/log/metric\n\tbootstrap\t: /home/log/bootstrap\n\n" ; \
