@@ -208,7 +208,7 @@
 
             let attack_element_str = `
                 <td
-                    onclick="delete_attack()"
+                    onclick="delete_attack(${attack.index})"
                 >
                     <img src="delete.png" height="16px" width="auto">
                 </td>
@@ -230,7 +230,15 @@
 
         };
 
-
+        const delete_attack = (index)=>{
+            for(let i = 0; i < attacks_tab.length; i++){
+                if(attacks_tab[i].index == index){
+                    document.getElementById(`attackformtr_${index}`).innerHTML = "";
+                    attacks_tab.splice(i, 1);
+                    break;
+                }
+            }
+        };
 
         // main
 
