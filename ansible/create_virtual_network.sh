@@ -13,14 +13,14 @@ for (( i=0; i<$nbr; i++ ))
         # host 
         docker run -itd  \
         --hostname hosts \
-        -v "$(pwd):/home/dev" \
+        -v "$(cd ..; pwd;):/home/dev" \
         ansible_host;
     done
 
 # main machine
 docker run -it \
 --hostname launcher \
--v "$(pwd):/home/dev" \
+-v "$(cd ..; pwd;):/home/dev" \
 ansible;
 
 ./stop_virtual_network.sh

@@ -61,6 +61,7 @@ int main(int argc, char const *argv[])
         return EXIT_FAILURE;
     }
     bootstrap_req req {viewSize, port, attackGroup};
+    std::cout << argv[8] << '\n';
     Basalt::write_n(bsServerSock, sizeof(req), &req);
     bootstrap_res resp;
     Basalt::read_n(bsServerSock, sizeof(resp), &resp);

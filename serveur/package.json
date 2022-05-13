@@ -5,6 +5,7 @@
   "main": "src/server.ts",
   "dependencies": {
     "charts.css": "^0.9.0",
+    "dotenv": "^16.0.1",
     "express": "^4.17.3",
     "mongodb": "^4.4.1",
     "mongoose": "^6.2.6",

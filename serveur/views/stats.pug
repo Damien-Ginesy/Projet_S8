@@ -2,21 +2,21 @@ extends layout
 
 block style
     style
-        include ../style/stats.css   
+        include ../style/stats.css
         include ../style/charts.min.css
 block title
     title Basalt Serveur Supervision
 
 block body
 
-    header 
-        a(href="accueil")
+    div
+        img#background(src="/images/background.jpg")
+        img#rectangle(src="/images/vintage.png")
+
+    #header
+        h1#title Statistiques Basalt APP
+        a#topNavRight(href="accueil")
             h3 Accueil
-
-    
-    h1#title Statistiques Basalt APP
-
-    h1#basalt_left BASALT APP
 
     div#screen
         canvas#graph1
@@ -43,23 +43,24 @@ block body
                         br
                         input#submit(type='submit' value='Effectuer les changements')
 
-        span#sub_header(onclick='openNav()')
+        //span#sub_header(onclick='openNav()')
             h1#open Ouvrir les options  
 
 
-    span#sub_chart(onclick='openChart()')
+    //span#sub_chart(onclick='openChart()')
         h1#openChart Changer de graphique  
 
     div#chart
 
-    div#nodes 
+    div#nodes
         h1#nodeTitle Noeud : 
         div#father
             div#subfather
+            #nodePie
             canvas#graph2
 
-        
-    
+
+
 
     div#cont
         div#but
@@ -69,46 +70,48 @@ block body
 
 
 
-        
+
     //- JavaScript Part
 
     script(src='https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js')
 
     script.
-                
+
         /*-------------------------------------*/
-                    /* params */
+        /* params */
         /*-------------------------------------*/
 
-        let pushData1 = [];
-        let pushData2 = [];
+        let pushData1 = []; // Données pour les stats globale
+        let pushData2 = []; // Données pour les stats d'un seul noeud
         const chartId1 = document.querySelector('#graph1'); // first pie chart, global stats window
         const chartId2 = document.querySelector('#graph2'); // pie chart in second window
-        let chart;
+
+        let chart = []; // pie chart : chart globale puis chart individuel
+
         let index = 0; // permits to know what is the node's number
 
 
         /*-------------------------------------*/
-                    /* pie chart */
+        /* pie chart */
         /*-------------------------------------*/
-        
-        async function pieChart(pushData, chartId){
+
+        async function pieChart(pushData, chartId) {
 
             await getDataForPieCharts();
 
             let data = {
-            labels: ['noeuds bons', 'noeuds malicieux'],
-            datasets: [{
-                data: pushData[0],
-                backgroundColor: ['#6b2d5c', '#E2C290']
-            }]
+                labels: ['noeuds malicieux', 'noeuds sains'],
+                datasets: [{
+                    data: pushData[0],
+                    backgroundColor: ['#6b2d5c', '#E2C290']
+                }]
             };
-            
+
             const config = {
                 type: 'doughnut',
                 data: data,
                 options: {
-                    maintainAspectRatio : true, // make the pie small
+                    maintainAspectRatio: true, // make the pie small
                     labels: {
                         display: true,
                         labels: {
@@ -118,26 +121,26 @@ block body
                 }
             };
 
-            chart = new Chart(chartId, config);
+            chart.push(new Chart(chartId, config));
         }
 
         pieChart(pushData1, chartId1); // creation of the global pie chart
-        //pieChart(pushData2, chartId2); // creation of the pie chart for nodes
+        pieChart(pushData2, chartId2); // creation of the pie chart for nodes
 
-        
+
         /*-------------------------------------*/
-            /*creation tables stats for nodes*/
+        /*creation tables stats for nodes*/
         /*-------------------------------------*/
 
         const nameNode = [];
         let changedTitle = 0;
 
-        async function createTitleNodes(){
-            await getData();
-            if(changedTitle === 0){
+        async function createTitleNodes() {
+            await getAllData()
+            if (changedTitle === 0) {
                 const father = document.getElementById('nodeTitle');
                 let title = document.createElement("p");
-                title.setAttribute("id","monTitle");
+                title.setAttribute("id", "monTitle");
                 title.style.display = 'inline';
                 title.append(nameNode[0].allNode[index].nodeID.adresseVirtuelle);
                 title.append('/' + "" + "port: ")
@@ -146,12 +149,12 @@ block body
                 ipAddress.append(nameNode[0].allNode[index].nodeID.port);
                 ipAddress.style.display = 'inline';
                 title.append(ipAddress)
-            }else{
+            } else {
                 document.getElementById("monTitle").remove()
                 const father = document.getElementById('nodeTitle');
                 let title = document.createElement("p");
                 title.style.display = 'inline';
-                title.setAttribute("id","monTitle");
+                title.setAttribute("id", "monTitle");
                 title.append(nameNode[0].allNode[index].nodeID.adresseVirtuelle);
                 title.append('/' + "" + "port: ")
                 father.append(title);
@@ -163,23 +166,23 @@ block body
             //- changeTitle = 0;
         }
 
-        
+
         createTitleNodes();
 
-         /*-------------------------------------*/
-            /*params for tables for nodes*/
+        /*-------------------------------------*/
+        /*params for tables for nodes*/
         /*-------------------------------------*/
 
         const Data = []; // general data
 
         let changed = 0;
 
-        async function createTableForNodes(){
+        async function createTableForNodes() {
             await getDataForPieCharts();
 
             const father = document.getElementById('subfather')
             let tab = document.createElement("table");
-            tab.setAttribute("id","monTab");
+            tab.setAttribute("id", "monTab");
             father.append(tab);
 
             let tr1 = document.createElement('tr');
@@ -198,31 +201,26 @@ block body
 
             const vueLength = Data[0].allNode[index].vue.length;
             console.log(index)
-           
+
             for (let pas = 0; pas < vueLength; pas++) {
                 let td2 = document.createElement('td');
                 tr1.append(td2);
                 let seed = Data[0].allNode[index].vue[pas].seed.toString()
-                td2.append(seed.slice(0,2))
+                td2.append(seed.slice(0, 2))
 
                 let td3 = document.createElement('td');
                 td3.style.fontSize = 10
                 tr2.append(td3);
                 td3.append(Data[0].allNode[index].vue[pas].nodeID.adresseVirtuelle)
             }
-            changed = 1;   
+            changed = 1;
 
         }
 
-        function deleteTableForNodes(){
-            if(changed === 1)
+        function deleteTableForNodes() {
+            if (changed === 1)
                 document.getElementById("monTab").remove()
         }
-
-
-        
-
-
 
         /*-------------------------------------*/
         /* window display when click on buttons*/
@@ -244,57 +242,57 @@ block body
         nodes.style.display = 'none';
 
         next.addEventListener("click", () => {
-            index = index+1;
-        if(getComputedStyle(chartId1).display !== "none"){
+            index = index + 1;
+            if (getComputedStyle(chartId1).display !== "none") {
                 screen.style.display = "none";
                 mainDiv.style.display = "none";
                 nodes.style.display = 'block';
                 buttonBar.style.margin = "105px";
 
-        
+
                 deleteTableForNodes();
                 createTableForNodes();
                 createTitleNodes();
 
 
                 changedTitle = 1; // const to know if function was applied
-            
+
             }
-            
+
         })
 
         prev.addEventListener("click", () => {
-            if(index === 0){
+            if (index === 0) {
 
-            }else{
+            } else {
                 index = index - 1;
             }
-                
-            
-            if(getComputedStyle(chartId1).display !== "none"){
+
+
+            if (getComputedStyle(chartId1).display !== "none") {
                 screen.style.display = "none";
                 mainDiv.style.display = "none";
                 nodes.style.display = 'block';
                 buttonBar.style.marginTop = "105px";
 
                 changedTitle = 1; // const to know if function was applied
-                
+
                 createTitleNodes();
                 deleteTableForNodes();
                 createTableForNodes();
 
-            } 
-            
+            }
+
         })
-        
+
 
         global.addEventListener("click", () => {
-            if(getComputedStyle(chartId1).display !== "none"){
+            if (getComputedStyle(chartId1).display !== "none") {
                 screen.style.display = "block";
                 nodes.style.display = 'none';
                 mainDiv.style.display = "none";
                 buttonBar.style.marginTop = "0px";
-            }else{
+            } else {
                 screen.style.display = "block";
                 mainDiv.style.display = "none";
                 buttonBar.style.marginTop = "0px";
@@ -304,22 +302,22 @@ block body
 
 
         /*-------------------------------------*/
-                    /* header nav */
+        /* header nav */
         /*-------------------------------------*/
 
-        
+
         function openNav() {
-        document.getElementById("myNav").style.width = "100%";
+            document.getElementById("myNav").style.width = "100%";
         }
-        
-        
+
+
         function closeNav() {
-        document.getElementById("myNav").style.width = "0%";
+            document.getElementById("myNav").style.width = "0%";
         }
 
 
         /*-------------------------------------*/
-                    /* line chart */
+        /* line chart */
         /*-------------------------------------*/
 
         mainDiv.style.display = "none";
@@ -327,7 +325,7 @@ block body
         let tab = document.createElement("table");
         tab.className = 'charts-css line show-4-secondary-axes show-heading';
         tab.id = "my-chart";
-        mainDiv.append(tab);  
+        mainDiv.append(tab);
         let tbody = document.createElement('tbody');
         tab.append(tbody);
 
@@ -339,7 +337,7 @@ block body
         let tr1 = document.createElement('tr');
         tbody.append(tr1);
         let td1 = document.createElement('td');
-        td1.style =  "--start: 0.0; --size: 0.4";
+        td1.style = "--start: 0.0; --size: 0.4";
         tr1.append(td1);
         let span = document.createElement('span');
         span.className = "data"
@@ -349,7 +347,7 @@ block body
         let tr2 = document.createElement('tr');
         tbody.append(tr2);
         let td2 = document.createElement('td');
-        td2.style = "--start: 0.4; --size: 0.4" ;
+        td2.style = "--start: 0.4; --size: 0.4";
         tr2.append(td2);
         let span2 = document.createElement('span');
         span2.className = "data"
@@ -357,42 +355,75 @@ block body
 
 
 
-        function openChart(){
-        screen.style.display = "none";
-        nodes.style.display = "none";
-        mainDiv.style.display = "block";
+        function openChart() {
+            screen.style.display = "none";
+            nodes.style.display = "none";
+            mainDiv.style.display = "block";
         }
 
 
         /*-------------------------------------*/
-                    /* get data */
+        /* get data */
         /*-------------------------------------*/
 
-        async function getData(){
+        async function getAllData() {
             const query = await fetch('/nodeData');
             const data = await query.json();
             nameNode.push(data);
             Data.push(data)
         };
-        
 
-        async function getDataForPieCharts(){
-            const query = await fetch('/statsData');
-            const data = await query.json();
-            const dataToPush = [data.nbMalicieux,data.nbSains];
-            pushData1 = [];
-            pushData2 = [];
-            pushData1.push(dataToPush);
-            pushData2.push(dataToPush);
-        };
+        async function getViewRate() {
+            const vueNoeud = [];
 
-        async function updateData() {
-            await getDataForPieCharts();
-            chart.data.datasets[0].data = pushData1[0];
-            chart.update();
+            Data[0].allNode[index].vue.forEach(el => {
+                vueNoeud.push(el.nodeID)
+            })
+            const vueNoeudId = {
+                vueNoeud: vueNoeud
+            }
+            const infoNoeudVue = await fetch("/infoNoeudVue", {
+                method: "POST",
+                body: JSON.stringify(vueNoeudId),
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            return infoNoeudVue.json();
         }
 
-        setInterval(updateData,1000);
+
+        async function getDataForPieCharts() {
+            /* global pie chart */
+            const query = await fetch('/statsData');
+            const data = await query.json();
+            const dataToPush = [data.nbMalicieux, data.nbSains];
+            pushData1 = [];
+            pushData1.push(dataToPush);
+        };
+
+        function setNodePieChart(infoVue) {
+            const dataToPush = [infoVue.vueNoeudMalicieux,
+                infoVue.vueNoeudSain];
+            pushData2 = [];
+            pushData2.push(dataToPush);
+
+            chart[1].data.datasets[0].data = pushData2[0];
+            chart[1].update();
+        }
+
+        async function updateData() {
+            await getAllData();
+            await getDataForPieCharts();
+            const infoVue = await getViewRate();
+            setNodePieChart(infoVue)
+
+            chart[0].data.datasets[0].data = pushData1[0];
+            chart[0].update();
+            console.log(Data)
+        }
+
+        setInterval(updateData, 1000);
         
  
     

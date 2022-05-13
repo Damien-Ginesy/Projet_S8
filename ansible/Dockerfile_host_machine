@@ -26,7 +26,7 @@ rm password.txt;
 RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
 
 # --- basic tools
-RUN apt-get install -y build-essential python3 python curl grep net-tools iputils-ping zip > /dev/null;
+RUN apt-get install -y build-essential python3 curl grep net-tools iputils-ping zip > /dev/null;
 
 # --- pip
 RUN \

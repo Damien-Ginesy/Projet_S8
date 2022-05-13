@@ -2,6 +2,7 @@
 import express from 'express';
 import {DatabaseAccess} from './db'
 import {InfoNoeud} from "./Interface/InfoNoeud";
+import * as dotenv from 'dotenv';
 
 const app = express();
 const port: number = 3000;
@@ -11,8 +12,18 @@ app.use(express.static(__dirname + '/../public'));
 app.use(express.json());
 app.set('view engine', 'pug');
 
+dotenv.config();
+dotenv.config({ path: __dirname+'/.env' });
+
+
 const db = new DatabaseAccess();
-db.openDb();
+
+if(process.argv.length < 3){
+    console.log("Merci de spécifier votre contexte d'exécution local ou online");
+    process.exit(0);
+}
+
+db.openDb(process.argv[2]);
 
 app.post('/infoNoeud', async (req, res) => {
 
@@ -26,6 +37,16 @@ app.post('/infoNoeud', async (req, res) => {
         }
     }
     res.sendStatus(200);
+})
+
+app.post('/infoNoeudVue',async (req, res) => {
+    const vueNoeud = req.body.vueNoeud;
+    const dataVue = await db.recupNoeudVue(vueNoeud);
+    const data = {
+        vueNoeudSain:dataVue[0],
+        vueNoeudMalicieux:dataVue[1],
+    };
+    res.status(200).json(data);
 })
 
 app.get('/nodeStat', async (req, res) => {

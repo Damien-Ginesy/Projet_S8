@@ -46,7 +46,7 @@
 
 *.pyc
 *.zip
-
+*.json
 
 *.odp*
 *.docx*

@@ -1,8 +1,8 @@
 #! /bin/bash
 
 #remove added file
-rm -r bootstrap_server;
-rm -r bin;
+rm -rf bootstrap_server;
+rm -rf bin;
 #remove host ip adresses file
 rm -f hosts
 
