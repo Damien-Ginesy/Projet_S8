@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BASALT Launcher</title>
+    <style>
+        body{
+            --sec_color : red;
+        }
+        div.params_section{
+            border-style: solid;
+            border-radius: 10px;
+            border-width: 1px;
+            padding: 10px;
+            border-color: var(--sec_color);
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <table>
+            <tr>
+                <td>
+                    <img src="project_logo.png" height="60px" width="auto" style="padding: 10px;" alt="project_logo">
+                </td>
+                <td>
+                    <h2>BASALT simulation launcher</h2>
+                </td>
+            </tr>
+        </table>
+    </header>
+
+    <main>
+        <div class="params_section">
+            <h3>Hosts configuration</h3>
+            <table id='host_table'>
+                <tr>
+                    <td onclick="">
+                        <img src="delete.png" height="16px" width="auto">
+                    </td>
+                    <td>
+                        <input type="text" value="" placeholder="host ip">
+                    </td>
+                    <td>
+                        <input type="text" value="" placeholder="node number">
+                    </td>
+                </tr>
+            </table>
+            <div style="width: 200px; margin-left:70%;" onclick="add_host_form()">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="add.png" height="30px" width="auto"></img>
+                        </td>
+                        <td>
+                            Add host
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+    </footer>
+
+    <script>
+        
+        var hosts_index = 0;
+        var hosts_tab = [];
+
+        var hosts_tab_element = document.getElementById('host_table');
+
+        const add_host_form = () => {
+            
+            let host = {
+                index : hosts_index
+            };
+            hosts_index++;
+            hosts_tab.push(host);
+
+            let host_element_str = `
+                <td
+                    onclick="delete_host(`;
+            host_element_str +=  host.index;
+            host_element_str += `)"
+                >
+                    <img src="delete.png" height="16px" width="auto">
+                </td>
+                <td>
+                    <input type="text" value="" placeholder="host ip">
+                </td>
+                <td>
+                    <input type="text" value="" placeholder="node number">
+                </td>
+            `;
+
+            // let host_element = new DOMParser().parseFromString(host_element_str, "text/xml").innerHTML;
+
+            let host_element = document.createElement('tr');
+            host_element.innerHTML = host_element_str;
+
+            console.log(host_element);
+
+            hosts_tab_element.appendChild(host_element);
+
+
+
+        }
+
+
+    </script>
+
+</body>
+</html>
