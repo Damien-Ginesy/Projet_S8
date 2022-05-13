@@ -18,6 +18,22 @@
             width: 80%;
             margin: auto;
         }
+        div.right_bar{
+            border-style: solid;
+            border-radius: 10px;
+            border-width: 1px;
+            padding: 10px;
+            border-color: var(--sec_color);
+            width: 90%;
+            margin: auto;
+        }
+        div.button{
+            border-style: solid;
+            border-radius: 10px;
+            border-width: 1px;
+            padding: 4px;
+            border-color: var(--sec_color);
+        }
     </style>
 </head>
 <body>
@@ -36,23 +52,49 @@
     </header>
 
     <main>
-        <div class="params_section">
-            <h3>Hosts configuration</h3>
-            <table id='host_table'>
-            </table>
-            <div style="width: 200px; margin-left:70%;" onclick="add_host_form()">
-                <table>
-                    <tr>
-                        <td>
-                            <img src="add.png" height="30px" width="auto"></img>
-                        </td>
-                        <td>
-                            Add host
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
+
+        <table style="width: 100%;">
+            <tr>
+                <td style="width : 20%;">
+                    <div class="right_bar">
+                        <div class="button" style="border-color: green;" onclick="save_hosts()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img src="launch.png" alt="">
+                                    </td>
+                                    <td>
+                                        Launch
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+                <td style="width : 80%;">
+
+                    <div class="params_section">
+                        <h3>Hosts configuration</h3>
+                        <table id='host_table'>
+                        </table>
+                        <div class="button" style="width: 200px; margin-left:70%;" onclick="add_host_form()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img src="add.png" height="30px" width="auto"></img>
+                                    </td>
+                                    <td>
+                                        Add host
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+
     </main>
 
     <footer>
@@ -64,6 +106,8 @@
         var hosts_tab = [];
 
         var hosts_tab_element = document.getElementById('host_table');
+
+        var params = {};
 
         const add_host_form = () => {
             
@@ -80,10 +124,10 @@
                     <img src="delete.png" height="16px" width="auto">
                 </td>
                 <td>
-                    <input type="text" value="" placeholder="host ip">
+                    <input id="hostip_${host.index}"" type="text" value="" placeholder="host ip">
                 </td>
                 <td>
-                    <input type="text" value="" placeholder="node number">
+                    <input id="hostnodenbr_${host.index}"" type="text" value="" placeholder="node number">
                 </td>
             `;
 
@@ -106,6 +150,17 @@
                 }
             }
         };
+
+        const save_hosts = () => {
+            
+            for(let i = 0; i < hosts_tab.length; i++){
+                hosts_tab[i].ip = document.getElementById(`hostip_${hosts_tab[i].index}`).value;
+                hosts_tab[i].node_nbr = document.getElementById(`hostnodenbr_${hosts_tab[i].index}`).value;
+            }
+
+            params.hosts = hosts_tab;
+        
+        }
 
         add_host_form();
 
