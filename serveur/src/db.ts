@@ -68,10 +68,18 @@ export class DatabaseAccess {
         noeudEnregistrer.save().then(() => console.log("Modification réussi"));
     }
 
-    openDb() {
-        const urlmongo = `mongodb+srv://Damien:EZi1eNGarEvEnzVo@test.bnuu4.mongodb.net/RéseauxData?retryWrites=true&w=majority`;
+    openDb(env:string) {
+        let urlmongo = "";
+
+        if(env.toLowerCase() === 'local'){
+            urlmongo = process.env.ACCESS_DB_LOCAL || "";
+        }else if(env.toLowerCase() === 'online'){
+            urlmongo = process.env.ACCESS_DB_ONLINE || "";
+        }
+
         mongoose.connect(urlmongo);
         const db = mongoose.connection;
+
         db.on('error', () => {
             console.error.bind(console, 'Erreur lors de la connexion');
             process.exit(1);
