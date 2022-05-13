@@ -39,17 +39,6 @@
         <div class="params_section">
             <h3>Hosts configuration</h3>
             <table id='host_table'>
-                <tr>
-                    <td onclick="">
-                        <img src="delete.png" height="16px" width="auto">
-                    </td>
-                    <td>
-                        <input type="text" value="" placeholder="host ip">
-                    </td>
-                    <td>
-                        <input type="text" value="" placeholder="node number">
-                    </td>
-                </tr>
             </table>
             <div style="width: 200px; margin-left:70%;" onclick="add_host_form()">
                 <table>
@@ -86,9 +75,7 @@
 
             let host_element_str = `
                 <td
-                    onclick="delete_host(`;
-            host_element_str +=  host.index;
-            host_element_str += `)"
+                    onclick="delete_host(${host.index})"
                 >
                     <img src="delete.png" height="16px" width="auto">
                 </td>
@@ -103,15 +90,24 @@
             // let host_element = new DOMParser().parseFromString(host_element_str, "text/xml").innerHTML;
 
             let host_element = document.createElement('tr');
+            host_element.id = `hostformtr_${host.index}`;
             host_element.innerHTML = host_element_str;
-
-            console.log(host_element);
 
             hosts_tab_element.appendChild(host_element);
 
+        };
 
+        const delete_host = (index)=>{
+            for(let i = 0; i < hosts_tab.length; i++){
+                if(hosts_tab[i].index == index){
+                    document.getElementById(`hostformtr_${index}`).innerHTML = "";
+                    hosts_tab.splice(i, 1);
+                    break;
+                }
+            }
+        };
 
-        }
+        add_host_form();
 
 
     </script>
