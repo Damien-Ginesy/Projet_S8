@@ -17,6 +17,7 @@
             border-color: var(--sec_color);
             width: 80%;
             margin: auto;
+            margin-top: 10px;
         }
         div.right_bar{
             border-style: solid;
@@ -77,7 +78,7 @@
                         <h3>Hosts configuration</h3>
                         <table id='host_table'>
                         </table>
-                        <div class="button" style="width: 200px; margin-left:70%;" onclick="add_host_form()">
+                        <div class="button" style="width: 110px; margin-left:70%;" onclick="add_host_form()">
                             <table>
                                 <tr>
                                     <td>
@@ -85,6 +86,24 @@
                                     </td>
                                     <td>
                                         Add host
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="params_section">
+                        <h3>Attacks configuration</h3>
+                        <table id='attacks_table'>
+                        </table>
+                        <div class="button" style="width: 110px; margin-left:70%;" onclick="add_attacks_form()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img src="add.png" height="30px" width="auto"></img>
+                                    </td>
+                                    <td>
+                                        Add attack
                                     </td>
                                 </tr>
                             </table>
@@ -102,12 +121,15 @@
 
     <script>
         
+        var params = {};
+
+        // hosts
+
         var hosts_index = 0;
         var hosts_tab = [];
 
         var hosts_tab_element = document.getElementById('host_table');
 
-        var params = {};
 
         const add_host_form = () => {
             
@@ -130,8 +152,6 @@
                     <input id="hostnodenbr_${host.index}"" type="text" value="" placeholder="node number">
                 </td>
             `;
-
-            // let host_element = new DOMParser().parseFromString(host_element_str, "text/xml").innerHTML;
 
             let host_element = document.createElement('tr');
             host_element.id = `hostformtr_${host.index}`;
@@ -161,6 +181,58 @@
             params.hosts = hosts_tab;
         
         }
+
+
+        // attacks
+        
+        var attacks_index = 1;
+        var attacks_tab = [];
+
+        var attacks_tab_element = document.getElementById('attacks_table');
+
+        const display_attack_params = ()=>{
+            if(document.getElementById('attackstype').value == 'inst'){
+                document.getElementById('attacksmask').style = '';
+            }else{
+                document.getElementById('attacksmask').style = 'visibility : hidden;';
+            }
+        };
+
+        const add_attacks_form = () => {
+            
+            let attack = {
+                index : attacks_index
+            };
+            attacks_index++;
+            attacks_tab.push(attack);
+
+            let attack_element_str = `
+                <td
+                    onclick="delete_attack()"
+                >
+                    <img src="delete.png" height="16px" width="auto">
+                </td>
+                <td>
+                    <select id="attackstype_${attack.index}" onchange="display_attack_params()">
+                        <option value="eclipse">Eclipse</option>
+                        <option value="inst">Institutional</option>
+                    </select>
+                    <input id="attacksmembersize_${attack.index}" type="text" value="" placeholder="number nodes">
+                    <input id="attacksmask_${attack.index}" type="text" value="" placeholder="mask" style = 'visibility : hidden;'>
+                </td>
+            `;
+
+            let attack_element = document.createElement('tr');
+            attack_element.id = `attackformtr_${attack.index}`;
+            attack_element.innerHTML = attack_element_str;
+
+            attacks_tab_element.appendChild(attack_element);
+
+        };
+
+
+
+        // main
 
         add_host_form();
 
