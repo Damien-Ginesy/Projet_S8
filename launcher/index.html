@@ -58,7 +58,7 @@
             <tr>
                 <td style="width : 20%;">
                     <div class="right_bar">
-                        <div class="button" style="border-color: green;" onclick="save_hosts()">
+                        <div class="button" style="border-color: green;" onclick="launche()">
                             <table>
                                 <tr>
                                     <td>
@@ -185,16 +185,16 @@
 
         // attacks
         
-        var attacks_index = 1;
+        var attacks_index = 0;
         var attacks_tab = [];
 
         var attacks_tab_element = document.getElementById('attacks_table');
 
-        const display_attack_params = ()=>{
-            if(document.getElementById('attackstype').value == 'inst'){
-                document.getElementById('attacksmask').style = '';
+        const display_attack_params = (index)=>{
+            if(document.getElementById(`attackstype_${index}`).value == 'inst'){
+                document.getElementById(`attacksmask_${index}`).style = '';
             }else{
-                document.getElementById('attacksmask').style = 'visibility : hidden;';
+                document.getElementById(`attacksmask_${index}`).style = 'visibility : hidden;';
             }
         };
 
@@ -213,7 +213,7 @@
                     <img src="delete.png" height="16px" width="auto">
                 </td>
                 <td>
-                    <select id="attackstype_${attack.index}" onchange="display_attack_params()">
+                    <select id="attackstype_${attack.index}" onchange="display_attack_params(${attack.index})">
                         <option value="eclipse">Eclipse</option>
                         <option value="inst">Institutional</option>
                     </select>
@@ -239,6 +239,27 @@
                 }
             }
         };
+
+        const save_attacks = () => {
+            
+            for(let i = 0; i < attacks_tab.length; i++){
+                attacks_tab[i].id = attacks_tab[i].index+1;
+                attacks_tab[i].type = document.getElementById(`attackstype_${hosts_tab[i].index}`).value;
+                attacks_tab[i].node_nbr = document.getElementById(`attacksmembersize_${hosts_tab[i].index}`).value;
+                if(attacks_tab[i].type == 'inst'){
+                    attacks_tab[i].mask = document.getElementById(`attacksmask_${hosts_tab[i].index}`).value;;
+                }
+            }
+
+            params.attacks = attacks_tab;
+
+        }
+
+        // Launcher
+        const launche = ()=>{
+            save_attacks();
+            save_hosts();
+        }
 
         // main
 
