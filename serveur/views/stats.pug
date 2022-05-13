@@ -9,13 +9,13 @@ block title
 
 block body
 
-    //div
+    div
         img#background(src="/images/background.jpg")
         img#rectangle(src="/images/vintage.png")
 
     #header 
         h1#title Statistiques Basalt APP
-        a(href="accueil")
+        a#topNavRight(href="accueil")
             h3 Accueil
 
     div#screen
@@ -56,6 +56,7 @@ block body
         h1#nodeTitle Noeud : 
         div#father
             div#subfather
+            #nodePie
             canvas#graph2
 
         
@@ -424,6 +425,7 @@ block body
 
             chart[0].data.datasets[0].data = pushData1[0];
             chart[0].update();
+            console.log(Data)
         }
 
         setInterval(updateData,1000);

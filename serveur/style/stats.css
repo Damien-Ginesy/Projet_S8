@@ -42,9 +42,22 @@ h1, h2, h3, p{
 
 /**** GRAPH ****/
 
+#screen{
+    position: absolute;
+    top: 5%;
+    left: 20%;
+    border: solid 5px black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3%;
+    width: 60%;
+    height: 55%;
+    padding: 2%;
+}
+
 #graph1{
     width: 40% !important;
-    height: 40% !important;
+    height: 80% !important;
     margin-left: auto;
     margin-right: auto;
     margin-top: 2%;
@@ -52,7 +65,7 @@ h1, h2, h3, p{
 }
 
 #graph2{
-    display: inline !important;
+    /* display: inline !important; */
     width: 20% !important;
     height: 20% !important;
     margin-left: auto;
@@ -65,26 +78,26 @@ h1, h2, h3, p{
 
 #header{
     position: absolute;
+    display: inline-flex;
     z-index: 1;
     color: white;
     top: 0px;
 }
 
-#screen{
-    border: solid 5px black;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 3%;
-    width: 50%;
-    padding: 2%;
+#topNavRight{
+    position: fixed;
+    top: 10px;
+    right: 60px;
+    margin-right: 20px;
 }
 
 #title{
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+    position: fixed;
+    top: 5px;
+    left: 40%;
+    color: #f2f2f2;
+    font-size: 25px;
 }
-
 
 #nodes > h1{
     margin-top: 100px;
@@ -94,11 +107,9 @@ h1, h2, h3, p{
 
 
 #but{
-    display: flex;
-    position: sticky;
-    justify-content: space-evenly;
-    margin: 10px;
-    margin-left: 50px;
+    position: absolute;
+    top: 85vh;
+    left: 10vw;
 }
 button{
     padding: 1rem 4rem;
@@ -112,6 +123,8 @@ button{
     border: none;
     transition: background-color 0.1s ease-in-out;
     transition: box-shadow 0.1s ease-in-out;
+
+    margin-inline: 4em;
 }
 
 
@@ -130,7 +143,7 @@ button:hover{
 
 a{
     text-decoration: none;
-    color: black;
+    color: white;
 }
 
 h3{
@@ -138,8 +151,16 @@ h3{
     margin-top: 1%;
 }
 
+
+/******** NODE ********/
+#nodePie{
+    position: absolute;
+    top: 20px;
+}
 #nodes{
-    margin-left: 20%;
+    margin-left: 10%;
+    position: absolute;
+    top: 20px;
 }
 
 table
