@@ -75,6 +75,19 @@
                             </table>
                         </div>
                         <br>
+                        <div class="button" onclick="stop_simu()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="stop_icon" src="" height="40" width="auto" alt="">
+                                    </td>
+                                    <td>
+                                        Stop
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
                         <div class="button" onclick="update_code()">
                             <table>
                                 <tr>
@@ -356,6 +369,23 @@
             location.reload();
         }
 
+        // stop
+        // update
+        const stop_simu = async () => {
+
+            document.getElementById('stop_icon').src = `http://${location.host}/media/activity_indicator`;
+
+            fetch(`http://${location.host}/stop`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then((res)=>{
+                document.getElementById('stop_icon').src = `http://${location.host}/media/stop`;
+            });
+        }
+
         // main
         const get_media = () => {
             document.getElementById('refresh_icon').src = `http://${location.host}/media/refresh`;
@@ -364,6 +394,7 @@
             document.getElementById('icon_launch').src = `http://${location.host}/media/launch`;
             document.getElementById('icon_add_attack').src = `http://${location.host}/media/add`;
             document.getElementById('icon_add_host').src = `http://${location.host}/media/add`;
+            document.getElementById('stop_icon').src = `http://${location.host}/media/stop`;
         }
 
         get_media();

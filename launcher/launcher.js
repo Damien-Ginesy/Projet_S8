@@ -52,12 +52,17 @@ app.get('/media/launch', (req, res) => {
 app.get('/media/refresh', (req, res) => {
     res.sendFile(__dirname+'/refresh.png');
 });
+app.get('/media/stop', (req, res) => {
+    res.sendFile(__dirname+'/stop.png');
+});
 app.get('/media/activity_indicator', (req, res) => {
     res.sendFile(__dirname+'/activity_indicator.gif');
 });
 
 // Launch
 app.post('/launch', async (req, res)=>{
+
+    stop_simu();
 
     let params = JSON.parse(req.body.req);
 
@@ -83,7 +88,7 @@ app.post('/launch', async (req, res)=>{
 
         exec(
             `/home/Projet_S8/bootstrap_server/bin/bootstrap_server${attacks_list_str} ${total_node_number} ${bootstrap_port}`,
-            () => {
+            (err, stdout, stderr) => {
                 if(err)
                     console.log(err);
                 if(stderr)
@@ -100,6 +105,8 @@ app.post('/launch', async (req, res)=>{
 // update code
 app.post('/update', async(req, res)=>{
 
+    stop_simu();
+
     let cmd_stdout;
 
     cmd_stdout = await async_exec('./update_code.sh');
@@ -107,6 +114,22 @@ app.post('/update', async(req, res)=>{
 
     // close the launcher
     process.exit(0);
+
+});
+
+// stop simu
+
+const stop_simu = async ()=>{
+    
+    await async_exec('./stop_simu.sh');
+
+}
+
+app.post('/stop', async(req, res)=>{
+
+    stop_simu();
+
+    res.json({msg:'ok'});
 
 });
 
