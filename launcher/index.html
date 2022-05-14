@@ -110,6 +110,28 @@
                         </div>
                     </div>
 
+                    <div class="params_section">
+                        <h3>BASALT parameters</h3>
+                        <table id='basalt_table'>
+                            <tr>
+                                <td>
+                                    <input id="basalt_view_size" type="text" value="" placeholder="view size">
+                                </td>
+                                <td>
+                                    <input id="basalt_cycles_before_reset" type="text" value="" placeholder="cycles before reset">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="basalt_nodes_per_reset" type="text" value="" placeholder="nodes per reset">
+                                </td>
+                                <td>
+                                    <input id="basalt_cycles_per_second" type="text" value="" placeholder="cycles per second">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
                 </td>
             </tr>
         </table>
@@ -255,10 +277,46 @@
 
         }
 
+        /*
+        
+        <tr>
+                                <td>
+                                    <input id="basalt_view_size" type="text" value="" placeholder="view size">
+                                </td>
+                                <td>
+                                    <input id="basalt_cycles_before_reset" type="text" value="" placeholder="cycles before reset">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input id="basalt_nodes_per_reset" type="text" value="" placeholder="nodes per reset">
+                                </td>
+                                <td>
+                                    <input id="basalt_cycles_per_second" type="text" value="" placeholder="cycles per second">
+                                </td>
+                            </tr>
+
+        */
+
+        // Basalt
+        const save_basalt = () => {
+
+            let basalt = {
+                view_size : document.getElementById('basalt_view_size').value,
+                cycles_before_reset : document.getElementById('basalt_cycles_before_reset').value,
+                nodes_per_reset : document.getElementById('basalt_nodes_per_reset').value,
+                cycles_per_second : document.getElementById('basalt_cycles_per_second').value
+            };
+
+            params.basalt = basalt;
+            
+        }
+
         // Launcher
         const launche = ()=>{
             save_attacks();
             save_hosts();
+            save_basalt();
         }
 
         // main
