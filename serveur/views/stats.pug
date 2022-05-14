@@ -57,7 +57,7 @@ block body
         div#father
             div#subfather
             #nodePie
-            canvas#graph2
+        canvas#graph2
 
 
 
@@ -88,9 +88,9 @@ block body
 
         let chart = []; // pie chart : chart globale puis chart individuel
 
-        let index = 0; // permits to know what is the node's number
-
-
+        let index = undefined; // permits to know what is the node's number
+        let nameNode = [];
+        let Data = []; // general data
         /*-------------------------------------*/
         /* pie chart */
         /*-------------------------------------*/
@@ -132,54 +132,19 @@ block body
         /*creation tables stats for nodes*/
         /*-------------------------------------*/
 
-        const nameNode = [];
-        let changedTitle = 0;
-
         async function createTitleNodes() {
-            await getAllData()
-            if (changedTitle === 0) {
-                const father = document.getElementById('nodeTitle');
-                let title = document.createElement("p");
-                title.setAttribute("id", "monTitle");
-                title.style.display = 'inline';
-                title.append(nameNode[0].allNode[index].nodeID.adresseVirtuelle);
-                title.append('/' + "" + "port: ")
-                father.append(title)
-                let ipAddress = document.createElement("p")
-                ipAddress.append(nameNode[0].allNode[index].nodeID.port);
-                ipAddress.style.display = 'inline';
-                title.append(ipAddress)
-            } else {
-                document.getElementById("monTitle").remove()
-                const father = document.getElementById('nodeTitle');
-                let title = document.createElement("p");
-                title.style.display = 'inline';
-                title.setAttribute("id", "monTitle");
-                title.append(nameNode[0].allNode[index].nodeID.adresseVirtuelle);
-                title.append('/' + "" + "port: ")
-                father.append(title);
-                let ipAddress = document.createElement("p")
-                ipAddress.append(nameNode[0].allNode[index].nodeID.port);
-                ipAddress.style.display = 'inline';
-                title.append(ipAddress)
-            }
-            //- changeTitle = 0;
+            const nodeData = Data[0].allNode[index];
+            const father = document.getElementById('nodeTitle');
+            const nodeNum = "Noeud : " + nodeData.nodeID.adresseVirtuelle;
+            const portNum = " / Port : " + nodeData.nodeID.port;
+            father.innerHTML = nodeNum + portNum;
         }
-
-
-        createTitleNodes();
 
         /*-------------------------------------*/
         /*params for tables for nodes*/
         /*-------------------------------------*/
 
-        const Data = []; // general data
-
-        let changed = 0;
-
         async function createTableForNodes() {
-            await getDataForPieCharts();
-
             const father = document.getElementById('subfather')
             let tab = document.createElement("table");
             tab.setAttribute("id", "monTab");
@@ -200,7 +165,6 @@ block body
             td2.append('Vue')
 
             const vueLength = Data[0].allNode[index].vue.length;
-            console.log(index)
 
             for (let pas = 0; pas < vueLength; pas++) {
                 let td2 = document.createElement('td');
@@ -213,13 +177,13 @@ block body
                 tr2.append(td3);
                 td3.append(Data[0].allNode[index].vue[pas].nodeID.adresseVirtuelle)
             }
-            changed = 1;
 
         }
 
         function deleteTableForNodes() {
-            if (changed === 1)
+            if(document.getElementById("monTab")){
                 document.getElementById("monTab").remove()
+            }
         }
 
         /*-------------------------------------*/
@@ -234,69 +198,45 @@ block body
         const screen = document.getElementById("screen");
         const nodes = document.getElementById("nodes");
 
-        const buttonBar = document.getElementById("cont");
-
         const mainDiv = document.getElementById("chart");
 
-
-        nodes.style.display = 'none';
-
         next.addEventListener("click", () => {
-            index = index + 1;
-            if (getComputedStyle(chartId1).display !== "none") {
-                screen.style.display = "none";
-                mainDiv.style.display = "none";
-                nodes.style.display = 'block';
-                buttonBar.style.margin = "105px";
-
-
-                deleteTableForNodes();
-                createTableForNodes();
-                createTitleNodes();
-
-
-                changedTitle = 1; // const to know if function was applied
-
+            index === undefined ? index = 0 : index = index + 1;
+            if (index >= Data[0].allNode.length){
+                index = Data[0].allNode.length-1
             }
+
+            screen.style.display = "none";
+            mainDiv.style.display = "none";
+            nodes.style.display = 'block';
+
+            deleteTableForNodes();
+            createTableForNodes();
+            createTitleNodes();
+
 
         })
 
         prev.addEventListener("click", () => {
-            if (index === 0) {
-
-            } else {
-                index = index - 1;
+            index === undefined ? index = 0 : index = index - 1;
+            if(index < 0){
+                index = 0;
             }
+            screen.style.display = "none";
+            mainDiv.style.display = "none";
+            nodes.style.display = 'block';
 
-
-            if (getComputedStyle(chartId1).display !== "none") {
-                screen.style.display = "none";
-                mainDiv.style.display = "none";
-                nodes.style.display = 'block';
-                buttonBar.style.marginTop = "105px";
-
-                changedTitle = 1; // const to know if function was applied
-
-                createTitleNodes();
-                deleteTableForNodes();
-                createTableForNodes();
-
-            }
+            createTitleNodes();
+            deleteTableForNodes();
+            createTableForNodes();
 
         })
 
 
         global.addEventListener("click", () => {
-            if (getComputedStyle(chartId1).display !== "none") {
-                screen.style.display = "block";
-                nodes.style.display = 'none';
-                mainDiv.style.display = "none";
-                buttonBar.style.marginTop = "0px";
-            } else {
-                screen.style.display = "block";
-                mainDiv.style.display = "none";
-                buttonBar.style.marginTop = "0px";
-            }
+            screen.style.display = "block";
+            nodes.style.display = 'none';
+            mainDiv.style.display = "none";
         })
 
 
@@ -369,14 +309,14 @@ block body
         async function getAllData() {
             const query = await fetch('/nodeData');
             const data = await query.json();
-            nameNode.push(data);
+            Data = [];
             Data.push(data)
         };
 
         async function getViewRate() {
             const vueNoeud = [];
 
-            Data[0].allNode[index].vue.forEach(el => {
+            Data[0]?.allNode[index]?.vue.forEach(el => {
                 vueNoeud.push(el.nodeID)
             })
             const vueNoeudId = {
