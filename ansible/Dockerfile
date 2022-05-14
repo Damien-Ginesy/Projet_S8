@@ -94,22 +94,9 @@ mkdir /home/log/; \
 # configure ssh auth
 su peer /etc/ansibleconf.sh; \
 
-
-
-
-#Launch the metric server
-cd /home/Projet_S8/serveur/; \
-npm start > /home/log/metric 2> /dev/null & \
-
 #Launch the Launcher
 cd /home/Projet_S8/launcher/; \
-npm run start > /home/log/launcher 2> /dev/null & \
-
-# Testing metric / basalt exchange
-/home/Projet_S8/ansible/test_mertic_baslt_exchange.sh ; \
-
-# Log files
-printf "Log files :\n\tlauncher\t: /home/log/launcher\n\tmetric\t: /home/log/metric\n\tbootstrap\t: /home/log/bootstrap\n\n" ; \
+node launcher.js > /home/log/launcher 2> /dev/null & \
 
 # terminal [Optional]
 bash
