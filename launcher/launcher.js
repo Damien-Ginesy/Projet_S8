@@ -27,9 +27,9 @@ const async_exec = (cmd) =>{
     });
 }
 
-const get_free_port = async () => {
+const get_free_port = () => {
 
-    return await async_exec('./find_free_port');
+    return async_exec('./find_free_port.sh');
 
 }
 
@@ -57,9 +57,42 @@ app.get('/media/activity_indicator', (req, res) => {
 });
 
 // Launch
-app.post('/launch', (req, res)=>{
+app.post('/launch', async (req, res)=>{
 
     let params = JSON.parse(req.body.req);
+
+    let bootstrap_port = await get_free_port();
+
+    // launch bootstrap server
+    const bootstrap_server_launch = (params)=>{
+        
+        // total_node_number
+        let total_node_number = 0;
+        for(let i = 0; i < params.hosts.length; i++){
+            total_node_number += parseInt(params.hosts[i].node_nbr);
+        }
+
+        let attacks_list_str = '';
+        for(let i = 0; i < params.attacks.length; i++){
+            attacks_list_str += ' ' + params.attacks[i].type + ' ';
+            attacks_list_str += params.attacks[i].id;
+            if(params.attacks[i].type == 'inst'){
+                attacks_list_str +=  ' ' + params.attacks[i].mask;
+            }
+        }
+
+        exec(
+            `/home/Projet_S8/bootstrap_server/bin/bootstrap_server${attacks_list_str} ${total_node_number} ${bootstrap_port}`,
+            () => {
+                if(err)
+                    console.log(err);
+                if(stderr)
+                    console.log(stderr);
+            }
+        );
+    }
+
+    bootstrap_server_launch(params);
 
     res.json({msg : 'ok'});
 });
