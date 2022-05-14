@@ -8,7 +8,7 @@
     <link rel="icon" href="http://localhost:8080/media/logo" />
     <style>
         body{
-            --sec_color : red;
+            --sec_color : rgba(224, 21, 21, 0.87);
         }
         div.params_section{
             border-style: solid;
@@ -35,6 +35,9 @@
             border-width: 1px;
             padding: 4px;
             border-color: var(--sec_color);
+        }
+        div.button:hover {
+            box-shadow: 0 0 11px var(--sec_color); 
         }
     </style>
 </head>
@@ -63,10 +66,23 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <img src="http://localhost:8080/media/launch" alt="">
+                                        <img src="http://localhost:8080/media/launch" height="40" width="auto" alt="">
                                     </td>
                                     <td>
                                         Launch
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="button" onclick="update_code()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="refresh_icon" src="http://localhost:8080/media/refresh" height="40" width="auto" alt="">
+                                    </td>
+                                    <td>
+                                        Update code
                                     </td>
                                 </tr>
                             </table>
@@ -145,6 +161,12 @@
     <script>
         
         var params = {};
+
+        const sleep = (m_sec) => {
+            return new Promise((resolve)=>{
+                setTimeout(()=>{ resolve() },m_sec);
+            })
+        }
 
         // hosts
 
@@ -314,6 +336,24 @@
 
             console.log(res);
           
+        }
+
+
+        // update
+        const update_code = async () => {
+
+            document.getElementById('refresh_icon').src = 'http://localhost:8080/media/activity_indicator';
+
+            fetch('http://localhost:8080/update', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+
+            await sleep(4000);
+
+            location.reload();
         }
 
         // main

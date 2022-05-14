@@ -96,7 +96,7 @@ su peer /etc/ansibleconf.sh; \
 
 #Launch the Launcher
 cd /home/Projet_S8/launcher/; \
-node launcher.js > /home/log/launcher 2> /dev/null & \
+while test 1; do node launcher.js > /home/log/launcher 2> /dev/null; done; \
 
 # terminal [Optional]
 bash

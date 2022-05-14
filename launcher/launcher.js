@@ -49,6 +49,12 @@ app.get('/media/delete', (req, res) => {
 app.get('/media/launch', (req, res) => {
     res.sendFile(__dirname+'/launch.png');
 });
+app.get('/media/refresh', (req, res) => {
+    res.sendFile(__dirname+'/refresh.png');
+});
+app.get('/media/activity_indicator', (req, res) => {
+    res.sendFile(__dirname+'/activity_indicator.gif');
+});
 
 // Launch
 app.post('/launch', (req, res)=>{
@@ -58,5 +64,17 @@ app.post('/launch', (req, res)=>{
     res.json({msg : 'ok'});
 });
 
+// update code
+app.post('/update', async(req, res)=>{
+
+    let cmd_stdout;
+
+    cmd_stdout = await async_exec('./update_code.sh');
+    console.log(cmd_stdout);
+
+    // close the launcher
+    process.exit(0);
+
+});
 
 app.listen(port, () => console.log(`Started server at port ${port} !`));
