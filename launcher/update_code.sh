@@ -1,7 +1,7 @@
 #! /bin/bash
 
 cd /home/Projet_S8;
-git pull origin intergration;
+git pull origin integration;
 
 cd /home/Projet_S8/bootstrap_server/; make > /dev/null;
 
