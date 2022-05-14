@@ -277,27 +277,6 @@
 
         }
 
-        /*
-        
-        <tr>
-                                <td>
-                                    <input id="basalt_view_size" type="text" value="" placeholder="view size">
-                                </td>
-                                <td>
-                                    <input id="basalt_cycles_before_reset" type="text" value="" placeholder="cycles before reset">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <input id="basalt_nodes_per_reset" type="text" value="" placeholder="nodes per reset">
-                                </td>
-                                <td>
-                                    <input id="basalt_cycles_per_second" type="text" value="" placeholder="cycles per second">
-                                </td>
-                            </tr>
-
-        */
-
         // Basalt
         const save_basalt = () => {
 
@@ -313,10 +292,27 @@
         }
 
         // Launcher
-        const launche = ()=>{
+        const launche = async()=>{
+            
             save_attacks();
             save_hosts();
             save_basalt();
+
+            // fetch('http://localhost:9090/launch')
+            // .then((res)=> return)
+
+            const rawResponse = await fetch('http://localhost:8080/launch', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'req='+JSON.stringify(params)
+            });
+
+            const res = await rawResponse.json();
+
+            console.log(res);
+          
         }
 
         // main
