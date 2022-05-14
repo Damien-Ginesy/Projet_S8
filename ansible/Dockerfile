@@ -26,7 +26,7 @@ rm password.txt;
 RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
 
 # --- basic tools
-RUN apt-get install -y build-essential cmake python3 curl grep net-tools iputils-ping zip git > /dev/null;
+RUN apt-get install -y build-essential cmake python3 curl grep net-tools iputils-ping zip git lsof > /dev/null;
 
 # --- pip
 RUN \

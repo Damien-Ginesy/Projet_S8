@@ -68,6 +68,18 @@ app.post('/launch', async (req, res)=>{
 
     let bootstrap_port = await get_free_port();
 
+    // launch metric server
+
+    exec(
+        `./launch_metric_server.sh`,
+        (err, stdout, stderr) => {
+            if(err)
+                console.log(err);
+            if(stderr)
+                console.log(stderr);
+        }
+    );
+
     // launch bootstrap server
     const bootstrap_server_launch = (params)=>{
         
