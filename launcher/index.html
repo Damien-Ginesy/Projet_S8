@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BASALT Launcher</title>
-    <link rel="icon" href="http://localhost:8080/media/logo" />
+    <link id = "favicon" rel="icon" href='' />
     <style>
         body{
             --sec_color : rgba(224, 21, 21, 0.87);
@@ -47,7 +47,7 @@
         <table>
             <tr>
                 <td>
-                    <img src="http://localhost:8080/media/logo" height="60px" width="auto" style="padding: 10px;" alt="project_logo">
+                    <img id='project_logo'src="" height="60px" width="auto" style="padding: 10px;" alt="project_logo">
                 </td>
                 <td>
                     <h2>BASALT simulation launcher</h2>
@@ -66,7 +66,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <img src="http://localhost:8080/media/launch" height="40" width="auto" alt="">
+                                        <img id="icon_launch" src="" height="40" width="auto" alt="">
                                     </td>
                                     <td>
                                         Launch
@@ -79,7 +79,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <img id="refresh_icon" src="http://localhost:8080/media/refresh" height="40" width="auto" alt="">
+                                        <img id="refresh_icon" src="" height="40" width="auto" alt="">
                                     </td>
                                     <td>
                                         Update code
@@ -99,7 +99,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <img src="http://localhost:8080/media/add" height="30px" width="auto"></img>
+                                        <img id="icon_add_host" src="" height="30px" width="auto"></img>
                                     </td>
                                     <td>
                                         Add host
@@ -117,7 +117,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <img src="http://localhost:8080/media/add" height="30px" width="auto"></img>
+                                        <img id="icon_add_attack" src="" height="30px" width="auto"></img>
                                     </td>
                                     <td>
                                         Add attack
@@ -188,7 +188,7 @@
                 <td
                     onclick="delete_host(${host.index})"
                 >
-                    <img src="http://localhost:8080/media/delete" height="16px" width="auto">
+                    <img src="http://${location.host}/media/delete" height="16px" width="auto">
                 </td>
                 <td>
                     <input id="hostip_${host.index}"" type="text" value="" placeholder="host ip">
@@ -255,7 +255,7 @@
                 <td
                     onclick="delete_attack(${attack.index})"
                 >
-                    <img src="http://localhost:8080/media/delete" height="16px" width="auto">
+                    <img src="http://${location.host}/media/delete" height="16px" width="auto">
                 </td>
                 <td>
                     <select id="attackstype_${attack.index}" onchange="display_attack_params(${attack.index})">
@@ -324,7 +324,7 @@
             // fetch('http://localhost:9090/launch')
             // .then((res)=> return)
 
-            const rawResponse = await fetch('http://localhost:8080/launch', {
+            const rawResponse = await fetch(`http://${location.host}/launch`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -342,9 +342,9 @@
         // update
         const update_code = async () => {
 
-            document.getElementById('refresh_icon').src = 'http://localhost:8080/media/activity_indicator';
+            document.getElementById('refresh_icon').src = `http://${location.host}/media/activity_indicator`;
 
-            fetch('http://localhost:8080/update', {
+            fetch(`http://${location.host}/update`, {
                 method: 'POST',
                 headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -357,6 +357,14 @@
         }
 
         // main
+        const get_media = () => {
+            document.getElementById('refresh_icon').src = `http://${location.host}/media/refresh`;
+            document.getElementById('favicon').href = `http://${location.host}/media/logo`;
+            document.getElementById('project_logo').src = `http://${location.host}/media/logo`;
+            document.getElementById('icon_launch').src = `http://${location.host}/media/launch`;
+            document.getElementById('icon_add_attack').src = `http://${location.host}/media/add`;
+            document.getElementById('icon_add_host').src = `http://${location.host}/media/add`;
+        }
 
         add_host_form();
 
