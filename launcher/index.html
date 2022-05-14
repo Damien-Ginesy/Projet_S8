@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BASALT Launcher</title>
+    <link rel="icon" href="http://localhost:8080/media/logo" />
     <style>
         body{
             --sec_color : red;
@@ -43,7 +44,7 @@
         <table>
             <tr>
                 <td>
-                    <img src="project_logo.png" height="60px" width="auto" style="padding: 10px;" alt="project_logo">
+                    <img src="http://localhost:8080/media/logo" height="60px" width="auto" style="padding: 10px;" alt="project_logo">
                 </td>
                 <td>
                     <h2>BASALT simulation launcher</h2>
@@ -62,7 +63,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <img src="launch.png" alt="">
+                                        <img src="http://localhost:8080/media/launch" alt="">
                                     </td>
                                     <td>
                                         Launch
@@ -82,7 +83,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <img src="add.png" height="30px" width="auto"></img>
+                                        <img src="http://localhost:8080/media/add" height="30px" width="auto"></img>
                                     </td>
                                     <td>
                                         Add host
@@ -100,7 +101,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <img src="add.png" height="30px" width="auto"></img>
+                                        <img src="http://localhost:8080/media/add" height="30px" width="auto"></img>
                                     </td>
                                     <td>
                                         Add attack
@@ -165,7 +166,7 @@
                 <td
                     onclick="delete_host(${host.index})"
                 >
-                    <img src="delete.png" height="16px" width="auto">
+                    <img src="http://localhost:8080/media/delete" height="16px" width="auto">
                 </td>
                 <td>
                     <input id="hostip_${host.index}"" type="text" value="" placeholder="host ip">
@@ -232,7 +233,7 @@
                 <td
                     onclick="delete_attack(${attack.index})"
                 >
-                    <img src="delete.png" height="16px" width="auto">
+                    <img src="http://localhost:8080/media/delete" height="16px" width="auto">
                 </td>
                 <td>
                     <select id="attackstype_${attack.index}" onchange="display_attack_params(${attack.index})">

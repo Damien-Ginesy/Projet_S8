@@ -33,6 +33,23 @@ const get_free_port = async () => {
 
 }
 
+//media
+app.get('/', (req, res) => {
+    res.sendFile(__dirname+'/index.html');
+});
+app.get('/media/logo', (req, res) => {
+    res.sendFile(__dirname+'/project_logo.png');
+});
+app.get('/media/add', (req, res) => {
+    res.sendFile(__dirname+'/add.png');
+});
+app.get('/media/delete', (req, res) => {
+    res.sendFile(__dirname+'/delete.png');
+});
+app.get('/media/launch', (req, res) => {
+    res.sendFile(__dirname+'/launch.png');
+});
+
 // Launch
 app.post('/launch', (req, res)=>{
 
