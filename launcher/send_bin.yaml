@@ -1,0 +1,9 @@
+---
+- name : deploy
+  hosts : all
+  tasks :
+    - name: Send src to all hosts
+      ansible.builtin.copy:
+        src: /home/Projet_S8/bin
+        dest: /home/peer/
+        mode: 0777
