@@ -114,6 +114,14 @@ app.post('/launch', async (req, res)=>{
 
     bootstrap_server_launch(params);
 
+    // launch basalt (ansible)
+
+    // --- ansible : creating an inventory at /etc/ansible/hosts
+    await async_exec('rm -f /etc/ansible/hosts');
+    for(let i = 0; i < params.hosts.length; i++){
+        await async_exec(`echo ${params.hosts[i].ip} >> /etc/ansible/hosts`);
+    }
+
     res.json({msg : 'ok'});
 });
 
