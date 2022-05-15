@@ -62,14 +62,14 @@
             <tr>
                 <td style="width : 300px;">
                     <div class="right_bar">
-                        <div class="button" style="border-color: green;" onclick="launche()">
+                        <div id ='launch_button' class="button" style="border-color: green;" onclick="launche()">
                             <table>
                                 <tr>
                                     <td>
                                         <img id="icon_launch" src="" height="40" width="auto" alt="">
                                     </td>
                                     <td>
-                                        Launch
+                                        <span id="launch_metric_msg">Launch</span>
                                     </td>
                                 </tr>
                             </table>
@@ -329,7 +329,7 @@
 
         // Launcher
         const launche = async()=>{
-            
+
             save_attacks();
             save_hosts();
             save_basalt();
@@ -346,6 +346,15 @@
             });
 
             const res = await rawResponse.json();
+
+            document.getElementById('icon_launch').src = `http://${location.host}/media/metric`;
+            document.getElementById('launch_metric_msg').innerHTML = "View metrics";
+            
+            var redirect_to_metric_server = ()=>{window.open(`http://${location.hostname}:3000`, '_blank').focus();};
+
+            document.getElementById('launch_button').onclick = redirect_to_metric_server;
+            
+
 
             console.log(res);
           
@@ -370,8 +379,11 @@
         }
 
         // stop
-        // update
         const stop_simu = async () => {
+
+            document.getElementById('icon_launch').src = `http://${location.host}/media/launch`;
+            document.getElementById('launch_metric_msg').innerHTML = "Launch"
+            document.getElementById('launch_button').onclick = launche;
 
             document.getElementById('stop_icon').src = `http://${location.host}/media/activity_indicator`;
 

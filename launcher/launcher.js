@@ -55,6 +55,9 @@ app.get('/media/refresh', (req, res) => {
 app.get('/media/stop', (req, res) => {
     res.sendFile(__dirname+'/stop.png');
 });
+app.get('/media/metric', (req, res) => {
+    res.sendFile(__dirname+'/metric.png');
+});
 app.get('/media/activity_indicator', (req, res) => {
     res.sendFile(__dirname+'/activity_indicator.gif');
 });
