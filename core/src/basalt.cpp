@@ -44,7 +44,6 @@ namespace Basalt
     static std::thread runner;
     std::mutex mutex;
     HTTPLogger *logger = nullptr;
-    int delayLogStart;
 
     Hash_t rank(uint32_t id, uint32_t seed) {
         return Hash_t {
@@ -61,8 +60,7 @@ namespace Basalt
         {
             try
             {
-                if(node->iter() > delayLogStart)
-                  *logger << node->to_string();
+                *logger << node->to_string();
             }
             catch(const asio::error_code& ec)
             {
@@ -135,10 +133,8 @@ namespace Basalt
     void basalt_set_logger(size_t bufferSize, const std::string& hostname, uint16_t port, const std::string& apiEndpoint,
             HTTPLogger::cbk_t callback)
     {
-
         logger = new HTTPLogger(bufferSize, hostname, port, apiEndpoint);
         logger->setCallback(callback);
-        delayLogStart = rand() % bufferSize;
     }
     void basalt_stop(){
         net::net_finish();
@@ -148,7 +144,7 @@ namespace Basalt
         runner.join();
         delete mainLoop;
         delete resetLoop;
-        delete logger;
+        if(logger) delete logger;
         delete node;
     }
 } // namespace Basalt
