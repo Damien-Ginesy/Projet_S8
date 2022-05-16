@@ -10,17 +10,28 @@ viewSize = 1
 k = 0
 freq = 1
 p = 3000
-n = 2
-m = 0
+n = 9
+m = 1
 httpPort = 8081
 
 def honest_launcher(port):
-    cmd = "./bin/honest_node %d %d %d %d %d %s %d localhost %d &" % (viewSize, port, 5*freq, k, freq, bsHost, bsPort, httpPort)
+    cmd = "./bin/honest_node %d %d %d %d %d %s %d localhost %d > /dev/null &" % (viewSize, port, 5*freq, k, freq, bsHost, bsPort, httpPort)
     system(cmd)
 
 def malicious_launcher(port):
-    cmd = "./bin/malicious_node %d %d %d %d %d %s %d 1 localhost %d &" % (viewSize, port, 5*freq, k, freq, bsHost, bsPort, httpPort)
+    cmd = "./bin/malicious_node %d %d %d %d %d %s %d 1 localhost %d > /dev/null &" % (viewSize, port, 5*freq, k, freq, bsHost, bsPort, httpPort)
     system(cmd)
+
+def bsLauncher(port):
+    if m:
+        cmd = "./bootstrap_server/bin/bootstrap_server eclipse 1 %d %d" % (n+m, port)
+    else:
+        cmd = "./bootstrap_server/bin/bootstrap_server %d %d" % (n+m, port)
+    system(cmd)
+
+bsServverThread = Thread(target=bsLauncher, args=(bsPort,))
+
+bsServverThread.start()
 
 for i in range(n):
     honest_launcher(p)
@@ -29,6 +40,8 @@ for i in range(n):
 for i in range(m):
     malicious_launcher(p)
     p+=1
+
+bsServverThread.join()
 
 while 1:
     try:
