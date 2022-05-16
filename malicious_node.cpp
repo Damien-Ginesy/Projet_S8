@@ -94,7 +94,8 @@ int main(int argc, char const *argv[])
     {
     case 11: logServerPort = (uint16_t)atoi(argv[10]);
     case 10: logServerHostname = argv[9];
-    Basalt::basalt_set_logger(k, logServerHostname, logServerPort);
+    std::cout << "Log server: " << logServerHostname << ':' << logServerPort << '\n';
+    Basalt::basalt_set_logger(5, logServerHostname, logServerPort);
     }
     
     Basalt::basalt_init(id, bootstrap, friends, k, mainDelay, resetDelay);

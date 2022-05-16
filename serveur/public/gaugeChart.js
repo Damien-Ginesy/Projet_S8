@@ -1,7 +1,8 @@
 function getGaugeOptions(){
     return ({
         chart:{
-            type:'solidgauge'
+            type:'solidgauge',
+            backgroundColor: 'rgba(0,0,0,0)'
         },
         title:null,
         pane: {
@@ -82,3 +83,27 @@ function setGaugeData(){
         }]
     })
 }
+
+const gaugeChart = Highcharts.chart('infectionRate', Highcharts.merge(getGaugeOptions(),setGaugeData()));
+
+setInterval(async function () {
+    // Speed
+    let point,
+      newVal    
+
+    if (!gaugeChart)
+        return;
+        
+    point = gaugeChart.series[0].points[0];
+    const data = await fetch('/nodeStat');
+    const dataJson = await data.json();
+    const taux = Math.round(dataJson.noeudMalicieux/(dataJson.noeudSain+dataJson.noeudMalicieux)*100);
+    newVal = taux;
+
+    if (newVal < 0 || newVal > 100) {
+        newVal = point.y;
+    }
+
+    point.update(newVal);
+
+}, 1000);
