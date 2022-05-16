@@ -3,6 +3,7 @@ import express from 'express';
 import {DatabaseAccess} from './db'
 import {InfoNoeud} from "./Interface/InfoNoeud";
 import * as dotenv from 'dotenv';
+import {Timestamp} from "mongodb";
 
 const app = express();
 const port: number = 3000;
@@ -26,16 +27,8 @@ if(process.argv.length < 3){
 db.openDb(process.argv[2]);
 
 app.post('/infoNoeud', async (req, res) => {
-
-    let noeud: any;
-    for (noeud of req.body) {
-        const existe: InfoNoeud | null = await db.recupNoeudExistant(noeud);
-        if (existe === null) {
-            db.addInfo(noeud);
-        } else {
-            await db.updateNoeud(noeud);
-        }
-    }
+    const adresseReelle = req.ip;
+    await db.ajoutDonnees(adresseReelle, req.body);
     res.sendStatus(200);
 })
 
@@ -93,19 +86,13 @@ app.get('/stats/:id', async(req,res)=>{
 })
 
 app.get('/accueil', (req, res) => {
+    db.suppDoublons();
     res.render('homepage');
 })
 
 app.post('/',async (req, res) => {
-    let noeud: any;
-    for (noeud of req.body) {
-        const existe: InfoNoeud | null = await db.recupNoeudExistant(noeud);
-        if (existe === null) {
-            db.addInfo(noeud);
-        } else {
-            await db.updateNoeud(noeud);
-        }
-    }
+    const adresseReelle = req.ip;
+    await db.ajoutDonnees(adresseReelle, req.body);
     res.sendStatus(200);
 })
 

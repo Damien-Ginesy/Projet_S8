@@ -4,6 +4,8 @@ import {InfoNoeud} from "./Interface/InfoNoeud";
 
 export class DatabaseAccess {
 
+    private ajout = false;
+
     private noeudSchema: Schema = new Schema(
         {
             nodeID: {
@@ -34,7 +36,7 @@ export class DatabaseAccess {
             malicieux: infoNoeud.malicieux,
             age: infoNoeud.age,
         });
-        noeud.save().then(() => console.log("Ajout réussi"));
+        noeud.collection.insertOne(infoNoeud).then(() => console.log("Ajout réussi"));
     }
 
     recupNoeudExistant(infoNoeud: any): Promise<any> {
@@ -61,11 +63,51 @@ export class DatabaseAccess {
     }
 
     async updateNoeud(noeud: any) {
-        const noeudEnregistrer: InfoNoeud = await this.recupNoeudExistant(noeud);
-        noeudEnregistrer.vue = noeud.vue;
-        noeudEnregistrer.age = noeud.age;
-        noeudEnregistrer.malicieux = noeud.malicieux;
-        noeudEnregistrer.save().then(() => console.log("Modification réussi"));
+        const noeudEnregistrer: InfoNoeud | null = await this.recupNoeudExistant(noeud) || null;
+        if(noeudEnregistrer !== null){
+            noeudEnregistrer.vue = noeud.vue;
+            noeudEnregistrer.age = noeud.age;
+            noeudEnregistrer.malicieux = noeud.malicieux;
+            noeudEnregistrer.save().then(() => console.log("Modification réussi"));
+        }
+    }
+
+    suppDoublons(){
+        this.noeudModel.distinct("nodeID").exec().then(async res => {
+            for (let noeud of res) {
+                const nodeID ={
+                    nodeID:noeud,
+                }
+                const noeudExistant = await this.noeudModel.find({nodeID:nodeID.nodeID}).exec();
+                let i = noeudExistant.length
+                const longueurMax = noeudExistant.length;
+                while(i > 1){
+                    this.noeudModel.deleteOne({nodeID:noeudExistant[longueurMax-i].nodeID}).exec().then();
+                    i--;
+                }
+            }
+        })
+        console.log("Doublons supprimée");
+    }
+
+
+    async ajoutDonnees(adresseReelle:string,noeuds:Array<object>){
+        let noeud: any;
+        for (noeud of noeuds) {
+            noeud.nodeID.adresseReelle = adresseReelle;
+            const existe: InfoNoeud | null = await this.recupNoeudExistant(noeud);
+            if (existe === null) {
+                this.addInfo(noeud);
+            } else {
+                if(!this.ajout){
+                    this.suppDoublons();
+                    this.ajout = true;
+                }
+                if(this.ajout){
+                    await this.updateNoeud(noeud);
+                }
+            }
+        }
     }
 
     openDb(env:string) {
@@ -86,7 +128,7 @@ export class DatabaseAccess {
         });
         db.once('open', () => {
             console.log("Connexion à la base de donnée réussi");
-            db.dropCollection("info_noeuds");
+            //db.dropCollection("info_noeuds");
         });
 
     }
