@@ -39,6 +39,18 @@ RUN apt-get install -y openssh-server > /dev/null;
 RUN \
 apt-get install -y libstdc++6;
 
+# setting root password
+RUN \
+    echo "basalt" > password; \
+    echo "basalt" >> password; \
+    passwd root < password;
+
+# add in host launcher
+ADD ./find_free_port.sh /home/peer/find_free_port.sh
+
+# add find free port script
+ADD ./in_host_launcher.sh /home/peer/in_host_launcher.sh
+
 # CMD is the default command that is going to be executed in the startup of every exection.
 # Only the last one is considered. So use it once.
 CMD \
