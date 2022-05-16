@@ -4,6 +4,7 @@ block style
     style
         include ../style/stats.css
         include ../style/charts.min.css
+        include ../style/gaugeChart.css
 block title
     title Basalt Serveur Supervision
 
@@ -47,8 +48,12 @@ block body
             h1#open Ouvrir les options  
 
 
-    //span#sub_chart(onclick='openChart()')
-        h1#openChart Changer de graphique  
+    div#subChart
+        h4(onclick='openChart()') Changer de graphique 
+
+    #gaugeChart        
+        figure.chartBox
+            #infectionRate
 
     div#chart
 
@@ -72,7 +77,12 @@ block body
 
 
     //- JavaScript Part
-
+    script(src="https://code.highcharts.com/highcharts.js")
+    script(src="https://code.highcharts.com/highcharts-more.js")
+    script(src="https://code.highcharts.com/modules/solid-gauge.js")
+    script(src="https://code.highcharts.com/modules/accessibility.js")
+    
+    script(src="gaugeChart.js")
     script(src='https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js')
 
     script.
@@ -89,7 +99,6 @@ block body
         let chart = []; // pie chart : chart globale puis chart individuel
 
         let index = undefined; // permits to know what is the node's number
-        let nameNode = [];
         let Data = []; // general data
         /*-------------------------------------*/
         /* pie chart */
@@ -195,20 +204,21 @@ block body
         const next = document.getElementById("next");
         const global = document.getElementById("global");
 
-        const screen = document.getElementById("screen");
-        const nodes = document.getElementById("nodes");
-
-        const mainDiv = document.getElementById("chart");
-
         next.addEventListener("click", () => {
             index === undefined ? index = 0 : index = index + 1;
             if (index >= Data[0].allNode.length){
                 index = Data[0].allNode.length-1
             }
 
+            const screen = document.getElementById("screen");
+            const nodes = document.getElementById("nodes");
+            const changeGraphButt = document.getElementById("subChart");
+            const mainDiv = document.getElementById("chart");
+            
             screen.style.display = "none";
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
+            changeGraphButt.style.display = "none";
 
             deleteTableForNodes();
             createTableForNodes();
@@ -222,9 +232,15 @@ block body
             if(index < 0){
                 index = 0;
             }
+            const screen = document.getElementById("screen");
+            const nodes = document.getElementById("nodes");
+            const changeGraphButt = document.getElementById("subChart");
+            const mainDiv = document.getElementById("chart");
+
             screen.style.display = "none";
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
+            changeGraphButt.style.display = "none";
 
             createTitleNodes();
             deleteTableForNodes();
@@ -234,9 +250,15 @@ block body
 
 
         global.addEventListener("click", () => {
+            const screen = document.getElementById("screen");
+            const nodes = document.getElementById("nodes");
+            const changeGraphButt = document.getElementById("subChart");
+            const mainDiv = document.getElementById("chart");
+            
             screen.style.display = "block";
             nodes.style.display = 'none';
             mainDiv.style.display = "none";
+            changeGraphButt.style.display = "block";
         })
 
 
@@ -259,7 +281,7 @@ block body
         /*-------------------------------------*/
         /* line chart */
         /*-------------------------------------*/
-
+        /*
         mainDiv.style.display = "none";
 
         let tab = document.createElement("table");
@@ -292,13 +314,20 @@ block body
         let span2 = document.createElement('span');
         span2.className = "data"
         td2.append(span2);
-
+        */
 
 
         function openChart() {
-            screen.style.display = "none";
-            nodes.style.display = "none";
-            mainDiv.style.display = "block";
+            const mainDiv = document.getElementById("chart");
+            const screen = document.getElementById("screen");
+            const gaugeChart = document.getElementById('gaugeChart');
+
+            const style = ["none", "block"];
+            let idStyle;
+            mainDiv.style.display === "none" ? idStyle = 1 : idStyle = 0;
+            screen.style.display = style[idStyle];
+            gaugeChart.style.display = style.at(parseInt(idStyle)-1)
+            mainDiv.style.display = style[idStyle];
         }
 
 
@@ -360,7 +389,6 @@ block body
 
             chart[0].data.datasets[0].data = pushData1[0];
             chart[0].update();
-            console.log(Data)
         }
 
         setInterval(updateData, 1000);
