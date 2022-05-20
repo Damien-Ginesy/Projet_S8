@@ -302,10 +302,10 @@
             
             for(let i = 0; i < attacks_tab.length; i++){
                 attacks_tab[i].id = attacks_tab[i].index+1;
-                attacks_tab[i].type = document.getElementById(`attackstype_${hosts_tab[i].index}`).value;
-                attacks_tab[i].node_nbr = document.getElementById(`attacksmembersize_${hosts_tab[i].index}`).value;
-                if(attacks_tab[i].type == 'inst'){
-                    attacks_tab[i].mask = document.getElementById(`attacksmask_${hosts_tab[i].index}`).value;;
+                attacks_tab[i].type = document.getElementById(`attackstype_${attacks_tab[i].index}`).value;
+                attacks_tab[i].node_nbr = document.getElementById(`attacksmembersize_${attacks_tab[i].index}`).value;
+                if(attacks_tab[i].type === 'inst'){
+                    attacks_tab[i].mask = document.getElementById(`attacksmask_${attacks_tab[i].index}`).value;;
                 }
             }
 
