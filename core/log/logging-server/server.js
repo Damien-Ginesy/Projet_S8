@@ -5,6 +5,7 @@ const port = 8081;
 var database = {};
 var s = false;
 
+app.use('/panel', express.static('panel'));
 app.use(express.json());
 
 app.post('/', (req, res) => {
