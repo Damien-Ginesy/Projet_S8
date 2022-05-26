@@ -63,7 +63,7 @@ function plot(){
 
 function getData(){
   var req = new XMLHttpRequest();
-  req.open('GET', 'http://localhost:8081/log.log', true);
+  req.open('GET', '/nodeData', true);
   req.onload  = function() {
     try {
       let obj = JSON.parse(req.response);

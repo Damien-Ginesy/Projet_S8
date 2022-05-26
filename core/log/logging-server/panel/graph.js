@@ -111,7 +111,7 @@ class Graph {
       this.ctx.fill();
       this.ctx.stroke();
       this.ctx.fillStyle = "black";
-      this.ctx.fillText(identifiant[i], node.x-3*("" + identifiant[i]).length, node.y+3);
+      this.ctx.fillText(i, node.x-3*("" + i).length, node.y+3);
     }
   }
 
