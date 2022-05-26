@@ -72,7 +72,8 @@ app.post('/launch', async (req, res)=>{
 
     let params = JSON.parse(req.body.req);
 
-    let main_machain_ip = req.headers.host.split(':')[0];
+    // let main_machain_ip = req.headers.host.split(':')[0];
+    let main_machain_ip = '172.17.0.15';
 
     let bootstrap_port = await get_free_port();
 
@@ -134,6 +135,7 @@ app.post('/launch', async (req, res)=>{
     for(let i = 0; i < params.hosts.length; i++){
         await async_exec(`echo ${params.hosts[i].ip} >> /etc/ansible/hosts`);
     }
+    await async_exec(`echo '172.17.0.13' > /etc/ansible/hosts; echo '172.17.0.14' >> /etc/ansible/hosts`);
 
     // --- ansible : send bin to hosts
     let res_cmd = await async_exec("su peer -c 'ansible-playbook send_bin.yaml'");
@@ -148,26 +150,26 @@ app.post('/launch', async (req, res)=>{
 
         console.log(mac_i);
         
-        if(params.hosts[mac_i].node_nbr === 0) continue;
+        if(parseInt(params.hosts[mac_i].node_nbr) === 0) continue;
         
         for(let attack_i = 0; attack_i < params.attacks.length; attack_i++){
 
-            if(params.attacks[attack_i].node_nbr === 0) continue;
+            if(parseInt(params.attacks[attack_i].node_nbr) === 0) continue;
 
-            if(params.hosts[mac_i].node_nbr >= params.attacks[attack_i].node_nbr){
+            if(parseInt(params.hosts[mac_i].node_nbr) >= parseInt(params.attacks[attack_i].node_nbr)){
                 launch_basalt_cmd_gen(params, mac_i, params.attacks[attack_i].id, params.attacks[attack_i].node_nbr);
-                params.hosts[mac_i].node_nbr -= params.attacks[attack_i].node_nbr;
+                params.hosts[mac_i].node_nbr = parseInt(params.hosts[mac_i].node_nbr) - parseInt(params.attacks[attack_i].node_nbr);
                 params.attacks[attack_i].node_nbr = 0;
             }else{
                 launch_basalt_cmd_gen(params, mac_i, params.attacks[attack_i].id, params.hosts[mac_i].node_nbr);
-                params.attacks[attack_i].node_nbr -= params.hosts[mac_i].node_nbr;
+                params.attacks[attack_i].node_nbr = parseInt(params.attacks[attack_i].node_nbr) - params.hosts[mac_i].node_nbr;
                 params.hosts[mac_i].node_nbr = 0;
                 break;
             }
 
         }
 
-        if(params.hosts[mac_i].node_nbr > 0){
+        if(parseInt(params.hosts[mac_i].node_nbr) > 0){
             launch_basalt_cmd_gen(params, mac_i, 0, params.hosts[mac_i].node_nbr);
         }
 
@@ -181,6 +183,7 @@ app.post('/launch', async (req, res)=>{
         main_basalt_exec_cmd += launch_basalt_cmd_tab[i]+" & ";
     }
     main_basalt_exec_cmd += "';";
+    // console.log(main_basalt_exec_cmd);
     await async_exec(main_basalt_exec_cmd);
 
     console.log('basalt ok');

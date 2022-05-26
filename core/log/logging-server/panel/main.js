@@ -1,6 +1,6 @@
 //Parametres graphiques
 let IdTarget = 1;
-let graphEnabled = false;
+let graphEnabled = true;
 
 let l, dl; //var global boucle
 l = setInterval(getData, 500);
