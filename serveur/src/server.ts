@@ -10,7 +10,7 @@ const port: number = 3000;
 
 app.set('views', './views');
 app.use(express.static(__dirname + '/../public'));
-app.use('/panel', express.static('/../panel'));
+app.use('/panel', express.static(__dirname + '/../panel'));
 app.use(express.json());
 app.set('view engine', 'pug');
 
