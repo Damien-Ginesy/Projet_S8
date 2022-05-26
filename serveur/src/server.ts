@@ -56,10 +56,7 @@ app.get('/nodeStat', async (req, res) => {
 
 app.get('/nodeData', async (req,res)=>{
     const allNode = await db.recupAllNoeud();
-    const nodesJson = {
-        allNode: allNode,
-    }
-    res.status(200).header("Access-Control-Allow-Origin","*").json(nodesJson);
+    res.status(200).header("Access-Control-Allow-Origin","*").json(allNode);
 })
 
 app.get('/network', (req, res) => {
