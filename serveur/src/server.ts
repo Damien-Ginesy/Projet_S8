@@ -29,7 +29,7 @@ db.openDb(process.argv[2]);
 
 app.post('/infoNoeud', async (req, res) => {
     const adresseReelle = req.ip;
-    await db.ajoutDonnees(adresseReelle, req.body);
+    await db.ajoutDonnees(adresseReelle, req.body[0]);
     res.sendStatus(200);
 })
 

@@ -91,22 +91,14 @@ export class DatabaseAccess {
     }
 
 
-    async ajoutDonnees(adresseReelle:string,noeuds:Array<object>){
-        let noeud: any;
-        for (noeud of noeuds) {
-            noeud.nodeID.adresseReelle = adresseReelle;
-            const existe: InfoNoeud | null = await this.recupNoeudExistant(noeud);
-            if (existe === null) {
-                this.addInfo(noeud);
-            } else {
-                if(!this.ajout){
-                    this.suppDoublons();
-                    this.ajout = true;
-                }
-                if(this.ajout){
-                    await this.updateNoeud(noeud);
-                }
-            }
+    async ajoutDonnees(adresseReelle:string,noeud:object){
+        // @ts-ignore
+        noeud.nodeID.adresseReelle = adresseReelle;
+        const existe: InfoNoeud | null = await this.recupNoeudExistant(noeud);
+        if (existe === null) {
+            this.addInfo(noeud);
+        } else {
+            await this.updateNoeud(noeud);
         }
     }
 
