@@ -72,7 +72,8 @@ app.post('/launch', async (req, res)=>{
 
     let params = JSON.parse(req.body.req);
 
-    let main_machain_ip = req.headers.host.split(':')[0];
+    // let main_machain_ip = req.headers.host.split(':')[0];
+    let main_machain_ip = '172.17.0.15';
 
     let bootstrap_port = await get_free_port();
 
