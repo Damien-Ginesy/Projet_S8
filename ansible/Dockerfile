@@ -32,6 +32,9 @@ RUN apt-get install -y build-essential cmake python3 curl grep net-tools iputils
 RUN \
 apt-get install -y python3-pip;
 
+# --- ssh server
+RUN apt-get install -y openssh-server > /dev/null;
+
 # --- Libstdc++6
 RUN \
 apt-get install -y libstdc++6;
@@ -80,15 +83,25 @@ RUN \
     cd /home/Projet_S8/bootstrap_server/; make > /dev/null; \
     rm -rf /home/Projet_S8/build; \
     cd /home/Projet_S8/; cmake -B build/ > /dev/null; cmake --build build/ > /dev/null; \
+    cp /home/Projet_S8/bootstrap_server/bin/bootstrap_server /home/Projet_S8/bin/bootstrap_server; \
     cd /home/Projet_S8/launcher/; npm install > /dev/null; \
     cd /home/Projet_S8/serveur/; npm install > /dev/null;
 
-# bin at:
-    # bootstrap           :  /home/Projet_S8/bootstrap_server/bin/bootstrap_server
+# --- bins at:
+    # bootstrap           :  /home/Projet_S8/bootstrap_server/bin/bootstrap_server, /home/Projet_S8/bin/bootstrap_server
     # basalt honest       :  /home/Projet_S8/bin/honest_node
     # basalt malicious    :  /home/Projet_S8/bin/malicious_node
     # launcher            : cd /home/Projet_S8/launcher npm run start
     # metric              : cd /home/Projet_S8/serveur npm start
+
+
+# Configuring main maching as a host also
+
+# --- add in host launcher
+ADD ./find_free_port.sh /home/peer/find_free_port.sh
+
+# -- add find free port script
+ADD ./in_host_launcher.sh /home/peer/in_host_launcher.sh
 
 
 USER root
@@ -96,6 +109,9 @@ USER root
 # CMD is the default command that is going to be executed in the startup of every exection.
 # Only the last one is considered. So use it once.
 CMD \
+
+# starting ssh server
+/etc/init.d/ssh start; \
 
 # for logs. created at launch
 # mkdir /home/log/; \

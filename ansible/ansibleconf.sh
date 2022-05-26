@@ -13,5 +13,6 @@ sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHos
 sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.8 > /dev/null 2> /dev/null;
 sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.9 > /dev/null 2> /dev/null;
 sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.10 > /dev/null 2> /dev/null;
-sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.11 > /dev/null 2> /dev/null; 
+sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.11 > /dev/null 2> /dev/null;
+sshpass -f password.txt ssh-copy-id -i "/home/peer/.ssh/id_rsa.pub" -o StrictHostKeyChecking=no peer@172.17.0.12 > /dev/null 2> /dev/null; 
 exit
