@@ -56,11 +56,17 @@ app.get('/nodeStat', async (req, res) => {
 
 app.get('/nodeData', async (req,res)=>{
     const allNode = await db.recupAllNoeud();
+    const newNodeArray = [];
+    allNode.forEach(el => {
+        //console.log(el.nodeID.port)
+        //newNodeArray[el.nodeID.adresseVirtuelle] =   el;
+    });
+
     res.status(200).header("Access-Control-Allow-Origin","*").json(allNode);
 })
 
 app.get('/network', (req, res) => {
-    res.render('network');
+    res.redirect('/panel');
 })
 
 app.get('/stats', (req,res)=>{
