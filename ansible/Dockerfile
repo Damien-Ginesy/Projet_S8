@@ -5,7 +5,7 @@
 # https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 
 # It must be the first command (except for ARG)
-FROM ubuntu
+FROM ubuntu:20.04
 
 # environment
 ENV TZ=Europe/Paris
@@ -26,7 +26,7 @@ rm password.txt;
 RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
 
 # --- basic tools
-RUN apt-get install -y build-essential cmake python3 curl grep net-tools iputils-ping zip git lsof > /dev/null;
+RUN apt-get install -y build-essential cmake python3 curl grep net-tools iputils-ping zip git lsof nmap gnupg wget systemctl > /dev/null;
 
 # --- pip
 RUN \
@@ -43,6 +43,15 @@ RUN apt-get install -y ssh-client sshpass;
 RUN pip3 install ansible paramiko argcomplete;
 
 RUN  apt-get -y install sudo;
+
+# --- mongodb
+RUN \
+    wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add - ; \
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-5.0.list; \
+    sudo apt-get update; \
+    sudo apt-get install -y mongodb-org;
+
+# launched at a service at the start up of launcher server
 
 # --- nodejs and npm
 ENV NODE_VERSION=16.13.0
@@ -88,15 +97,15 @@ USER root
 # Only the last one is considered. So use it once.
 CMD \
 
-#
-mkdir /home/log/; \
+# for logs. created at launch
+# mkdir /home/log/; \
 
 # configure ssh auth
 su peer /etc/ansibleconf.sh; \
 
 #Launch the Launcher
-cd /home/Projet_S8/launcher/; \
-while test 1; do node launcher.js; done & \
+# cd /home/Projet_S8/launcher/; \
+# while test 1; do node launcher.js; done & \
 
 # terminal [Optional]
 bash
