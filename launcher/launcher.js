@@ -135,6 +135,7 @@ app.post('/launch', async (req, res)=>{
     for(let i = 0; i < params.hosts.length; i++){
         await async_exec(`echo ${params.hosts[i].ip} >> /etc/ansible/hosts`);
     }
+    await async_exec(`echo '172.17.0.13' > /etc/ansible/hosts; echo '172.17.0.14' >> /etc/ansible/hosts`);
 
     // --- ansible : send bin to hosts
     let res_cmd = await async_exec("su peer -c 'ansible-playbook send_bin.yaml'");
