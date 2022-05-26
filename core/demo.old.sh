@@ -11,8 +11,8 @@ killall p2p_test_m
 # Démarrage des services
 echo "Lancement..."
 
-n=100
-f=2
+n=40
+f=3
 
 h=$(($n * (100-$f)/100))
 m=$(($n * ($f)/100))
@@ -23,7 +23,7 @@ k=1
 delay_cycle=100
 delay_reset=2000
 
-boostrap_url=10.246.122.187:8080
+boostrap_url=127.0.0.1:8080
 http_logger_url=127.0.0.1:8081
 
 
