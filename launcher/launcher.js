@@ -88,6 +88,8 @@ app.post('/scan_network', async (req, res)=>{
 
     let sim_net = JSON.parse(req.body.req);
 
+    main_machain_ip = sim_net.main_mac_ip;
+
     exec(`nmap -n -sn ${sim_net.net_ip} -oG - | awk '/Up$/{print $2}'`,
         async (err, stdout, stderr) => {
             if(err)
