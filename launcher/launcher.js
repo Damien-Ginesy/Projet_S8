@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 
 const cors = require("cors");
+const { stdout, stdin } = require("process");
 const corsOptions = {
   origin: '*',
   credentials: true,            //access-control-allow-credentials:true
@@ -196,8 +197,6 @@ app.post('/launch', async (req, res)=>{
 
     console.log('bootstrap ok');
 
-    await sleep(5000);
-
     await async_exec(`echo '/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000' > /tmp/diag_node`);
     await async_exec(`chmod u+x /tmp/diag_node`);
 
@@ -309,7 +308,19 @@ app.get('/log', (req, res)=>{
     if(req.query.log_file_name === 'inventory'){
         res.sendFile(`/etc/ansible/hosts`);
     }else{
-        res.sendFile(`/home/log/${req.query.log_file_name}`);
+        exec (`cat /home/log/${req.query.log_file_name}`,
+            (err, stdout, stderr)=>{
+                if(err){
+                    res.sendFile('/dev/null');
+                }
+                else if(stderr){
+                    res.sendFile('/dev/null');
+                }else{
+                    res.sendFile(`/home/log/${req.query.log_file_name}`);
+                }
+
+            }
+        );
     }
 });
 
