@@ -619,12 +619,12 @@
         }
 
         const diag_update_log = async ()=>{
+            await get_log('inventory', 'diag_inventory');
             while(1){
-                await get_log('inventory', 'diag_inventory');
                 await get_log('metric', 'diag_metric');
                 await get_log('bootstrap', 'diag_bootstrap');
-                await get_log('basalt', 'diag_basalt');
-                await sleep(2000);
+                // await get_log('basalt', 'diag_basalt');
+                await sleep(5000);
             }
         }
 

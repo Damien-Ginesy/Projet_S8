@@ -124,14 +124,16 @@ app.post('/launch', async (req, res)=>{
 
     stop_simu();
 
+    await async_exec('rm -rf /home/log/; mkdir /home/log/;');
+    console.log("init log folder");
+
     let params = JSON.parse(req.body.req);
 
     let bootstrap_port = await get_free_port();
 
     // launch metric server
-
     exec(
-        `./launch_metric_server.sh`,
+        `stdbuf -i0 -o0 -e0 ./launch_metric_server.sh  > /home/log/metric`,
         (err, stdout, stderr) => {
             if(err)
                 console.log(err);
@@ -143,7 +145,7 @@ app.post('/launch', async (req, res)=>{
     );
 
     // launch bootstrap server
-    const bootstrap_server_launch = (params)=>{
+    const bootstrap_server_launch = async (params)=>{
         
         // total_node_number
         let total_node_number = 0;
@@ -160,8 +162,11 @@ app.post('/launch', async (req, res)=>{
             }
         }
 
+        await async_exec(`echo '/home/Projet_S8/bootstrap_server/bin/bootstrap_server${attacks_list_str} ${total_node_number} ${bootstrap_port}' > /tmp/bootstrap_launcher`);
+        await async_exec(`chmod u+x /tmp/bootstrap_launcher`);
+
         exec(
-            `/home/Projet_S8/bootstrap_server/bin/bootstrap_server${attacks_list_str} ${total_node_number} ${bootstrap_port}`,
+            `stdbuf -i0 -o0 -e0 /tmp/bootstrap_launcher > /home/log/bootstrap`,
             (err, stdout, stderr) => {
                 if(err)
                     console.log(err);
@@ -173,6 +178,8 @@ app.post('/launch', async (req, res)=>{
                 res.json({msg : 'ok'});
             }
         );
+
+        // console.log(`stdbuf -i0 -o0 -e0 /home/Projet_S8/bootstrap_server/bin/bootstrap_server${attacks_list_str} ${total_node_number} ${bootstrap_port} > /home/log/bootstrap`);
     }
 
     bootstrap_server_launch(params);

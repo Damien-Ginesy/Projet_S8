@@ -23,4 +23,4 @@ ansible;
 ./stop_virtual_network.sh
 
 # in dev mode execute :
-# pkill sh; pkill node; cd /home/dev/launcher;
+# cd /home/dev/launcher;
