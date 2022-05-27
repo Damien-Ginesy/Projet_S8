@@ -7,7 +7,6 @@
 #include <asio.hpp>
 #include <misc.h>
 #include <Array.hpp>
-#include <endian.h>
 
 namespace Basalt
 {
