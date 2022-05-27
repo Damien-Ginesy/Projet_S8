@@ -15,6 +15,19 @@ const corsOptions = {
 }
 app.use(cors(corsOptions)) // Use this after the variable declaration
 
+// systemctl start mongod.service
+exec(
+    `/etc/init.d/mongodb start`,
+    (err, stdout, stderr) => {
+        if(err)
+            console.log(err);
+        if(stderr)
+            console.log(stderr);
+
+        console.log('mongo db ok');
+    }
+);
+
 const async_exec = (cmd) =>{
     return new Promise((resolve)=>{
         exec(cmd,(err, stdout, stderr)=>{
@@ -33,6 +46,9 @@ const get_free_port = () => {
     return async_exec('./find_free_port.sh');
 
 }
+
+// var
+const main_machain_ip = '172.17.0.15';
 
 //media
 app.get('/', (req, res) => {
@@ -62,6 +78,41 @@ app.get('/media/metric', (req, res) => {
 app.get('/media/activity_indicator', (req, res) => {
     res.sendFile(__dirname+'/activity_indicator.gif');
 });
+app.get('/media/scan', (req, res) => {
+    res.sendFile(__dirname+'/scan.png');
+});
+
+app.post('/scan_network', async (req, res)=>{
+
+    // nmap -n -sn 172.17.0.0/24 -oG - | awk '/Up$/{print $2}'
+
+    let sim_net = JSON.parse(req.body.req);
+
+    exec(`nmap -n -sn ${sim_net.net_ip} -oG - | awk '/Up$/{print $2}'`,
+        async (err, stdout, stderr) => {
+            if(err)
+                console.log(err);
+            if(stderr)
+                console.log(stderr);
+
+            // creating inventory
+            let inventory_tab = stdout.split('\n');
+            inventory_tab.splice(inventory_tab.length-1);
+
+            await async_exec("rm -f /etc/ansible/hosts");
+            for(let i = 0; i < inventory_tab.length; i++){
+                await async_exec(`echo ${inventory_tab[i]} >> /etc/ansible/hosts`);
+            }
+            console.log('inventory created');
+            console.log(inventory_tab);
+
+            // sending respond
+            res.json({msg : 'ok', inventory_tab : inventory_tab});
+
+        }
+    );
+
+});
 
 // Launch
 app.post('/launch', async (req, res)=>{
@@ -71,9 +122,6 @@ app.post('/launch', async (req, res)=>{
     stop_simu();
 
     let params = JSON.parse(req.body.req);
-
-    // let main_machain_ip = req.headers.host.split(':')[0];
-    let main_machain_ip = '172.17.0.15';
 
     let bootstrap_port = await get_free_port();
 
@@ -86,10 +134,10 @@ app.post('/launch', async (req, res)=>{
                 console.log(err);
             if(stderr)
                 console.log(stderr);
+
+            console.log('metric ok');
         }
     );
-
-    console.log('metric ok');
 
     // launch bootstrap server
     const bootstrap_server_launch = (params)=>{
@@ -131,11 +179,11 @@ app.post('/launch', async (req, res)=>{
     // launch basalt (ansible)
 
     // --- ansible : creating an inventory at /etc/ansible/hosts
-    await async_exec('rm -f /etc/ansible/hosts');
-    for(let i = 0; i < params.hosts.length; i++){
-        await async_exec(`echo ${params.hosts[i].ip} >> /etc/ansible/hosts`);
-    }
-    await async_exec(`echo '172.17.0.13' > /etc/ansible/hosts; echo '172.17.0.14' >> /etc/ansible/hosts`);
+    // await async_exec('rm -f /etc/ansible/hosts');
+    // for(let i = 0; i < params.hosts.length; i++){
+    //     await async_exec(`echo ${params.hosts[i].ip} >> /etc/ansible/hosts`);
+    // }
+    // await async_exec(`echo '172.17.0.13' > /etc/ansible/hosts; echo '172.17.0.14' >> /etc/ansible/hosts`);
 
     // --- ansible : send bin to hosts
     let res_cmd = await async_exec("su peer -c 'ansible-playbook send_bin.yaml'");
@@ -147,8 +195,6 @@ app.post('/launch', async (req, res)=>{
     }
     
     for(let mac_i = 0; mac_i < params.hosts.length; mac_i++){
-
-        console.log(mac_i);
         
         if(parseInt(params.hosts[mac_i].node_nbr) === 0) continue;
         
@@ -174,9 +220,6 @@ app.post('/launch', async (req, res)=>{
         }
 
     }
-
-    // console.log(launch_basalt_cmd_tab);
-    console.log('ansible cmd ok');
 
     let main_basalt_exec_cmd = "su peer -c '";
     for(let i = 0; i < launch_basalt_cmd_tab.length; i++){

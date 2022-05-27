@@ -39,6 +39,22 @@
         div.button:hover {
             box-shadow: 0 0 11px var(--sec_color); 
         }
+
+        input{
+            border-style: none;
+            width: 100%;
+        }
+        input:focus{
+            outline: none;
+        }
+        fieldset{
+            
+            padding-top: 0;
+            padding-bottom: 3px;
+
+            width: 200px;
+        }
+
     </style>
 </head>
 <body>
@@ -103,6 +119,42 @@
                     </div>
                 </td>
                 <td style="width : 700px">
+
+                    <div class="params_section">
+                        <h3>Simulation network scan</h3>
+
+                        <table>
+                            <tr>
+                                <td>
+                                    <fieldset>
+                                        <legend>Simulation network ip address</legend>
+                                        <input type="text" id="net_ip" name="net_ip" value="172.17.0.0/24">
+                                    </fieldset>
+                                </td>
+                                <td>
+                                    <fieldset>
+                                        <legend>Main machine ip address</legend>
+                                        <input type="text" id="main_mac_ip" name="main_mac_ip" value="172.17.0.15">
+                                    </fieldset>
+                                </td>
+                                <td>
+                                    <div class="button" style="width: 110px;" onclick="scan_network_req()">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <img id="icon_scan" src="" height="30px" width="auto"></img>
+                                                </td>
+                                                <td>
+                                                    Scan
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    
+                    </div>
 
                     <div class="params_section">
                         <h3>Hosts configuration</h3>
@@ -174,6 +226,7 @@
     <script>
         
         var params = {};
+        var inventory_tab;
 
         const sleep = (m_sec) => {
             return new Promise((resolve)=>{
@@ -400,6 +453,34 @@
             });
         }
 
+        // scan network
+        const scan_network_req = async () => {
+
+            document.getElementById('icon_scan').src = `http://${location.host}/media/activity_indicator`;
+
+            let sim_net = {
+                net_ip : document.getElementById('net_ip').value,
+                main_mac_ip : document.getElementById('main_mac_ip').value
+            };
+
+            const rawResponse = await fetch(`http://${location.host}/scan_network`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'req='+JSON.stringify(sim_net)
+            });
+
+            const res = await rawResponse.json();
+
+            inventory_tab = res.inventory_tab;
+
+            console.log(inventory_tab);
+
+            document.getElementById('icon_scan').src = `http://${location.host}/media/scan`;
+
+        }
+
         // main
         const get_media = () => {
             document.getElementById('refresh_icon').src = `http://${location.host}/media/refresh`;
@@ -409,6 +490,7 @@
             document.getElementById('icon_add_attack').src = `http://${location.host}/media/add`;
             document.getElementById('icon_add_host').src = `http://${location.host}/media/add`;
             document.getElementById('stop_icon').src = `http://${location.host}/media/stop`;
+            document.getElementById('icon_scan').src = `http://${location.host}/media/scan`;
         }
 
         get_media();
