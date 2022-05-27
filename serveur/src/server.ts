@@ -29,7 +29,7 @@ db.openDb(process.argv[2]);
 
 app.post('/infoNoeud', async (req, res) => {
     const adresseReelle = req.ip;
-    await db.ajoutDonnees(adresseReelle, req.body);
+    await db.ajoutDonnees(adresseReelle, req.body[0]);
     res.sendStatus(200);
 })
 
@@ -56,11 +56,17 @@ app.get('/nodeStat', async (req, res) => {
 
 app.get('/nodeData', async (req,res)=>{
     const allNode = await db.recupAllNoeud();
-    res.status(200).header("Access-Control-Allow-Origin","*").json(allNode);
+    const newNodeArray = {};
+    allNode.forEach(el => {
+        // @ts-ignore
+        newNodeArray[el.nodeID.adresseVirtuelle] = el;
+    });
+
+    res.status(200).header("Access-Control-Allow-Origin","*").json(newNodeArray);
 })
 
 app.get('/network', (req, res) => {
-    res.render('network');
+    res.redirect('/panel');
 })
 
 app.get('/stats', (req,res)=>{

@@ -173,18 +173,18 @@ block body
             tr2.append(td2);
             td2.append('Vue')
 
-            const vueLength = Data[0].allNode[index].vue.length;
+            const vueLength = Data[index].vue.length;
 
             for (let pas = 0; pas < vueLength; pas++) {
                 let td2 = document.createElement('td');
                 tr1.append(td2);
-                let seed = Data[0].allNode[index].vue[pas].seed.toString()
+                let seed = Data[index].vue[pas].seed.toString()
                 td2.append(seed.slice(0, 2))
 
                 let td3 = document.createElement('td');
                 td3.style.fontSize = 10
                 tr2.append(td3);
-                td3.append(Data[0].allNode[index].vue[pas].nodeID.adresseVirtuelle)
+                td3.append(Data[index].vue[pas].nodeID.adresseVirtuelle)
             }
 
         }
@@ -206,8 +206,8 @@ block body
 
         next.addEventListener("click", () => {
             index === undefined ? index = 0 : index = index + 1;
-            if (index >= Data[0].allNode.length){
-                index = Data[0].allNode.length-1
+            if (index >= Data.length){
+                index = Data.length-1
             }
 
             const screen = document.getElementById("screen");
@@ -338,14 +338,13 @@ block body
         async function getAllData() {
             const query = await fetch('/nodeData');
             const data = await query.json();
-            Data = [];
-            Data.push(data)
+            Data = data;
         };
 
         async function getViewRate() {
             const vueNoeud = [];
 
-            Data[0]?.allNode[index]?.vue.forEach(el => {
+            Data[index]?.vue.forEach(el => {
                 vueNoeud.push(el.nodeID)
             })
             const vueNoeudId = {

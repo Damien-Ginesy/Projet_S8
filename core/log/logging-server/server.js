@@ -1,8 +1,12 @@
 const express = require('express');
+const fs = require('fs');
 const app = express();
 const port = 8081;
 
 var database = {};
+
+//database = JSON.parse(fs.readFileSync('nodeData.json',{encoding:'utf8', flag:'r'}));
+
 var s = false;
 
 app.use('/panel', express.static('panel'));
@@ -18,7 +22,7 @@ app.post('/', (req, res) => {
   res.send();
 })
 
-app.get('/log.log', (req, res) => {
+app.get('/nodeData', (req, res) => {
   res.setHeader('Access-Control-Allow-Origin','*');
   res.send(JSON.stringify(database));
 })
