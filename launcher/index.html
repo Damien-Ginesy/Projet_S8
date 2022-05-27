@@ -48,11 +48,11 @@
             margin: auto;
         }
 
-        input{
+        input.withfieldset{
             border-style: none;
             width: 100%;
         }
-        input:focus{
+        input.withfieldset:focus{
             outline: none;
         }
         fieldset{
@@ -102,13 +102,13 @@
                     <td>
                         <fieldset>
                             <legend>Simulation network ip address</legend>
-                            <input type="text" id="net_ip" name="net_ip" value="172.17.0.0/24">
+                            <input class="withfieldset" type="text" id="net_ip" name="net_ip" value="172.17.0.0/24">
                         </fieldset>
                     </td>
                     <td>
                         <fieldset>
                             <legend>Main machine ip address</legend>
-                            <input type="text" id="main_mac_ip" name="main_mac_ip" value="172.17.0.15">
+                            <input class="withfieldset" type="text" id="main_mac_ip" name="main_mac_ip" value="172.17.0.15">
                         </fieldset>
                     </td>
                     <td>
@@ -182,6 +182,11 @@
                     <div class="params_section">
                         <h3>Hosts configuration</h3>
                         <table id='host_table'>
+                            <tr>
+                                <td></td>
+                                <td>IP</td>
+                                <td>node number</td>
+                            </tr>
                         </table>
                         <div class="button" style="width: 110px; margin-left:70%;" onclick="add_host_form()">
                             <table>
@@ -220,18 +225,30 @@
                         <table id='basalt_table'>
                             <tr>
                                 <td>
-                                    <input id="basalt_view_size" type="text" value="" placeholder="view size">
+                                    <fieldset>
+                                        <legend>view size</legend>
+                                        <input class="withfieldset" id="basalt_view_size" type="text" value="4" placeholder="view size">
+                                    </fieldset>
                                 </td>
                                 <td>
-                                    <input id="basalt_cycles_before_reset" type="text" value="" placeholder="cycles before reset">
+                                    <fieldset>
+                                        <legend>cycles before reset</legend>
+                                        <input class="withfieldset" id="basalt_cycles_before_reset" type="text" value="4" placeholder="cycles before reset">
+                                    </fieldset>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    <input id="basalt_nodes_per_reset" type="text" value="" placeholder="nodes per reset">
+                                    <fieldset>
+                                        <legend>nodes per reset</legend>
+                                        <input class="withfieldset" id="basalt_nodes_per_reset" type="text" value="4" placeholder="nodes per reset">
+                                    </fieldset>
                                 </td>
                                 <td>
-                                    <input id="basalt_cycles_per_second" type="text" value="" placeholder="cycles per second">
+                                    <fieldset>
+                                        <legend>cycles per second</legend>
+                                        <input class="withfieldset" id="basalt_cycles_per_second" type="text" value="4" placeholder="cycles per second">
+                                    </fieldset>
                                 </td>
                             </tr>
                         </table>
@@ -271,10 +288,10 @@
         var hosts_index = 0;
         var hosts_tab = [];
 
-        var hosts_tab_element = document.getElementById('host_table');
-
 
         const add_host_form = () => {
+
+            console.log('add_host_form');
             
             let host = {
                 index : hosts_index
@@ -300,6 +317,7 @@
             host_element.id = `hostformtr_${host.index}`;
             host_element.innerHTML = host_element_str;
 
+            let hosts_tab_element = document.getElementById('host_table');
             hosts_tab_element.appendChild(host_element);
 
         };
@@ -331,8 +349,6 @@
         var attacks_index = 0;
         var attacks_tab = [];
 
-        var attacks_tab_element = document.getElementById('attacks_table');
-
         const display_attack_params = (index)=>{
             if(document.getElementById(`attackstype_${index}`).value == 'inst'){
                 document.getElementById(`attacksmask_${index}`).style = '';
@@ -343,6 +359,21 @@
 
         const add_attacks_form = () => {
             
+            if(attacks_index === 0){
+                let attack_tab_header = `
+                    <td></td>
+                    <td>type</td>
+                    <td>node number</td>
+                    <td">mask (if inst)</td>
+                `;
+
+                let attack_element = document.createElement('tr');
+                attack_element.innerHTML = attack_tab_header;
+
+                let attacks_tab_element = document.getElementById('attacks_table');
+                attacks_tab_element.appendChild(attack_element);
+            }
+
             let attack = {
                 index : attacks_index
             };
@@ -360,7 +391,11 @@
                         <option value="eclipse">Eclipse</option>
                         <option value="inst">Institutional</option>
                     </select>
+                </td>
+                <td>
                     <input id="attacksmembersize_${attack.index}" type="text" value="" placeholder="number nodes">
+                </td>
+                <td>
                     <input id="attacksmask_${attack.index}" type="text" value="" placeholder="mask" style = 'visibility : hidden;'>
                 </td>
             `;
@@ -369,6 +404,7 @@
             attack_element.id = `attackformtr_${attack.index}`;
             attack_element.innerHTML = attack_element_str;
 
+            let attacks_tab_element = document.getElementById('attacks_table');
             attacks_tab_element.appendChild(attack_element);
 
         };
