@@ -48,7 +48,7 @@ const get_free_port = () => {
 }
 
 // var
-const main_machain_ip = '172.17.0.15';
+var main_machain_ip = '172.17.0.15';
 
 //media
 app.get('/', (req, res) => {
@@ -89,6 +89,7 @@ app.post('/scan_network', async (req, res)=>{
     let sim_net = JSON.parse(req.body.req);
 
     main_machain_ip = sim_net.main_mac_ip;
+    console.log(`main machaine ip : ${main_machain_ip}`);
 
     exec(`nmap -n -sn ${sim_net.net_ip} -oG - | awk '/Up$/{print $2}'`,
         async (err, stdout, stderr) => {
