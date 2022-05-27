@@ -12,3 +12,5 @@ cd /home/Projet_S8/serveur/; npm install > /dev/null;
 
 
 # close every thing but the launcher
+
+exit;

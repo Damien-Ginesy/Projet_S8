@@ -10,3 +10,5 @@ su peer -c 'ansible all -a "pkill malicious_node"';
 kill $(lsof -t -i :3000);
 
 rm -rf /home/log;
+
+exit;
