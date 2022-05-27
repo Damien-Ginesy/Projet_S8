@@ -142,7 +142,7 @@ app.post('/launch', async (req, res)=>{
 
     // launch metric server
     exec(
-        `stdbuf -i0 -o0 -e0 ./launch_metric_server.sh  > /home/log/metric`,
+        `stdbuf -i0 -o0 -e0 ./launch_metric_server.sh  > /home/log/metric 2> /home/log/metric_err`,
         (err, stdout, stderr) => {
             if(err)
                 console.log(err);
@@ -178,7 +178,7 @@ app.post('/launch', async (req, res)=>{
         await async_exec(`chmod u+x /tmp/bootstrap_launcher`);
 
         exec(
-            `stdbuf -i0 -o0 -e0 /tmp/bootstrap_launcher > /home/log/bootstrap`,
+            `stdbuf -i0 -o0 -e0 /tmp/bootstrap_launcher > /home/log/bootstrap 2> /home/log/bootstrap_err`,
             (err, stdout, stderr) => {
                 if(err)
                     console.log(err);
@@ -215,7 +215,7 @@ app.post('/launch', async (req, res)=>{
     let res_cmd = await async_exec("su peer -c 'ansible-playbook send_bin.yaml'");
     
     // launch diag node
-    exec(`stdbuf -i0 -o0 -e0 /tmp/diag_node 2> /home/log/basalt`,
+    exec(`stdbuf -i0 -o0 -e0 /tmp/diag_node > /home/log/basalt 2> /home/log/basalt_err`,
         (err, stdout, stderr) => {
             if(err)
                 console.log(err);
