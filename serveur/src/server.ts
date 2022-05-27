@@ -90,13 +90,12 @@ app.get('/stats/:id', async(req,res)=>{
 })
 
 app.get('/accueil', (req, res) => {
-    db.suppDoublons();
     res.render('homepage');
 })
 
 app.post('/',async (req, res) => {
     const adresseReelle = req.ip;
-    await db.ajoutDonnees(adresseReelle, req.body);
+    await db.ajoutDonnees(adresseReelle, req.body[0]);
     res.sendStatus(200);
 })
 
