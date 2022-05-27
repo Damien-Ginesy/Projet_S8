@@ -40,6 +40,11 @@
             box-shadow: 0 0 11px var(--sec_color); 
         }
 
+        div.scan_network_config_div{
+            width: 60%;
+            margin: auto;
+        }
+
         input{
             border-style: none;
             width: 100%;
@@ -72,7 +77,46 @@
         </table>
     </header>
 
-    <main>
+    <!-- is going to be visible later by js script -->
+    <div id = "scan_network_config_div_parent" style="visibility: hidden;">
+        <div class="params_section" id="scan_network_config_div">
+            <h3>Simulation network scan</h3>
+    
+            <table>
+                <tr>
+                    <td>
+                        <fieldset>
+                            <legend>Simulation network ip address</legend>
+                            <input type="text" id="net_ip" name="net_ip" value="172.17.0.0/24">
+                        </fieldset>
+                    </td>
+                    <td>
+                        <fieldset>
+                            <legend>Main machine ip address</legend>
+                            <input type="text" id="main_mac_ip" name="main_mac_ip" value="172.17.0.15">
+                        </fieldset>
+                    </td>
+                    <td>
+                        <div class="button" style="width: 110px;" onclick="scan_network_req()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="icon_scan" src="" height="30px" width="auto"></img>
+                                    </td>
+                                    <td>
+                                        Scan
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        
+        </div>
+    </div>
+
+    <main id="main_page">
 
         <table style="width: 1000px; margin: auto;">
             <tr>
@@ -119,42 +163,6 @@
                     </div>
                 </td>
                 <td style="width : 700px">
-
-                    <div class="params_section">
-                        <h3>Simulation network scan</h3>
-
-                        <table>
-                            <tr>
-                                <td>
-                                    <fieldset>
-                                        <legend>Simulation network ip address</legend>
-                                        <input type="text" id="net_ip" name="net_ip" value="172.17.0.0/24">
-                                    </fieldset>
-                                </td>
-                                <td>
-                                    <fieldset>
-                                        <legend>Main machine ip address</legend>
-                                        <input type="text" id="main_mac_ip" name="main_mac_ip" value="172.17.0.15">
-                                    </fieldset>
-                                </td>
-                                <td>
-                                    <div class="button" style="width: 110px;" onclick="scan_network_req()">
-                                        <table>
-                                            <tr>
-                                                <td>
-                                                    <img id="icon_scan" src="" height="30px" width="auto"></img>
-                                                </td>
-                                                <td>
-                                                    Scan
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    
-                    </div>
 
                     <div class="params_section">
                         <h3>Hosts configuration</h3>
@@ -453,10 +461,23 @@
             });
         }
 
+        // media
+        const get_media = () => {
+            document.getElementById('refresh_icon').src = `http://${location.host}/media/refresh`;
+            document.getElementById('favicon').href = `http://${location.host}/media/logo`;
+            document.getElementById('project_logo').src = `http://${location.host}/media/logo`;
+            document.getElementById('icon_launch').src = `http://${location.host}/media/launch`;
+            document.getElementById('icon_add_attack').src = `http://${location.host}/media/add`;
+            document.getElementById('icon_add_host').src = `http://${location.host}/media/add`;
+            document.getElementById('stop_icon').src = `http://${location.host}/media/stop`;
+            document.getElementById('icon_scan').src = `http://${location.host}/media/scan`;
+        }
+
         // scan network
         const scan_network_req = async () => {
 
             document.getElementById('icon_scan').src = `http://${location.host}/media/activity_indicator`;
+            console.log(document.getElementById('icon_scan').src);
 
             let sim_net = {
                 net_ip : document.getElementById('net_ip').value,
@@ -478,23 +499,39 @@
             console.log(inventory_tab);
 
             document.getElementById('icon_scan').src = `http://${location.host}/media/scan`;
+            
+            display_after_scan();
 
+        }
+
+        var original_main_page_inner_html;
+        const hide_before_scan = ()=>{
+            let main_page_ele = document.getElementById('main_page');
+            original_main_page_inner_html = main_page_ele.innerHTML;
+            main_page_ele.innerHTML = document.getElementById('scan_network_config_div_parent').innerHTML;
+            document.getElementById('scan_network_config_div_parent').innerHTML = "";
+        }
+
+        const display_after_scan = ()=>{
+            document.getElementById('main_page').innerHTML = original_main_page_inner_html;
+        }
+
+        // diagnostic
+        const get_log = (log_file_name) => {
+            fetch(`http://${location.host}/log?log_file_name=${log_file_name}`)
+            .then(
+                (res)=>{
+                    console.log(res.text());
+                }
+            )
         }
 
         // main
-        const get_media = () => {
-            document.getElementById('refresh_icon').src = `http://${location.host}/media/refresh`;
-            document.getElementById('favicon').href = `http://${location.host}/media/logo`;
-            document.getElementById('project_logo').src = `http://${location.host}/media/logo`;
-            document.getElementById('icon_launch').src = `http://${location.host}/media/launch`;
-            document.getElementById('icon_add_attack').src = `http://${location.host}/media/add`;
-            document.getElementById('icon_add_host').src = `http://${location.host}/media/add`;
-            document.getElementById('stop_icon').src = `http://${location.host}/media/stop`;
-            document.getElementById('icon_scan').src = `http://${location.host}/media/scan`;
-        }
 
         get_media();
         add_host_form();
+
+        hide_before_scan();
 
 
     </script>
