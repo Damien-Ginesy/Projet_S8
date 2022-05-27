@@ -24,11 +24,11 @@ delay_cycle=100
 delay_reset=2000
 
 boostrap_url=127.0.0.1:8080
-http_logger_url=127.0.0.1:8081
+http_logger_url=127.0.0.1:3000
 
 
 #bin port viewSize k delay_cycle delay_reset bootstrap_url http_url
-b=3000
+b=4000
 
 for i in $(seq 1 $h)
 do
