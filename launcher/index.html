@@ -31,7 +31,17 @@
         }
         div.diag_section{
             margin: 30px;
+            width: 600px;
         }
+
+        fieldset.diag{
+            
+            padding-top: 0;
+            padding-bottom: 3px;
+
+            width: 100%;
+        }
+
         div.button{
             border-style: solid;
             border-radius: 10px;
@@ -133,9 +143,9 @@
 
     <main id="main_page">
 
-        <table style="width: 1000px; margin: auto;">
+        <table style="width: 1600px; margin: auto;">
             <tr>
-                <td style="width : 300px;">
+                <td style="width : 300px; vertical-align:top;">
                     <div class="right_bar">
                         <div id ='launch_button' class="button" style="border-color: green;" onclick="launche()">
                             <table>
@@ -177,7 +187,7 @@
                         </div>
                     </div>
                 </td>
-                <td style="width : 700px">
+                <td style="width : 700px; vertical-align:top;">
 
                     <div class="params_section">
                         <h3>Hosts configuration</h3>
@@ -255,12 +265,24 @@
                     </div>
 
                 </td>
-                <td style="width : 500px;">
+                <td style="width : 400px; vertical-align:top;">
                     <div class="diag_section">
-                        <h3>Diagnostic</h3>
+                        <!-- <h3>Diagnostic</h3> -->
                         <fieldset class="diag">
                             <legend>Inventory</legend>
                             <div class='diag' id='diag_inventory' style="height: 100px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Bootstrap</legend>
+                            <div class='diag' id='diag_bootstrap' style="height: 200px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Metric</legend>
+                            <div class='diag' id='diag_metric' style="height: 150px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Basalt</legend>
+                            <div class='diag' id='diag_basalt' style="height: 150px;"></div>
                         </fieldset>
                     </div>
                 </td>
@@ -599,6 +621,9 @@
         const diag_update_log = async ()=>{
             while(1){
                 await get_log('inventory', 'diag_inventory');
+                await get_log('metric', 'diag_metric');
+                await get_log('bootstrap', 'diag_bootstrap');
+                await get_log('basalt', 'diag_basalt');
                 await sleep(2000);
             }
         }
