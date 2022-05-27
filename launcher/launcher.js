@@ -118,18 +118,26 @@ app.post('/scan_network', async (req, res)=>{
 });
 
 // Launch
+const sleep = (m_sec) => {
+    return new Promise((resolve)=>{
+        setTimeout(()=>{ resolve() },m_sec);
+    })
+}
 app.post('/launch', async (req, res)=>{
 
     console.log('launching');
 
-    stop_simu();
+    //stop_simu();
 
     await async_exec('rm -rf /home/log/; mkdir /home/log/;');
     console.log("init log folder");
 
     let params = JSON.parse(req.body.req);
 
+    console.log(params);
+
     let bootstrap_port = await get_free_port();
+    bootstrap_port = parseInt(bootstrap_port);
 
     // launch metric server
     exec(
@@ -152,6 +160,9 @@ app.post('/launch', async (req, res)=>{
         for(let i = 0; i < params.hosts.length; i++){
             total_node_number += parseInt(params.hosts[i].node_nbr);
         }
+
+        // for the honest node for diag in local machine
+        total_node_number++;
 
         let attacks_list_str = '';
         for(let i = 0; i < params.attacks.length; i++){
@@ -179,12 +190,18 @@ app.post('/launch', async (req, res)=>{
             }
         );
 
-        // console.log(`stdbuf -i0 -o0 -e0 /home/Projet_S8/bootstrap_server/bin/bootstrap_server${attacks_list_str} ${total_node_number} ${bootstrap_port} > /home/log/bootstrap`);
     }
 
     bootstrap_server_launch(params);
 
     console.log('bootstrap ok');
+
+    await sleep(5000);
+
+    await async_exec(`echo '/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000' > /tmp/diag_node`);
+    await async_exec(`chmod u+x /tmp/diag_node`);
+
+    // console.log(`/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000;`);
 
     // launch basalt (ansible)
 
@@ -198,6 +215,18 @@ app.post('/launch', async (req, res)=>{
     // --- ansible : send bin to hosts
     let res_cmd = await async_exec("su peer -c 'ansible-playbook send_bin.yaml'");
     
+    // launch diag node
+    exec(`stdbuf -i0 -o0 -e0 /tmp/diag_node 2> /home/log/basalt`,
+        (err, stdout, stderr) => {
+            if(err)
+                console.log(err);
+            if(stdout)
+                console.log(stdout);
+            if(stderr)
+                console.log(stderr);
+        }
+    );
+
     // --- launch
     let launch_basalt_cmd_tab = []
     const launch_basalt_cmd_gen = async (params, mac_i, attack_id, nbr_node)=>{
