@@ -106,7 +106,11 @@ class Graph {
       } else if(dest.includes(parseInt(i))) {
           this.ctx.fillStyle = "#2ecc71";
       } */ else {
-        this.ctx.fillStyle = `hsl(${(100-infectionRate(nodeArray[identifiant[i]].vue))}, 100%, 50%)`;
+        if(typeof(nodeArray[identifiant[i]]) == "undefined"){
+          this.ctx.fillStyle = "#a3a3a3";
+        } else {
+          this.ctx.fillStyle = `hsl(${(100-infectionRate(nodeArray[identifiant[i]].vue))}, 100%, 50%)`;
+        }
       }
       this.ctx.fill();
       this.ctx.stroke();
