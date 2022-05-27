@@ -27,7 +27,10 @@
             padding: 10px;
             border-color: var(--sec_color);
             width: 200px;
-            margin: auto;
+            margin: 30px;
+        }
+        div.diag_section{
+            margin: 30px;
         }
         div.button{
             border-style: solid;
@@ -58,6 +61,18 @@
             padding-bottom: 3px;
 
             width: 200px;
+        }
+
+        div.diag{
+            height: 200px;
+            overflow: scroll;
+        }
+        div.diag::-webkit-scrollbar {
+            display: none;
+        }
+
+        fieldset.diag{
+            border-color: var(--sec_color);
         }
 
     </style>
@@ -222,6 +237,15 @@
                         </table>
                     </div>
 
+                </td>
+                <td style="width : 500px;">
+                    <div class="diag_section">
+                        <h3>Diagnostic</h3>
+                        <fieldset class="diag">
+                            <legend>Inventory</legend>
+                            <div class='diag' id='diag_inventory' style="height: 100px;"></div>
+                        </fieldset>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -477,7 +501,6 @@
         const scan_network_req = async () => {
 
             document.getElementById('icon_scan').src = `http://${location.host}/media/activity_indicator`;
-            console.log(document.getElementById('icon_scan').src);
 
             let sim_net = {
                 net_ip : document.getElementById('net_ip').value,
@@ -496,11 +519,16 @@
 
             inventory_tab = res.inventory_tab;
 
-            console.log(inventory_tab);
-
             document.getElementById('icon_scan').src = `http://${location.host}/media/scan`;
             
             display_after_scan();
+
+            setTimeout(
+                ()=>{
+                    diag_update_log();
+                },
+                0
+            );
 
         }
 
@@ -517,13 +545,26 @@
         }
 
         // diagnostic
-        const get_log = (log_file_name) => {
-            fetch(`http://${location.host}/log?log_file_name=${log_file_name}`)
-            .then(
-                (res)=>{
-                    console.log(res.text());
+        const get_log = (log_file_name, ele_id) => {
+            return new Promise(
+                (resolve)=>{
+                    fetch(`http://${location.host}/log?log_file_name=${log_file_name}`)
+                    .then(res => res.text())
+                    .then(
+                        (res_txt)=>{
+                            document.getElementById(ele_id).innerText = res_txt;
+                            resolve();
+                        }
+                    )
                 }
             )
+        }
+
+        const diag_update_log = async ()=>{
+            while(1){
+                await get_log('inventory', 'diag_inventory');
+                await sleep(2000);
+            }
         }
 
         // main

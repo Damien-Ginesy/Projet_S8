@@ -268,4 +268,13 @@ app.post('/stop', async(req, res)=>{
 
 });
 
+// diagnostic
+app.get('/log', (req, res)=>{
+    if(req.query.log_file_name === 'inventory'){
+        res.sendFile(`/etc/ansible/hosts`);
+    }else{
+        res.sendFile(`/home/log/${req.query.log_file_name}`);
+    }
+});
+
 app.listen(port, () => console.log(`Started server at port ${port} !`));
