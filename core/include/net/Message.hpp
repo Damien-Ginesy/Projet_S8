@@ -31,8 +31,8 @@ namespace Basalt
             /* Constructs the Header object from raw bytes */
             static Header fromBytes(const uint8_t* in){
                 return {
-                    .type = (MessageType)in[0],
-                    .size = lendian32(*(uint32_t*)(in+1))
+                    (MessageType)in[0],
+                    lendian32(*(uint32_t*)(in+1))
                 };
             }
             /* The raw data size of a serialized Header object */
