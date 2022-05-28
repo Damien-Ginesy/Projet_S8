@@ -28,8 +28,7 @@ if(process.argv.length < 3){
 db.openDb(process.argv[2]);
 
 app.post('/infoNoeud', async (req, res) => {
-    const adresseReelle = req.ip.split(':');
-    await db.ajoutDonnees(adresseReelle[3], req.body[0]);
+    await db.ajoutDonnees(req.body[0]);
     res.sendStatus(200);
 })
 
@@ -94,8 +93,7 @@ app.get('/accueil', (req, res) => {
 })
 
 app.post('/',async (req, res) => {
-    const adresseReelle = req.ip
-    await db.ajoutDonnees(adresseReelle, req.body[0]);
+    await db.ajoutDonnees(req.body[0]);
     res.sendStatus(200);
 })
 
