@@ -11,6 +11,12 @@ FROM ubuntu:20.04
 ENV TZ=Europe/Paris
 ENV DEBIAN_FRONTEND=noninteractive
 
+# setting root password
+RUN \
+    echo "basalt" > password; \
+    echo "basalt" >> password; \
+    passwd root < password;
+
 # creating user
 RUN \
 USER_NAME=peer; \
