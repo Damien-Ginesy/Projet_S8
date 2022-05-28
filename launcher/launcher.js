@@ -16,6 +16,19 @@ const corsOptions = {
 }
 app.use(cors(corsOptions)) // Use this after the variable declaration
 
+// init log folder
+exec (
+    `rm -rf /home/log/; mkdir /home/log/;`,
+    (err, stdout, stderr) => {
+        if(err)
+            console.log(err);
+        if(stderr)
+            console.log(stderr);
+
+        console.log('mongo db ok');
+    }
+);
+
 // systemctl start mongod.service
 exec(
     `/etc/init.d/mongodb start`,
@@ -90,7 +103,6 @@ app.post('/scan_network', async (req, res)=>{
     let sim_net = JSON.parse(req.body.req);
 
     main_machain_ip = sim_net.main_mac_ip;
-    console.log(`main machaine ip : ${main_machain_ip}`);
 
     exec(`nmap -n -sn ${sim_net.net_ip} -oG - | awk '/Up$/{print $2}'`,
         async (err, stdout, stderr) => {
@@ -107,8 +119,6 @@ app.post('/scan_network', async (req, res)=>{
             for(let i = 0; i < inventory_tab.length; i++){
                 await async_exec(`echo ${inventory_tab[i]} >> /etc/ansible/hosts`);
             }
-            console.log('inventory created');
-            console.log(inventory_tab);
 
             // sending respond
             res.json({msg : 'ok', inventory_tab : inventory_tab});
@@ -134,8 +144,6 @@ app.post('/launch', async (req, res)=>{
     console.log("init log folder");
 
     let params = JSON.parse(req.body.req);
-
-    console.log(params);
 
     let bootstrap_port = await get_free_port();
     bootstrap_port = parseInt(bootstrap_port);
@@ -197,7 +205,7 @@ app.post('/launch', async (req, res)=>{
 
     console.log('bootstrap ok');
 
-    await async_exec(`echo '/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000' > /tmp/diag_node`);
+    await async_exec(`echo 'su peer -c "/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000"' > /tmp/diag_node`);
     await async_exec(`chmod u+x /tmp/diag_node`);
 
     // console.log(`/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000;`);
@@ -264,7 +272,7 @@ app.post('/launch', async (req, res)=>{
         main_basalt_exec_cmd += launch_basalt_cmd_tab[i]+" & ";
     }
     main_basalt_exec_cmd += "';";
-    // console.log(main_basalt_exec_cmd);
+    //console.log(main_basalt_exec_cmd);
     await async_exec(main_basalt_exec_cmd);
 
     console.log('basalt ok');
