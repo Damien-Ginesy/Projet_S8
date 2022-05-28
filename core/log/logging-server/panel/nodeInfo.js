@@ -12,7 +12,7 @@ function buildNodeInfo(n){
   let nodeInfo = document.createElement("div");
   nodeInfo.classList.add("nodeInfo");
   nodeInfo.id = "node-" + n;
-  node = nodeArray[n];
+  node = nodeArray[identifiant[n]];
 
   if(typeof(node) == "undefined"){console.log("noeud "+n+" non loggé");return 0;}
 
@@ -27,8 +27,8 @@ function buildNodeInfo(n){
   }
 
   nodeInfo.innerHTML = `
-  <h3>Noeud ${n}</h3> <p>(${node.nodeID.adresseReelle}:${node.nodeID.port}, ${node.malicieux == 0 ? "non" : ""} malicieux, age=<span class="age">0</span>, inf=<span class="infectionRate">?</span>%)</p>
   <div class="closeButton" onclick="this.parentElement.remove()">x</div>
+  <h3>Noeud ${n} (vAddr:${identifiant[n]})</h3> <p>(${node.nodeID.adresseReelle}:${node.nodeID.port}, ${node.malicieux == 0 ? "non" : ""} malicieux, age=<span class="age">0</span>, inf=<span class="infectionRate">?</span>%)</p>
   <table>
     <tr class="loopID">
      <th>ID</th>
@@ -51,7 +51,7 @@ function buildNodeInfo(n){
 
 function updateNodeInfo(n){
   elem = document.getElementById("node-" + n);
-  node = nodeArray[n];
+  node = nodeArray[identifiant[n]];
 
   elem.getElementsByClassName("infectionRate")[0].innerText = Math.floor(infectionRate(node.vue));
   elem.getElementsByClassName("age")[0].innerText = node.age;

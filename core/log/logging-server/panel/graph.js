@@ -43,7 +43,7 @@ class Graph {
     let r = this.radius;
     let c = {'x':r, 'y': r}; //centre du cercle
 
-    let target = identifiant.indexOf(IdTarget);
+    let target = IdTarget;
     if(i == target){ // the target
       x = c.x;
       y = c.y;
@@ -71,6 +71,8 @@ class Graph {
   //Affichage d'une frame
   static draw(){
     this.clear(); //On efface le graph
+
+    if(Object.keys(nodeArray).length == 0) {Graph.error();return;}
 
     let orig = []; //liste des noeuds origine d'une arete
     let dest = []; //liste des noeuds destination d'une arete
@@ -115,6 +117,7 @@ class Graph {
       this.ctx.fill();
       this.ctx.stroke();
       this.ctx.fillStyle = "black";
+      this.ctx.font = '7pt cambria';
       this.ctx.fillText(i, node.x-3*("" + i).length, node.y+3);
     }
   }
@@ -130,5 +133,11 @@ class Graph {
   //Effacement de la fenetre de dessin
   static clear(){
     this.ctx.clearRect(0, 0, this.canvas.width/this.scale, this.canvas.height/this.scale);
+  }
+
+  static error(){
+    this.ctx.font = '1pt terminal';
+    this.ctx.fillStyle = "black";
+    this.ctx.fillText("Error: no data", 1, 2);
   }
 }
