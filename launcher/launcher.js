@@ -18,7 +18,7 @@ app.use(cors(corsOptions)) // Use this after the variable declaration
 
 // systemctl start mongod.service
 exec(
-    `/etc/init.d/mongodb start`,
+    `systemctl start mongod`,
     (err, stdout, stderr) => {
         if(err)
             console.log(err);
