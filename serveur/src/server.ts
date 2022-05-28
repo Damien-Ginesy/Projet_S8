@@ -65,6 +65,11 @@ app.get('/nodeData', async (req,res)=>{
     res.status(200).header("Access-Control-Allow-Origin","*").json(newNodeArray);
 })
 
+app.get('/nodeDataTab', async (req,res)=>{
+    const allNode = await db.recupAllNoeud();
+    res.status(200).header("Access-Control-Allow-Origin","*").json(allNode);
+})
+
 app.get('/network', (req, res) => {
     res.redirect('/panel');
 })
