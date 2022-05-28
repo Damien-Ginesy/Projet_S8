@@ -25,6 +25,7 @@ h4 {display: inline-block;}
   position: absolute;
   right: 0px;
   transform: translate(-50%, 0%);
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .nodeInfo {
