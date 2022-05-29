@@ -24,8 +24,6 @@ exec (
             console.log(err);
         if(stderr)
             console.log(stderr);
-
-        console.log('mongo db ok');
     }
 );
 
@@ -60,7 +58,7 @@ const get_free_port = () => {
 
     const async_exec = () => {
         return new Promise((resolve)=>{
-            exec(cmd,(err, stdout, stderr)=>{
+            exec('/home/peer/find_free_port.sh',(err, stdout, stderr)=>{
                 if(err){
                     resolve(err);
                 }else if(stderr){
@@ -222,23 +220,10 @@ app.post('/launch', async (req, res)=>{
 
     await async_exec(`echo 'su peer -c "/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000"' > /tmp/diag_node`);
     await async_exec(`chmod u+x /tmp/diag_node`);
-
-    // console.log(`/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000;`);
-
-    // launch basalt (ansible)
-
-    // --- ansible : creating an inventory at /etc/ansible/hosts
-    // await async_exec('rm -f /etc/ansible/hosts');
-    // for(let i = 0; i < params.hosts.length; i++){
-    //     await async_exec(`echo ${params.hosts[i].ip} >> /etc/ansible/hosts`);
-    // }
-    // await async_exec(`echo '172.17.0.13' > /etc/ansible/hosts; echo '172.17.0.14' >> /etc/ansible/hosts`);
-
-    // --- ansible : send bin to hosts
-    let res_cmd = await async_exec("su peer -c 'ansible-playbook send_bin.yaml'");
     
     // launch diag node
-    exec(`stdbuf -i0 -o0 -e0 /tmp/diag_node > /home/log/basalt 2> /home/log/basalt_err`,
+    let free_port = await get_free_port();
+    exec(`stdbuf -i0 -o0 -e0 /home/peer/bin/honest_node ${params.basalt.view_size} ${free_port} ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000 > /home/log/basalt 2> /home/log/basalt_err`,
         (err, stdout, stderr) => {
             if(err)
                 console.log(err);
@@ -250,9 +235,9 @@ app.post('/launch', async (req, res)=>{
     );
 
     // --- launch
-    let launch_basalt_cmd_tab = []
+    let launch_basalt_cmd_tab = [];
     const launch_basalt_cmd_gen = async (params, mac_i, attack_id, nbr_node)=>{
-        launch_basalt_cmd_tab.push(`ansible ${params.hosts[mac_i].ip} -a "/home/peer/in_host_launcher.sh ${attack_id} ${nbr_node} ${params.basalt.view_size} ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port}"`);
+        launch_basalt_cmd_tab.push(`/home/peer/in_host_launcher.sh ${attack_id} ${nbr_node} ${params.basalt.view_size} ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port}`);
     }
     
     for(let mac_i = 0; mac_i < params.hosts.length; mac_i++){
@@ -282,11 +267,11 @@ app.post('/launch', async (req, res)=>{
 
     }
 
-    let main_basalt_exec_cmd = "su peer -c '";
+    let main_basalt_exec_cmd = "";
     for(let i = 0; i < launch_basalt_cmd_tab.length; i++){
-        main_basalt_exec_cmd += launch_basalt_cmd_tab[i]+" & ";
+        main_basalt_exec_cmd += launch_basalt_cmd_tab[i]+"; ";
     }
-    main_basalt_exec_cmd += "';";
+    
     //console.log(main_basalt_exec_cmd);
     await async_exec(main_basalt_exec_cmd);
 
