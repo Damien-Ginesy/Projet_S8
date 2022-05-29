@@ -29,7 +29,7 @@ exec (
 
 // systemctl start mongod.service
 exec(
-    `systemctl start mongod`,
+    `/etc/init.d/mongodb start`,
     (err, stdout, stderr) => {
         if(err)
             console.log(err);
@@ -272,7 +272,7 @@ app.post('/launch', async (req, res)=>{
         main_basalt_exec_cmd += launch_basalt_cmd_tab[i]+" & ";
     }
     
-    //console.log(main_basalt_exec_cmd);
+    console.log(main_basalt_exec_cmd);
     await async_exec(main_basalt_exec_cmd);
 
     console.log('basalt ok');
