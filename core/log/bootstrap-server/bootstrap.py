@@ -16,6 +16,7 @@ class Node:
 NodeList = []
 MaliciousList = []
 i = 0
+offset = 100
 
 lim = 39 #au minimum bs_size
 bs_size = 5
@@ -66,7 +67,7 @@ def log():
     type = request.json['type']
     port = request.json['port']
     ip = request.remote_addr
-    id = (i:=i+1)
+    id = (i:=i+1) + offset
     NodeList.append(Node(ip, port, id, type))
     if(int(type) > 0):
         MaliciousList.append(Node(ip, port, id, type))

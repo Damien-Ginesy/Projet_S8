@@ -49,7 +49,7 @@ function plot(){
     let idSource = node.nodeID.adresseVirtuelle;
       for (let v of node.vue) {
         idDestination = v.nodeID.adresseVirtuelle;
-        if(idSource == IdTarget){
+        if(idSource == identifiant[IdTarget]){
           Graph.createEdge(identifiant.indexOf(idSource),
             identifiant.indexOf(idDestination));
         }
@@ -89,7 +89,7 @@ canvas.addEventListener('mousemove', e => {
 canvas.addEventListener('click', e => {
   let n = getFocusedNode(canvas, e);
   if (n!=-1){
-    IdTarget = identifiant[n];
+    IdTarget = n;
     plot();
   }
 });

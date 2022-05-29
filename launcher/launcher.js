@@ -29,7 +29,7 @@ exec (
 
 // systemctl start mongod.service
 exec(
-    `/etc/init.d/mongodb start`,
+    `systemctl start mongod`,
     (err, stdout, stderr) => {
         if(err)
             console.log(err);

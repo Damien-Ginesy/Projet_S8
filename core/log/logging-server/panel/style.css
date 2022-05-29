@@ -1,6 +1,7 @@
 canvas {
   margin: auto;
   position: fixed;
+  border: 1px solid gray;
 }
 body {
   margin: auto; padding: 40px; width: 80%; overflow-x: hidden;
@@ -15,6 +16,16 @@ h4 {display: inline-block;}
 
 #nodesInfo {
   float:right;
+  margin-top: 150px;
+
+}
+
+#legende {
+  width: 600px;
+  position: absolute;
+  right: 0px;
+  transform: translate(-50%, 0%);
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .nodeInfo {
@@ -26,12 +37,10 @@ h4 {display: inline-block;}
   border-radius: 5px;
   max-width: 600px;
 }
-.nodeInfo h3 {display: inline-block; margin-left: 20px;margin-bottom: 20px;}
-.nodeInfo p {display: inline-block; font-size: 11pt;}
+.nodeInfo h3 {display: inline-block; margin-left: 20px;margin-bottom: 0;}
+.nodeInfo p {font-size: 11pt; margin-left: 50px;margin-bottom: 10px;}
 .nodeInfo table {
   border-collapse: collapse;
-  margin-left: auto;
-  margin-right: auto;
 }
 .nodeInfo table th, .nodeInfo table td {
   text-align: center;

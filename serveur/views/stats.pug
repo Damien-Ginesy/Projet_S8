@@ -142,7 +142,7 @@ block body
         /*-------------------------------------*/
 
         async function createTitleNodes() {
-            const nodeData = Data[0].allNode[index];
+            const nodeData = Data[index];
             const father = document.getElementById('nodeTitle');
             const nodeNum = "Noeud : " + nodeData.nodeID.adresseVirtuelle;
             const portNum = " / Port : " + nodeData.nodeID.port;
@@ -254,68 +254,14 @@ block body
             const nodes = document.getElementById("nodes");
             const changeGraphButt = document.getElementById("subChart");
             const mainDiv = document.getElementById("chart");
+            const gaugeChart = document.getElementById('gaugeChart');
             
             screen.style.display = "block";
             nodes.style.display = 'none';
             mainDiv.style.display = "none";
             changeGraphButt.style.display = "block";
+            gaugeChart.style.display = "none";
         })
-
-
-
-        /*-------------------------------------*/
-        /* header nav */
-        /*-------------------------------------*/
-
-
-        function openNav() {
-            document.getElementById("myNav").style.width = "100%";
-        }
-
-
-        function closeNav() {
-            document.getElementById("myNav").style.width = "0%";
-        }
-
-
-        /*-------------------------------------*/
-        /* line chart */
-        /*-------------------------------------*/
-        /*
-        mainDiv.style.display = "none";
-
-        let tab = document.createElement("table");
-        tab.className = 'charts-css line show-4-secondary-axes show-heading';
-        tab.id = "my-chart";
-        mainDiv.append(tab);
-        let tbody = document.createElement('tbody');
-        tab.append(tbody);
-
-        let caption = document.createElement('caption');
-        caption.textContent = "Graphique Basalt"
-        tab.append(caption)
-
-
-        let tr1 = document.createElement('tr');
-        tbody.append(tr1);
-        let td1 = document.createElement('td');
-        td1.style = "--start: 0.0; --size: 0.4";
-        tr1.append(td1);
-        let span = document.createElement('span');
-        span.className = "data"
-        td1.append(span);
-
-
-        let tr2 = document.createElement('tr');
-        tbody.append(tr2);
-        let td2 = document.createElement('td');
-        td2.style = "--start: 0.4; --size: 0.4";
-        tr2.append(td2);
-        let span2 = document.createElement('span');
-        span2.className = "data"
-        td2.append(span2);
-        */
-
 
         function openChart() {
             const mainDiv = document.getElementById("chart");
@@ -336,14 +282,13 @@ block body
         /*-------------------------------------*/
 
         async function getAllData() {
-            const query = await fetch('/nodeData');
+            const query = await fetch('/nodeDataTab');
             const data = await query.json();
             Data = data;
         };
 
         async function getViewRate() {
             const vueNoeud = [];
-
             Data[index]?.vue.forEach(el => {
                 vueNoeud.push(el.nodeID)
             })
@@ -375,9 +320,14 @@ block body
                 infoVue.vueNoeudSain];
             pushData2 = [];
             pushData2.push(dataToPush);
-
+            console.log(dataToPush)
             chart[1].data.datasets[0].data = pushData2[0];
             chart[1].update();
+
+            const graph = document.getElementById("graph2");
+            if (!(dataToPush[0] || dataToPush[1])){
+                graph.style.display = "none";
+            }else{ graph.style.display = "block";}
         }
 
         async function updateData() {

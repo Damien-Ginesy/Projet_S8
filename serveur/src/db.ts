@@ -91,9 +91,7 @@ export class DatabaseAccess {
     }
 
 
-    async ajoutDonnees(adresseReelle:string,noeud:object){
-        // @ts-ignore
-        noeud.nodeID.adresseReelle = adresseReelle;
+    async ajoutDonnees(noeud:object){
         const existe: InfoNoeud | null = await this.recupNoeudExistant(noeud);
         if (existe === null) {
             this.addInfo(noeud);
