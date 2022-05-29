@@ -218,9 +218,9 @@ app.post('/launch', async (req, res)=>{
 
     console.log('bootstrap ok');
 
-    await async_exec(`echo 'su peer -c "/home/peer/bin/honest_node ${params.basalt.view_size} $(/home/peer/find_free_port.sh) ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000"' > /tmp/diag_node`);
-    await async_exec(`chmod u+x /tmp/diag_node`);
-    
+    // --- ansible : send bin to hosts
+    await async_exec("su peer -c 'ansible-playbook send_bin.yaml'");
+
     // launch diag node
     let free_port = await get_free_port();
     exec(`stdbuf -i0 -o0 -e0 /home/peer/bin/honest_node ${params.basalt.view_size} ${free_port} ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port} ${main_machain_ip} 3000 > /home/log/basalt 2> /home/log/basalt_err`,
@@ -237,7 +237,7 @@ app.post('/launch', async (req, res)=>{
     // --- launch
     let launch_basalt_cmd_tab = [];
     const launch_basalt_cmd_gen = async (params, mac_i, attack_id, nbr_node)=>{
-        launch_basalt_cmd_tab.push(`/home/peer/in_host_launcher.sh ${attack_id} ${nbr_node} ${params.basalt.view_size} ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port}`);
+        launch_basalt_cmd_tab.push(`su peer -c 'ssh peer@${params.hosts[mac_i].ip} "/home/peer/in_host_launcher.sh ${attack_id} ${nbr_node} ${params.basalt.view_size} ${params.basalt.cycles_before_reset} ${params.basalt.nodes_per_reset} ${params.basalt.cycles_per_second} ${main_machain_ip} ${bootstrap_port}"'`);
     }
     
     for(let mac_i = 0; mac_i < params.hosts.length; mac_i++){
@@ -269,7 +269,7 @@ app.post('/launch', async (req, res)=>{
 
     let main_basalt_exec_cmd = "";
     for(let i = 0; i < launch_basalt_cmd_tab.length; i++){
-        main_basalt_exec_cmd += launch_basalt_cmd_tab[i]+"; ";
+        main_basalt_exec_cmd += launch_basalt_cmd_tab[i]+" & ";
     }
     
     //console.log(main_basalt_exec_cmd);
