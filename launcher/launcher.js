@@ -47,9 +47,10 @@ const async_exec = (cmd) =>{
         exec(cmd,(err, stdout, stderr)=>{
             if(err){
                 resolve(err);
+            }else if(stderr){
+                resolve(stderr);
             }else{
                 resolve(stdout);
-                resolve(stderr);
             }
         })
     });
@@ -57,7 +58,21 @@ const async_exec = (cmd) =>{
 
 const get_free_port = () => {
 
-    return async_exec('./find_free_port.sh');
+    const async_exec = () => {
+        return new Promise((resolve)=>{
+            exec(cmd,(err, stdout, stderr)=>{
+                if(err){
+                    resolve(err);
+                }else if(stderr){
+                    resolve(stderr);
+                }else{
+                    resolve(parseInt(stdout));
+                }
+            })
+        });
+    }
+
+    return async_exec();
 
 }
 
