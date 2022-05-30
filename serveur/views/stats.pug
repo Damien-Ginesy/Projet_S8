@@ -48,7 +48,7 @@ block body
             h1#open Ouvrir les options  
 
 
-    div#subChart
+    //- div#subChart
         h4(onclick='openChart()') Changer de graphique 
 
     #gaugeChart        
@@ -144,8 +144,8 @@ block body
         async function createTitleNodes() {
             const nodeData = Data[index];
             const father = document.getElementById('nodeTitle');
-            const nodeNum = "Noeud : " + nodeData.nodeID.adresseVirtuelle;
-            const portNum = " / Port : " + nodeData.nodeID.port;
+            const nodeNum = "Noeud : " + nodeData?.nodeID.adresseVirtuelle;
+            const portNum = " / Port : " + nodeData?.nodeID.port;
             father.innerHTML = nodeNum + portNum;
         }
 
@@ -173,13 +173,13 @@ block body
             tr2.append(td2);
             td2.append('Vue')
 
-            const vueLength = Data[index].vue.length;
+            const vueLength = Data[index]?.vue.length;
 
             for (let pas = 0; pas < vueLength; pas++) {
                 let td2 = document.createElement('td');
                 tr1.append(td2);
                 let seed = Data[index].vue[pas].seed.toString()
-                td2.append(seed.slice(0, 2))
+                td2.append(seed.slice(0, 4))
 
                 let td3 = document.createElement('td');
                 td3.style.fontSize = 10
@@ -214,11 +214,13 @@ block body
             const nodes = document.getElementById("nodes");
             const changeGraphButt = document.getElementById("subChart");
             const mainDiv = document.getElementById("chart");
+            const gaugeChart = document.getElementById("gaugeChart");
             
             screen.style.display = "none";
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
             changeGraphButt.style.display = "none";
+            gaugeChart.style.display = "none";
 
             deleteTableForNodes();
             createTableForNodes();
@@ -236,11 +238,13 @@ block body
             const nodes = document.getElementById("nodes");
             const changeGraphButt = document.getElementById("subChart");
             const mainDiv = document.getElementById("chart");
+            const gaugeChart = document.getElementById("gaugeChart");
 
             screen.style.display = "none";
             mainDiv.style.display = "none";
             nodes.style.display = 'block';
             changeGraphButt.style.display = "none";
+            gaugeChart.style.display = "none";
 
             createTitleNodes();
             deleteTableForNodes();
@@ -320,7 +324,6 @@ block body
                 infoVue.vueNoeudSain];
             pushData2 = [];
             pushData2.push(dataToPush);
-            console.log(dataToPush)
             chart[1].data.datasets[0].data = pushData2[0];
             chart[1].update();
 
@@ -334,7 +337,11 @@ block body
             await getAllData();
             await getDataForPieCharts();
             const infoVue = await getViewRate();
-            setNodePieChart(infoVue)
+            setNodePieChart(infoVue);
+
+            createTitleNodes();
+            deleteTableForNodes();
+            createTableForNodes();
 
             chart[0].data.datasets[0].data = pushData1[0];
             chart[0].update();
