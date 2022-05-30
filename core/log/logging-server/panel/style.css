@@ -4,10 +4,17 @@ canvas {
   border: 1px solid gray;
 }
 body {
-  margin: auto; padding: 40px; width: 80%; overflow-x: hidden;
+  margin: 0px;
   font-family: 'Roboto', sans-serif;
   font-size: 15pt;
 }
+
+#center {
+  margin: auto; padding: 0px;
+  overflow-x: hidden;
+  width: 80%;
+}
+
 h1 {
     font-size: 20pt;
 }
@@ -21,7 +28,7 @@ h4 {display: inline-block;}
 }
 
 #legende {
-  width: 600px;
+  width: 34vw;
   position: absolute;
   right: 0px;
   transform: translate(-50%, 0%);
