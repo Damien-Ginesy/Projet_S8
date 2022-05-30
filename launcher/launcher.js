@@ -174,6 +174,9 @@ app.post('/launch', async (req, res)=>{
         }
     );
 
+    // making sure the metric server is listenning
+    sleep(10000);
+
     // launch bootstrap server
     const bootstrap_server_launch = async (params)=>{
         
