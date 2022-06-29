@@ -46,6 +46,11 @@
 
 *.pyc
 *.zip
-*.json
+
 
 *.odp*
+*.docx*
+
+
+#node js
+node_modules

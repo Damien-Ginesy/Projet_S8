@@ -1,15 +1,37 @@
 #include <basalt.hpp>
-#include <semaphore>
-#include <bootstrap_server_structs.h>
-#include <endian.hpp>
+#include <exchange_protocol.h>
+// #include <endian.hpp>
+#include <thread>
+
+asio::error_code resolve(asio::ip::tcp::resolver& resolver, std::string hostname, std::string service, asio::ip::tcp::endpoint& out)
+{
+    asio::error_code ec;
+    auto results =  resolver.resolve(hostname, service, ec);
+    if(ec) return ec;
+    for(const auto& r: results){
+        if(r.endpoint().address().is_v4()) {
+            out = r.endpoint();
+            break;
+        }
+    }
+    return asio::error_code();
+}
 
 int main(int argc, char const *argv[])
 {
     using namespace asio::ip;
+    using namespace std::chrono_literals;
     constexpr int attackId = 0;
+    if(argc < 8){
+        std::cout << "Usage: ./honest_node " 
+        "<view_size> <listen_port> <cycles_before_reset> <n_nodes_per_reset> <cycles_per_second> <bootstrap_hostname> "
+        "<bootstrap_port> [log server hostname] [log server port (defaults to 80]" << '\n';
+        return 1;
+    }
     asio::io_context ctx;
     /* params
     - view size
+    - port
     - cycles before reset
     - n nodes per reset
     - cycles per second
@@ -19,31 +41,56 @@ int main(int argc, char const *argv[])
     - log server port (if not 80)
      */
     const unsigned viewSize = atol(argv[1]);
-    const unsigned cyclesBeforeReset = atol(argv[2]);
-    const unsigned k = atol(argv[3]);
-    const unsigned cyclesPerSec = atoi(argv[4]);
+    const uint16_t port = atoi(argv[2]);
+    const unsigned cyclesBeforeReset = atol(argv[3]);
+    const unsigned k = atol(argv[4]);
+    const unsigned cyclesPerSec = atoi(argv[5]);
     tcp::resolver resolver(ctx);
-    asio::error_code ec;
-    auto results =  resolver.resolve(argv[5], argv[6], ec);
-    if(ec){
-        std::cerr << "Couldn't resolve " << argv[5] << ": " << ec.message() << std::endl;
-        return EXIT_FAILURE;
-    }
-    tcp::endpoint bootstrapServer = *results.begin();
-    tcp::socket sock(ctx);
+    tcp::endpoint bootstrapServer;
+    asio::error_code ec = resolve(resolver, argv[6], argv[7], bootstrapServer);
+    tcp::socket bsServerSock(ctx);
 
-    sock.connect(bootstrapServer, ec);
+    bsServerSock.connect(bootstrapServer, ec);
     if(ec){
         std::cerr << "Couldn't connect to bootstrap server: " << ec.message() << std::endl;
         return EXIT_FAILURE;
     }
-    Request req { little_endian(viewSize), 0};
-    Response resp;
-    Basalt::write_n(sock, sizeof(req), &req);
-
-    Basalt::read_n(sock, sizeof(resp), &resp);
-    Basalt::NodeId id { make_address_v4(resp.realIp), 0, resp.virtualIp};
-    id._port = (uint16_t)(id.id - (id.id >> 16));
+    bootstrap_req req {viewSize, port, 0};
+    Basalt::write_n(bsServerSock, sizeof(req), &req);
+    bootstrap_res resp;
+    Basalt::read_n(bsServerSock, sizeof(resp), &resp);
+    Basalt::NodeId id { make_address_v4(resp.real_ip), port, resp.ip};
     std::cout << id.to_string() << '\n';
+    std::cout << sizeof(node_network_info) << '\n';
+    Basalt::Array<Basalt::NodeId> bootstrap(viewSize);
+    std::cout << "Bootstrap:\n==================\n";
+    for (auto& p: bootstrap)
+    {
+        node_network_info info;
+        Basalt::read_n(bsServerSock, sizeof(info), &info);
+        p = Basalt::NodeId {make_address_v4(info.ip), info.port, info.virtual_ip};
+        std::cout << p.to_string() << '\n';
+    }
+    
+
+    // init here
+    const std::chrono::milliseconds mainDelay(1000 / cyclesPerSec);
+    const std::chrono::milliseconds resetDelay(cyclesBeforeReset * mainDelay);
+    const char *logServerHostname = NULL;
+    uint16_t logServerPort = 80;
+    switch (argc)
+    {
+    case 10: logServerPort = (uint16_t)atoi(argv[9]);
+    case 9: logServerHostname = argv[8];
+    std::cout << "Log server: " << logServerHostname << ':' << logServerPort << '\n';
+    Basalt::basalt_set_logger(5, logServerHostname, logServerPort);
+    }
+    
+    Basalt::basalt_init(id, bootstrap, k, mainDelay, resetDelay);
+
+    while(1) 
+        std::this_thread::sleep_for(10s);
+    Basalt::basalt_stop();
+
     return 0;
 }

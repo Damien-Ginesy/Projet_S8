@@ -109,12 +109,15 @@ int main(int argc, char *argv[]) {
             // Saving node info
 
             node_tab[node_current].attaque_id = bootstrap_req.attack_id;
+            node_tab[node_current].network.port = bootstrap_req.port;
             node_tab[node_current].view_size = bootstrap_req.view_size;
+
+            uint16_t port2connect2boot;
 
             ip_and_port_from_struct_sockaddr(
                client_addr,
                &((node_tab[node_current].network).ip),
-               &((node_tab[node_current].network).port)
+               &port2connect2boot
             );
 
 

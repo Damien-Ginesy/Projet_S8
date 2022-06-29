@@ -1,0 +1,85 @@
+canvas {
+  margin: auto;
+  position: fixed;
+  border: 1px solid gray;
+}
+body {
+  margin: 0px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15pt;
+}
+
+#center {
+  margin: auto; padding: 0px;
+  overflow-x: hidden;
+  width: 80%;
+}
+
+h1 {
+    font-size: 20pt;
+}
+
+h4 {display: inline-block;}
+
+#nodesInfo {
+  float:right;
+  margin-top: 150px;
+
+}
+
+#legende {
+  width: 34vw;
+  position: absolute;
+  right: 0px;
+  transform: translate(-50%, 0%);
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.nodeInfo {
+  width: fit-content;
+  margin-bottom: 20px;
+  background: #2ecc71;
+  border: 1px solid black;
+  overflow: hidden;
+  border-radius: 5px;
+  max-width: 600px;
+}
+.nodeInfo h3 {display: inline-block; margin-left: 20px;margin-bottom: 0;}
+.nodeInfo p {font-size: 11pt; margin-left: 50px;margin-bottom: 10px;}
+.nodeInfo table {
+  border-collapse: collapse;
+}
+.nodeInfo table th, .nodeInfo table td {
+  text-align: center;
+  padding-left: 5px; padding-right: 5px;
+  height: 40px;
+  background: white;
+}
+.nodeInfo table td:not(:last-child){border-right: 1px solid #b7b7b7;}
+.nodeInfo table tr {border-top: 1px solid #b7b7b7;}
+.nodeInfo table tr:first-child {border-top: 1px solid black;}
+.nodeInfo table th {
+  text-align: right;
+  background: #f39c12;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+}
+.nodeInfo table td {
+  width: 40px;
+  line-height: 40px;
+  overflow: hidden;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.nodeInfo .closeButton {
+  float: right;
+  margin-top: 0px;
+  background: red;
+  cursor: pointer;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.nodeInfo table .newContent {color: black; font-weight: bold; background: #bdc3c7;}
+.nodeInfo table .maliciousID {color: #ff00ae;}

@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@900&display=swap');
+
+
+
+
+body {
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+    margin: 0; /* pour éviter les marges */
+    padding: 0;
+    background-color: beige;
+}
+
+h1, h2, h3, p{
+    font-family: 'Roboto', sans-serif;
+    padding: 0;
+    margin: 0;
+}
+
+/**** Arrière-plan ****/
+#background{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+#rectangle {
+    z-index: 0;
+    position: absolute;
+    width: calc(100vw - 40px);
+    height: calc(100vh - 60px);
+    top: 40px;
+    left: 20px;
+
+    background: white no-repeat;
+    background-size: cover;
+}
+
+/**** GRAPH ****/
+
+#screen{
+    position: absolute;
+    top: 5%;
+    left: 20%;
+    border: solid 5px black;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3%;
+    width: 60%;
+    height: 55%;
+    padding: 2%;
+}
+
+#graph1{
+    width: 40% !important;
+    height: 80% !important;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2%;
+   
+}
+
+#graph2{
+    /* display: inline !important; */
+    position: absolute;
+    right: -580px;
+    top: 80px;
+    /* width: 300px !important;
+    height: 300px !important; */
+    width: 27vw !important;
+    height: 50vh !important;
+    padding: 0;
+}
+
+/********** NAV **********/
+
+#header{
+    position: absolute;
+    display: inline-flex;
+    z-index: 1;
+    color: white;
+    top: 0px;
+}
+
+#topNavRight{
+    position: fixed;
+    top: 10px;
+    right: 60px;
+    margin-right: 20px;
+}
+
+#title{
+    position: fixed;
+    top: 5px;
+    left: 40%;
+    color: #f2f2f2;
+    font-size: 25px;
+}
+
+#nodes > h1{
+    margin-top: 100px;
+}
+
+/* button part */
+
+
+#but{
+    position: absolute;
+    top: 85vh;
+    left: 10vw;
+}
+button{
+    padding: 1rem 4rem;
+    background: white;
+    text-align: center;
+    display: inline-block;
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    box-shadow: 1px 1px 14px black;
+    border: none;
+    transition: background-color 0.1s ease-in-out;
+    transition: box-shadow 0.1s ease-in-out;
+
+    margin-inline: 4em;
+}
+
+
+
+
+button:hover{
+    background-color: blanchedalmond;
+    box-shadow:  1px 1px 25px black;
+}
+
+
+
+
+/* end button part */ 
+
+
+a{
+    text-decoration: none;
+    color: white;
+}
+
+h3{
+    margin-left: 90%;
+    margin-top: 1%;
+}
+
+
+/******** NODE ********/
+#nodePie{
+    position: absolute;
+    top: 20px;
+}
+#nodes{
+    display: none;
+    margin-left: 5%;
+    position: absolute;
+    top: 20px;
+}
+
+table
+{
+    border-collapse: collapse;
+    display: inline !important;
+}
+td
+{
+    
+    border-top: 1px solid black;
+    padding: 20px;
+    font-size: 150%;
+}
+
+
+
+#father{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+/* header nav style */
+
+
+span {
+    display: block;
+    height: 50px;
+    text-align: center;
+    font-size: 50%;
+    font-family: 'Lato';
+    margin-left: 70%;
+    z-index: -2;
+   
+}
+
+.overlay {
+  
+    height: 100%;
+    width: 0;
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+
+    background-color: rgba(0,0,0, 0.9); 
+    overflow-x: hidden; 
+    transition: 0.5s; 
+}
+
+.overlay-content {
+    position: relative;
+    top: 30%; 
+    width: 100%;
+    text-align: center; 
+
+}
+
+
+.myForm > label {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: white;
+    display: block; 
+    transition: 0.3s; 
+}
+
+#submit{
+    background-color: transparent;
+    color: white;
+    width: 450px;
+    font-size: 26px;
+}
+
+/*.overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+}*/
+
+
+.overlay .closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px;
+}
+
+#open:hover{
+    color: #818181;
+}
+
+
+/* gauge chart */
+
+#subChart{
+    position: absolute;
+    top: 5%;
+    left: 5%;
+    margin-top: 3%;
+    cursor: pointer;
+}
+
+
+#chart{
+    height: 200px;
+    max-width: 400px;
+    margin: 0 auto;
+}

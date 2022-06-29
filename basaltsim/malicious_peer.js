@@ -32,12 +32,14 @@ class Malicous extends Peer {
       peer.tick();
     }
   }
+  /*
   pull(p){
     p.onpull(this);
 
     //Pour compatibilité avec les naifs
     return this.view[parseInt(Math.random()*viewSize)];
-  }
+  }*/
+
   updateSamples(v){/* rien */}
   reset(){ /* rien */}
   onpush(p, v){ /* rien */}

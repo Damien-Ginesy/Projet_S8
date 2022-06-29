@@ -5,9 +5,14 @@ html(lang="fr")
             meta(charset='utf-8')
             meta(name='viewport', content='width=device-width, initial-scale=1')
             meta(name='description', content='')
-            style
-                include ../style/homepage.css
+            block style
+     
         block title
             title Titre standard
+
+    script(src='particles.js')
+    script(src='particles.min.js')
+    script(src='app.js')
+
     body
         block body

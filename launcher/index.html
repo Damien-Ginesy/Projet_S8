@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BASALT Launcher</title>
+    <link id = "favicon" rel="icon" href='' />
+    <style>
+        body{
+            --sec_color : rgba(224, 21, 21, 0.87);
+        }
+        div.params_section{
+            border-style: solid;
+            border-radius: 10px;
+            border-width: 1px;
+            padding: 10px;
+            border-color: var(--sec_color);
+            width: 600px;
+            margin: auto;
+            margin-top: 10px;
+        }
+        div.right_bar{
+            border-style: solid;
+            border-radius: 10px;
+            border-width: 1px;
+            padding: 10px;
+            border-color: var(--sec_color);
+            width: 200px;
+            margin: 30px;
+        }
+        div.diag_section{
+            margin: 30px;
+            width: 300px;
+        }
+
+        fieldset.diag{
+            
+            padding-top: 0;
+            padding-bottom: 3px;
+
+            width: 100%;
+        }
+
+        div.button{
+            cursor: pointer;
+            border-style: solid;
+            border-radius: 10px;
+            border-width: 1px;
+            padding: 4px;
+            border-color: var(--sec_color);
+        }
+        div.button:hover {
+            box-shadow: 0 0 11px var(--sec_color); 
+        }
+
+        div.scan_network_config_div{
+            width: 60%;
+            margin: auto;
+        }
+
+        input.withfieldset{
+            border-style: none;
+            width: 100%;
+        }
+        input.withfieldset:focus{
+            outline: none;
+        }
+        fieldset{
+            
+            padding-top: 0;
+            padding-bottom: 3px;
+
+            width: 200px;
+        }
+
+        div.diag{
+            height: 200px;
+            overflow: scroll;
+        }
+        div.diag::-webkit-scrollbar {
+            display: none;
+        }
+
+        fieldset.diag{
+            border-color: var(--sec_color);
+        }
+
+    </style>
+</head>
+<body>
+    
+    <header>
+        <table>
+            <tr>
+                <td>
+                    <img id='project_logo' src="" height="60px" width="auto" style="padding: 10px;" alt="project_logo">
+                </td>
+                <td>
+                    <h2>The BASALT simulation launcher</h2>
+                </td>
+            </tr>
+        </table>
+    </header>
+
+    <!-- is going to be visible later by js script -->
+    <div id = "scan_network_config_div_parent" style="visibility: hidden;">
+        <div class="params_section" id="scan_network_config_div">
+            <h3>Simulation network scan</h3>
+    
+            <table>
+                <tr>
+                    <td>
+                        <fieldset>
+                            <legend>Simulation network ip address</legend>
+                            <input class="withfieldset" type="text" id="net_ip" name="net_ip" value="172.17.0.0/24">
+                        </fieldset>
+                    </td>
+                    <td>
+                        <fieldset>
+                            <legend>Main machine ip address</legend>
+                            <input class="withfieldset" type="text" id="main_mac_ip" name="main_mac_ip" value="172.17.0.15">
+                        </fieldset>
+                    </td>
+                    <td>
+                        <div class="button" style="width: 110px;" onclick="scan_network_req()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="icon_scan" src="" height="30px" width="auto"></img>
+                                    </td>
+                                    <td>
+                                        Scan
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        
+        </div>
+    </div>
+
+    <main id="main_page">
+
+        <table style="width: 1900px; margin: auto;">
+            <tr>
+                <td style="width : 300px; vertical-align:top;">
+                    <div class="right_bar">
+                        <div id ='launch_button' class="button" style="border-color: green;" onclick="launche()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="icon_launch" src="" height="40" width="auto" alt="">
+                                    </td>
+                                    <td>
+                                        <span id="launch_metric_msg">Launch</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="button" onclick="stop_simu()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="stop_icon" src="" height="40" width="auto" alt="">
+                                    </td>
+                                    <td>
+                                        Stop
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+                        <div class="button" onclick="update_code()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="refresh_icon" src="" height="40" width="auto" alt="">
+                                    </td>
+                                    <td>
+                                        Update code
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+                <td style="width : 700px; vertical-align:top;">
+
+                    <div class="params_section">
+                        <h3>Hosts configuration</h3>
+                        <table id='host_table'>
+                            <tr>
+                                <td></td>
+                                <td>IP</td>
+                                <td>node number</td>
+                            </tr>
+                        </table>
+                        <div class="button" style="width: 110px; margin-left:70%;" onclick="add_host_form()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="icon_add_host" src="" height="30px" width="auto"></img>
+                                    </td>
+                                    <td>
+                                        Add host
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <p style="font-size:smaller;">
+                            * An additional honest node is always executed in the main machine for diagnostic purposes.
+                        </p>
+                    </div>
+
+                    <div class="params_section">
+                        <h3>Attacks configuration</h3>
+                        <table id='attacks_table'>
+                        </table>
+                        <div class="button" style="width: 110px; margin-left:70%;" onclick="add_attacks_form()">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <img id="icon_add_attack" src="" height="30px" width="auto"></img>
+                                    </td>
+                                    <td>
+                                        Add attack
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="params_section">
+                        <h3>BASALT parameters</h3>
+                        <table id='basalt_table'>
+                            <tr>
+                                <td>
+                                    <fieldset>
+                                        <legend>view size</legend>
+                                        <input class="withfieldset" id="basalt_view_size" type="text" value="10" placeholder="view size">
+                                    </fieldset>
+                                </td>
+                                <td>
+                                    <fieldset>
+                                        <legend>cycles before reset</legend>
+                                        <input class="withfieldset" id="basalt_cycles_before_reset" type="text" value="4" placeholder="cycles before reset">
+                                    </fieldset>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <fieldset>
+                                        <legend>nodes per reset</legend>
+                                        <input class="withfieldset" id="basalt_nodes_per_reset" type="text" value="1" placeholder="nodes per reset">
+                                    </fieldset>
+                                </td>
+                                <td>
+                                    <fieldset>
+                                        <legend>cycles per second</legend>
+                                        <input class="withfieldset" id="basalt_cycles_per_second" type="text" value="5" placeholder="cycles per second">
+                                    </fieldset>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </td>
+                <td style="width : 400px; vertical-align:top;">
+                    <div class="diag_section">
+                        <!-- <h3>Diagnostic</h3> -->
+                        <fieldset class="diag">
+                            <legend>Inventory</legend>
+                            <div class='diag' id='diag_inventory' style="height: 100px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Bootstrap</legend>
+                            <div class='diag' id='diag_bootstrap' style="height: 200px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Metric</legend>
+                            <div class='diag' id='diag_metric' style="height: 150px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Basalt</legend>
+                            <div class='diag' id='diag_basalt' style="height: 150px;"></div>
+                        </fieldset>
+                    </div>
+                </td>
+                <td style="width : 400px; vertical-align:top;">
+                    <div class="diag_section">
+                        <!-- <h3>Diagnostic</h3> -->
+                        <fieldset class="diag">
+                            <legend>Inventory err</legend>
+                            <div class='diag' id='diag_inventory_err' style="height: 100px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Bootstrap err</legend>
+                            <div class='diag' id='diag_bootstrap_err' style="height: 200px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Metric err</legend>
+                            <div class='diag' id='diag_metric_err' style="height: 150px;"></div>
+                        </fieldset>
+                        <fieldset class="diag">
+                            <legend>Basalt err</legend>
+                            <div class='diag' id='diag_basalt_err' style="height: 150px;"></div>
+                        </fieldset>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </main>
+
+    <footer>
+    </footer>
+
+    <script>
+        
+        var params = {};
+        var inventory_tab;
+
+        const sleep = (m_sec) => {
+            return new Promise((resolve)=>{
+                setTimeout(()=>{ resolve() },m_sec);
+            })
+        }
+
+        // hosts
+
+        var hosts_index = 0;
+        var hosts_tab = [];
+
+
+        const add_host_form = () => {
+
+            console.log('add_host_form');
+            
+            let host = {
+                index : hosts_index
+            };
+            hosts_index++;
+            hosts_tab.push(host);
+
+            let host_element_str = `
+                <td
+                    onclick="delete_host(${host.index})"
+                >
+                    <img src="http://${location.host}/media/delete" height="16px" width="auto">
+                </td>
+                <td>
+                    <input id="hostip_${host.index}"" type="text" value="" placeholder="host ip">
+                </td>
+                <td>
+                    <input id="hostnodenbr_${host.index}"" type="text" value="" placeholder="node number">
+                </td>
+            `;
+
+            let host_element = document.createElement('tr');
+            host_element.id = `hostformtr_${host.index}`;
+            host_element.innerHTML = host_element_str;
+
+            let hosts_tab_element = document.getElementById('host_table');
+            hosts_tab_element.appendChild(host_element);
+
+        };
+
+        const delete_host = (index)=>{
+            for(let i = 0; i < hosts_tab.length; i++){
+                if(hosts_tab[i].index == index){
+                    document.getElementById(`hostformtr_${index}`).innerHTML = "";
+                    hosts_tab.splice(i, 1);
+                    break;
+                }
+            }
+        };
+
+        const save_hosts = () => {
+            
+            for(let i = 0; i < hosts_tab.length; i++){
+                hosts_tab[i].ip = document.getElementById(`hostip_${hosts_tab[i].index}`).value;
+                hosts_tab[i].node_nbr = document.getElementById(`hostnodenbr_${hosts_tab[i].index}`).value;
+            }
+
+            params.hosts = hosts_tab;
+        
+        }
+
+
+        // attacks
+        
+        var attacks_index = 0;
+        var attacks_tab = [];
+
+        const display_attack_params = (index)=>{
+            if(document.getElementById(`attackstype_${index}`).value == 'inst'){
+                document.getElementById(`attacksmask_${index}`).style = '';
+            }else{
+                document.getElementById(`attacksmask_${index}`).style = 'visibility : hidden;';
+            }
+        };
+
+        const add_attacks_form = () => {
+            
+            if(attacks_index === 0){
+                let attack_tab_header = `
+                    <td></td>
+                    <td>type</td>
+                    <td>node number</td>
+                    <td">mask (if inst)</td>
+                `;
+
+                let attack_element = document.createElement('tr');
+                attack_element.innerHTML = attack_tab_header;
+
+                let attacks_tab_element = document.getElementById('attacks_table');
+                attacks_tab_element.appendChild(attack_element);
+            }
+
+            let attack = {
+                index : attacks_index
+            };
+            attacks_index++;
+            attacks_tab.push(attack);
+
+            let attack_element_str = `
+                <td
+                    onclick="delete_attack(${attack.index})"
+                >
+                    <img src="http://${location.host}/media/delete" height="16px" width="auto">
+                </td>
+                <td>
+                    <select id="attackstype_${attack.index}" onchange="display_attack_params(${attack.index})">
+                        <option value="eclipse">Eclipse</option>
+                        <option value="inst">Institutional</option>
+                    </select>
+                </td>
+                <td>
+                    <input id="attacksmembersize_${attack.index}" type="text" value="" placeholder="number nodes">
+                </td>
+                <td>
+                    <input id="attacksmask_${attack.index}" type="text" value="" placeholder="mask" style = 'visibility : hidden;'>
+                </td>
+            `;
+
+            let attack_element = document.createElement('tr');
+            attack_element.id = `attackformtr_${attack.index}`;
+            attack_element.innerHTML = attack_element_str;
+
+            let attacks_tab_element = document.getElementById('attacks_table');
+            attacks_tab_element.appendChild(attack_element);
+
+        };
+
+        const delete_attack = (index)=>{
+            for(let i = 0; i < attacks_tab.length; i++){
+                if(attacks_tab[i].index == index){
+                    document.getElementById(`attackformtr_${index}`).innerHTML = "";
+                    attacks_tab.splice(i, 1);
+                    break;
+                }
+            }
+        };
+
+        const save_attacks = () => {
+            
+            for(let i = 0; i < attacks_tab.length; i++){
+                attacks_tab[i].id = attacks_tab[i].index+1;
+                attacks_tab[i].type = document.getElementById(`attackstype_${attacks_tab[i].index}`).value;
+                attacks_tab[i].node_nbr = document.getElementById(`attacksmembersize_${attacks_tab[i].index}`).value;
+                if(attacks_tab[i].type === 'inst'){
+                    attacks_tab[i].mask = document.getElementById(`attacksmask_${attacks_tab[i].index}`).value;;
+                }
+            }
+
+            params.attacks = attacks_tab;
+
+        }
+
+        // Basalt
+        const save_basalt = () => {
+
+            let basalt = {
+                view_size : document.getElementById('basalt_view_size').value,
+                cycles_before_reset : document.getElementById('basalt_cycles_before_reset').value,
+                nodes_per_reset : document.getElementById('basalt_nodes_per_reset').value,
+                cycles_per_second : document.getElementById('basalt_cycles_per_second').value
+            };
+
+            params.basalt = basalt;
+            
+        }
+
+        // Launcher
+        const launche = async()=>{
+
+            document.getElementById('icon_launch').src = `http://${location.host}/media/activity_indicator`;
+
+            save_attacks();
+            save_hosts();
+            save_basalt();
+
+            // fetch('http://localhost:9090/launch')
+            // .then((res)=> return)
+
+            const rawResponse = await fetch(`http://${location.host}/launch`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'req='+JSON.stringify(params)
+            });
+
+            const res = await rawResponse.json();
+
+            document.getElementById('icon_launch').src = `http://${location.host}/media/metric`;
+            document.getElementById('launch_metric_msg').innerHTML = "View metrics";
+            
+            var redirect_to_metric_server = ()=>{window.open(`http://${location.hostname}:3000`, '_blank').focus();};
+
+            document.getElementById('launch_button').onclick = redirect_to_metric_server;
+            
+
+
+            console.log(res);
+          
+        }
+
+
+        // update
+        const update_code = async () => {
+
+            document.getElementById('refresh_icon').src = `http://${location.host}/media/activity_indicator`;
+
+            fetch(`http://${location.host}/update`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            });
+
+            await sleep(4000);
+
+            location.reload();
+        }
+
+        // stop
+        const stop_simu = async () => {
+
+            document.getElementById('icon_launch').src = `http://${location.host}/media/launch`;
+            document.getElementById('launch_metric_msg').innerHTML = "Launch"
+            document.getElementById('launch_button').onclick = launche;
+
+            document.getElementById('stop_icon').src = `http://${location.host}/media/activity_indicator`;
+
+            fetch(`http://${location.host}/stop`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            .then((res)=>{
+                document.getElementById('stop_icon').src = `http://${location.host}/media/stop`;
+            });
+        }
+
+        // media
+        const get_media = () => {
+            document.getElementById('refresh_icon').src = `http://${location.host}/media/refresh`;
+            document.getElementById('favicon').href = `http://${location.host}/media/logo`;
+            document.getElementById('project_logo').src = `http://${location.host}/media/logo`;
+            document.getElementById('icon_launch').src = `http://${location.host}/media/launch`;
+            document.getElementById('icon_add_attack').src = `http://${location.host}/media/add`;
+            document.getElementById('icon_add_host').src = `http://${location.host}/media/add`;
+            document.getElementById('stop_icon').src = `http://${location.host}/media/stop`;
+            document.getElementById('icon_scan').src = `http://${location.host}/media/scan`;
+        }
+
+        // scan network
+        const scan_network_req = async () => {
+
+            document.getElementById('icon_scan').src = `http://${location.host}/media/activity_indicator`;
+
+            let sim_net = {
+                net_ip : document.getElementById('net_ip').value,
+                main_mac_ip : document.getElementById('main_mac_ip').value
+            };
+
+            const rawResponse = await fetch(`http://${location.host}/scan_network`, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'req='+JSON.stringify(sim_net)
+            });
+
+            const res = await rawResponse.json();
+
+            inventory_tab = res.inventory_tab;
+
+            document.getElementById('icon_scan').src = `http://${location.host}/media/scan`;
+            
+            display_after_scan();
+
+            setTimeout(
+                ()=>{
+                    diag_update_log();
+                },
+                0
+            );
+
+        }
+
+        var original_main_page_inner_html;
+        const hide_before_scan = ()=>{
+            let main_page_ele = document.getElementById('main_page');
+            original_main_page_inner_html = main_page_ele.innerHTML;
+            main_page_ele.innerHTML = document.getElementById('scan_network_config_div_parent').innerHTML;
+            document.getElementById('scan_network_config_div_parent').innerHTML = "";
+        }
+
+        const display_after_scan = ()=>{
+            document.getElementById('main_page').innerHTML = original_main_page_inner_html;
+        }
+
+        // diagnostic
+        const get_log = (log_file_name, ele_id) => {
+            return new Promise(
+                (resolve)=>{
+                    fetch(`http://${location.host}/log?log_file_name=${log_file_name}`)
+                    .then(res => res.text())
+                    .then(
+                        (res_txt)=>{
+                            document.getElementById(ele_id).innerText = res_txt;
+                            resolve();
+                        }
+                    )
+                }
+            )
+        }
+
+        const diag_update_log = async ()=>{
+            await get_log('inventory', 'diag_inventory');
+            while(1){
+                await get_log('metric', 'diag_metric');
+                await get_log('bootstrap', 'diag_bootstrap');
+                await get_log('basalt', 'diag_basalt');
+                await get_log('metric_err', 'diag_metric_err');
+                await get_log('bootstrap_err', 'diag_bootstrap_err');
+                await get_log('basalt_err', 'diag_basalt_err');
+                await sleep(1000);
+            }
+        }
+
+        // main
+
+        get_media();
+        add_host_form();
+
+        hide_before_scan();
+
+
+    </script>
+
+</body>
+</html>

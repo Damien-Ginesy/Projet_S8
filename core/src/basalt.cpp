@@ -76,7 +76,7 @@ namespace Basalt
     #endif
     // message handlers
     void on_pull_req(asio::ip::tcp::endpoint sender, net::Message& req){
-        std::cout << "Pull from " << sender.address() << '\n';
+        std::cout << "Pull from " << sender.address() << ':' << sender.port() << '\n';
         using namespace asio::ip;
         std::lock_guard guard(mutex);
         node->on_pull_req(req);
@@ -87,7 +87,7 @@ namespace Basalt
     #if IS_BYZANTINE==0
     void on_push_req(asio::ip::tcp::endpoint sender, net::Message& req){
         std::lock_guard guard(mutex);
-        std::cout << "Push from " << sender.address() << '\n';
+        std::cout << "Push from " << sender.address() << ':' << sender.port() << '\n';
 
         node->on_push_req(req, sender);
     }
@@ -109,12 +109,13 @@ namespace Basalt
             {net::PUSH_RESP, on_push_resp}
         };
     #else
-    void basalt_init(NodeId id, const Array<NodeId>& bs, Array<NodeId>& friends, 
+    void basalt_init(NodeId id, const Array<NodeId>& bs, Array<NodeId>& friends,
             unsigned k, duration<double> updateDelay, duration<double> resetDelay){
         node = new Node(id, bs, friends);
         net::CallbackMap callbacks {
             {net::PULL_REQ, on_pull_req},
-            {net::PUSH_RESP, on_push_resp}
+            {net::PUSH_RESP, on_push_resp},
+            {net::PUSH_REQ, on_push_resp}, // respond with a SESSION_END
         };
     #endif
         using namespace asio::ip;
@@ -129,8 +130,11 @@ namespace Basalt
         #endif
         runner = std::thread([](){ ctx.run(); });
     }
-    void basalt_set_logger(HTTPLogger* log){
-        logger = log;
+    void basalt_set_logger(size_t bufferSize, const std::string& hostname, uint16_t port, const std::string& apiEndpoint,
+            HTTPLogger::cbk_t callback)
+    {
+        logger = new HTTPLogger(bufferSize, hostname, port, apiEndpoint);
+        logger->setCallback(callback);
     }
     void basalt_stop(){
         net::net_finish();
@@ -140,6 +144,7 @@ namespace Basalt
         runner.join();
         delete mainLoop;
         delete resetLoop;
+        if(logger) delete logger;
         delete node;
     }
 } // namespace Basalt

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Deploy basalt</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="background.css">
+    </head>
+  <body>
+    <div class="topNav">
+        <h3 id="headerTitle">BASALT APP</h3>
+        <div id="topNavRight">
+            <a href="/accueil"><h3 id="accueil">Accueil</h3></a>
+            <a href="/stats"><h3 id="stats">Statistiques</h3></a>
+        </div>
+    </div>
+
+    <div id="center">
+    <header>
+      <h1>BASALT Monitoring tool</h1>
+    </header>
+
+
+
+      <canvas id="canvas"></canvas>
+      <img src="legend.png" id="legende">
+      <div id="nodesInfo">
+        <h4>Taux d'infection: <span id="globalInfectionRate"></span>%</h4>
+        <br>
+        <button onclick="ajouterNoeud()">Ajouter un noeud</button>
+        <br>
+      </div>
+    </div>
+    <script src="graph.js" charset="utf-8"></script>
+    <script src="nodeInfo.js" charset="utf-8"></script>
+    <script src="main.js" charset="utf-8"></script>
+  </body>
+</html>

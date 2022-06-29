@@ -17,7 +17,9 @@ namespace Basalt
         unsigned k, std::chrono::duration<double> updateDelay, 
         std::chrono::duration<double> resetDelay);
     #endif
-    void basalt_set_logger(Basalt::HTTPLogger* logger);
+    void basalt_set_logger(size_t bufferSize, const std::string& hostname, uint16_t port=80, const std::string& apiEndpoint="/",
+        HTTPLogger::cbk_t callback = nullptr);
+
         
     Hash_t rank(uint32_t id, uint32_t seed);
     

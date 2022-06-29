@@ -1,7 +1,5 @@
 #! /bin/bash
 
-#copie des dossiers utiles 
-cp -r ../bootstrap_server ./;
 # Création des machines hosts et main
 
 #hosts 
@@ -12,14 +10,17 @@ for (( i=0; i<$nbr; i++ ))
         # host 
         docker run -itd  \
         --hostname hosts \
-        -v "$(pwd):/home/dev" \
+        -v "$(cd ..; pwd;):/home/dev" \
         ansible_host;
     done
 
 # main machine
 docker run -it \
 --hostname launcher \
--v "$(pwd):/home/dev" \
+-v "$(cd ..; pwd;):/home/dev" \
 ansible;
 
 ./stop_virtual_network.sh
+
+# in dev mode execute :
+# cd /home/dev/launcher;

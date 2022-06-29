@@ -1,0 +1,353 @@
+extends layout
+
+block style
+    style
+        include ../style/stats.css
+        include ../style/charts.min.css
+        include ../style/gaugeChart.css
+block title
+    title Basalt Serveur Supervision
+
+block body
+
+    div
+        img#background(src="/images/background.jpg")
+        img#rectangle(src="/images/vintage.png")
+
+    #header
+        h1#title Statistiques Basalt APP
+        a#topNavRight(href="accueil")
+            h3 Accueil
+
+    div#screen
+        canvas#graph1
+
+        div#myNav.overlay
+            a.closebtn(href='javascript:void(0)' onclick='closeNav()') &times;
+            .overlay-content
+
+
+                form(action='' method='get')
+                    .myForm
+                        label(for='nbNoeuds') Nombre de noeuds
+                        br
+                        input#nbNoeuds(type='number' name='nbNoeuds' min='1' max='100')
+                    .myForm
+                        label(for='vue') Taille de la vue
+                        br
+                        input#Vue(type='number' name='vue' min='2' max='6')
+                    .myForm
+                        label(for='vue') Nombre de noeuds malicieux
+                        br
+                        input#nbMalicieux(type='number' name='nbMalicieux' min='0' max='100')
+                    .myForm
+                        br
+                        input#submit(type='submit' value='Effectuer les changements')
+
+        //span#sub_header(onclick='openNav()')
+            h1#open Ouvrir les options  
+
+
+    //- div#subChart
+        h4(onclick='openChart()') Changer de graphique 
+
+    #gaugeChart        
+        figure.chartBox
+            #infectionRate
+
+    div#chart
+
+    div#nodes
+        h1#nodeTitle Noeud : 
+        div#father
+            div#subfather
+            #nodePie
+        canvas#graph2
+
+
+
+
+    div#cont
+        div#but
+            button#prev noeud précédent
+            button#global Statistiques globales
+            button#next  noeud suivant
+
+
+
+
+    //- JavaScript Part
+    script(src="https://code.highcharts.com/highcharts.js")
+    script(src="https://code.highcharts.com/highcharts-more.js")
+    script(src="https://code.highcharts.com/modules/solid-gauge.js")
+    script(src="https://code.highcharts.com/modules/accessibility.js")
+    
+    script(src="gaugeChart.js")
+    script(src='https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js')
+
+    script.
+
+        /*-------------------------------------*/
+        /* params */
+        /*-------------------------------------*/
+
+        let pushData1 = []; // Données pour les stats globale
+        let pushData2 = []; // Données pour les stats d'un seul noeud
+        const chartId1 = document.querySelector('#graph1'); // first pie chart, global stats window
+        const chartId2 = document.querySelector('#graph2'); // pie chart in second window
+
+        let chart = []; // pie chart : chart globale puis chart individuel
+
+        let index = undefined; // permits to know what is the node's number
+        let Data = []; // general data
+        /*-------------------------------------*/
+        /* pie chart */
+        /*-------------------------------------*/
+
+        async function pieChart(pushData, chartId) {
+
+            await getDataForPieCharts();
+
+            let data = {
+                labels: ['noeuds malicieux', 'noeuds sains'],
+                datasets: [{
+                    data: pushData[0],
+                    backgroundColor: ['#6b2d5c', '#E2C290']
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: data,
+                options: {
+                    maintainAspectRatio: true, // make the pie small
+                    labels: {
+                        display: true,
+                        labels: {
+                            fontSize: 500 //change the size of the labels
+                        }
+                    }
+                }
+            };
+
+            chart.push(new Chart(chartId, config));
+        }
+
+        pieChart(pushData1, chartId1); // creation of the global pie chart
+        pieChart(pushData2, chartId2); // creation of the pie chart for nodes
+
+
+        /*-------------------------------------*/
+        /*creation tables stats for nodes*/
+        /*-------------------------------------*/
+
+        async function createTitleNodes() {
+            const nodeData = Data[index];
+            const father = document.getElementById('nodeTitle');
+            const nodeNum = "Noeud : " + nodeData?.nodeID.adresseVirtuelle;
+            const portNum = " / Port : " + nodeData?.nodeID.port;
+            father.innerHTML = nodeNum + portNum;
+        }
+
+        /*-------------------------------------*/
+        /*params for tables for nodes*/
+        /*-------------------------------------*/
+
+        async function createTableForNodes() {
+            const father = document.getElementById('subfather')
+            let tab = document.createElement("table");
+            tab.setAttribute("id", "monTab");
+            father.append(tab);
+
+            let tr1 = document.createElement('tr');
+            tab.append(tr1);
+
+            let td1 = document.createElement('td');
+            tr1.append(td1);
+            td1.append('Seed')
+
+            let tr2 = document.createElement('tr');
+            tab.append(tr2);
+
+            let td2 = document.createElement('td');
+            tr2.append(td2);
+            td2.append('View')
+
+            const vueLength = Data[index]?.vue.length;
+
+            for (let pas = 0; pas < vueLength; pas++) {
+                let td2 = document.createElement('td');
+                tr1.append(td2);
+                let seed = Data[index].vue[pas].seed.toString()
+                td2.append(seed.slice(0, 4))
+
+                let td3 = document.createElement('td');
+                td3.style.fontSize = 10
+                tr2.append(td3);
+                td3.append(Data[index].vue[pas].nodeID.adresseVirtuelle)
+            }
+
+        }
+
+        function deleteTableForNodes() {
+            if(document.getElementById("monTab")){
+                document.getElementById("monTab").remove()
+            }
+        }
+
+        /*-------------------------------------*/
+        /* window display when click on buttons*/
+        /*-------------------------------------*/
+
+
+        const prev = document.getElementById("prev");
+        const next = document.getElementById("next");
+        const global = document.getElementById("global");
+
+        next.addEventListener("click", () => {
+            index === undefined ? index = 0 : index = index + 1;
+            if (index >= Data.length){
+                index = Data.length-1
+            }
+
+            const screen = document.getElementById("screen");
+            const nodes = document.getElementById("nodes");
+            const changeGraphButt = document.getElementById("subChart");
+            const mainDiv = document.getElementById("chart");
+            const gaugeChart = document.getElementById("gaugeChart");
+            
+            screen.style.display = "none";
+            mainDiv.style.display = "none";
+            nodes.style.display = 'block';
+            changeGraphButt.style.display = "none";
+            gaugeChart.style.display = "none";
+
+            deleteTableForNodes();
+            createTableForNodes();
+            createTitleNodes();
+
+
+        })
+
+        prev.addEventListener("click", () => {
+            index === undefined ? index = 0 : index = index - 1;
+            if(index < 0){
+                index = 0;
+            }
+            const screen = document.getElementById("screen");
+            const nodes = document.getElementById("nodes");
+            const changeGraphButt = document.getElementById("subChart");
+            const mainDiv = document.getElementById("chart");
+            const gaugeChart = document.getElementById("gaugeChart");
+
+            screen.style.display = "none";
+            mainDiv.style.display = "none";
+            nodes.style.display = 'block';
+            changeGraphButt.style.display = "none";
+            gaugeChart.style.display = "none";
+
+            createTitleNodes();
+            deleteTableForNodes();
+            createTableForNodes();
+
+        })
+
+
+        global.addEventListener("click", () => {
+            const screen = document.getElementById("screen");
+            const nodes = document.getElementById("nodes");
+            const changeGraphButt = document.getElementById("subChart");
+            const mainDiv = document.getElementById("chart");
+            const gaugeChart = document.getElementById('gaugeChart');
+            
+            screen.style.display = "block";
+            nodes.style.display = 'none';
+            mainDiv.style.display = "none";
+            changeGraphButt.style.display = "block";
+            gaugeChart.style.display = "none";
+        })
+
+        function openChart() {
+            const mainDiv = document.getElementById("chart");
+            const screen = document.getElementById("screen");
+            const gaugeChart = document.getElementById('gaugeChart');
+
+            const style = ["none", "block"];
+            let idStyle;
+            mainDiv.style.display === "none" ? idStyle = 1 : idStyle = 0;
+            screen.style.display = style[idStyle];
+            gaugeChart.style.display = style.at(parseInt(idStyle)-1)
+            mainDiv.style.display = style[idStyle];
+        }
+
+
+        /*-------------------------------------*/
+        /* get data */
+        /*-------------------------------------*/
+
+        async function getAllData() {
+            const query = await fetch('/nodeDataTab');
+            const data = await query.json();
+            Data = data;
+        };
+
+        async function getViewRate() {
+            const vueNoeud = [];
+            Data[index]?.vue.forEach(el => {
+                vueNoeud.push(el.nodeID)
+            })
+            const vueNoeudId = {
+                vueNoeud: vueNoeud
+            }
+            const infoNoeudVue = await fetch("/infoNoeudVue", {
+                method: "POST",
+                body: JSON.stringify(vueNoeudId),
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+            return infoNoeudVue.json();
+        }
+
+
+        async function getDataForPieCharts() {
+            /* global pie chart */
+            const query = await fetch('/statsData');
+            const data = await query.json();
+            const dataToPush = [data.nbMalicieux, data.nbSains];
+            pushData1 = [];
+            pushData1.push(dataToPush);
+        };
+
+        function setNodePieChart(infoVue) {
+            const dataToPush = [infoVue.vueNoeudMalicieux,
+                infoVue.vueNoeudSain];
+            pushData2 = [];
+            pushData2.push(dataToPush);
+            chart[1].data.datasets[0].data = pushData2[0];
+            chart[1].update();
+
+            const graph = document.getElementById("graph2");
+            if (!(dataToPush[0] || dataToPush[1])){
+                graph.style.display = "none";
+            }else{ graph.style.display = "block";}
+        }
+
+        async function updateData() {
+            await getAllData();
+            await getDataForPieCharts();
+            const infoVue = await getViewRate();
+            setNodePieChart(infoVue);
+
+            createTitleNodes();
+            deleteTableForNodes();
+            createTableForNodes();
+
+            chart[0].data.datasets[0].data = pushData1[0];
+            chart[0].update();
+        }
+
+        setInterval(updateData, 1000);
+        
+ 
+    

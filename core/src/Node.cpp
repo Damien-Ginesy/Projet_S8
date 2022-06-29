@@ -10,7 +10,7 @@ namespace Basalt
 		std::stringstream out;
 		out << "{\"nodeID\":" << _id.to_string()
 		<< ", \"sgx\": " << (_isSGX? "true":"false")
-		<< ", \"age\": " << (_iter? "true":"false")
+		<< ", \"age\": " << _iter
 		<< ", \"vue\": [";
 		for(size_t i=0; i<_view.size()-1; ++i)
 			out << _view[i].to_string() << ", ";
@@ -35,6 +35,7 @@ namespace Basalt
 	void Node::updateSamples(const Array<NodeId>& candidates){
 		for(uint32_t i=0; i<_view.size() ; ++i){
 			Hash_t currentHash = _rankingFunc(_view[i].id.id, _view[i].seed);
+			if(candidates.size() <= (_view.size()+1)){ //pr etre sur
 			for (const NodeId& p : candidates) {
 				if(p.id == _id.id) continue;
 				if(_view[i].id.id == p.id){ _view[i].hits++; continue; }
@@ -45,6 +46,7 @@ namespace Basalt
 					_view[i].id = p;
 				}
 			}
+		}
 		}
 	}
 	Array<NodeId> Node::reset() {
@@ -66,15 +68,17 @@ namespace Basalt
 		req << _id;
 		using namespace asio::ip;
 		tcp::endpoint ep(dest._addr, dest._port);
-		std::cout << "Attempting pull to " << dest.to_string() << '\n';
+		std::cout << "Attempting pull to " << dest._addr << ':' << dest._port << '\n';
 		asio::error_code err = net::send_request(ep, req);
 		if(err){
-			std::cerr << "Coudln't send request: " << err.message() << '\n';
+			std::cerr << "Couldn't send request 1: "<< dest._port << err.message() << '\n';
 		}
 	}
 	void Node::on_push_req(net::Message& req, const asio::ip::tcp::endpoint& sender){
 		// update our view, and make a PULL_RESP respoonse
-		Array<NodeId> candidates(_view.size() + 1);
+
+		int size = std::min(_view.size() + 1, req.payloadSize()/sizeof(NodeId));
+		Array<NodeId> candidates(size);
 		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--)
 			req >> (*c);
 		candidates[0]._addr = sender.address().to_v4();
@@ -83,9 +87,12 @@ namespace Basalt
 	}
 	void Node::on_pull_resp(net::Message& resp, const asio::ip::tcp::endpoint& sender){
 		// read the view from the message and update
-		Array<NodeId> candidates(_view.size() + 1);
-		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--)
-			resp >> (*c);
+		int size =std:: min(_view.size() + 1, resp.payloadSize()/sizeof(NodeId));
+		Array<NodeId> candidates(size);
+		for(NodeId* c=candidates.end()-1; c>=candidates.begin(); c--){
+				resp >> (*c);
+		}
+
 		candidates[0]._addr = sender.address().to_v4();
 		updateSamples(candidates);
 		resp.set_type(net::SESSION_END);
@@ -110,10 +117,10 @@ namespace Basalt
 		for(const ViewEntry& e: _view)
 			req << e.id;
 		asio::ip::tcp::endpoint ep(dest._addr, dest._port);
-		std::cout << "Attempting push to " << dest.to_string() << '\n';
+		std::cout << "Attempting push to " << dest._addr << ':' << dest._port << '\n';
 		asio::error_code err = net::send_request(ep, req);
 		if(err){
-			std::cerr << "Coudln't send request: " << err.message() << '\n';
+			std::cerr << "Couldn't send request 2: "<< dest._port << err.message() << '\n';
 		}
 	}
 	#else
@@ -122,12 +129,14 @@ namespace Basalt
 	{
 		_friends = friends;
 		_view = Array<ViewEntry>(bs.size());
-		for(size_t i=0; i<bs.size(); ++i)
+		for(size_t i=0; i<bs.size(); i++)
 			_view[i] = ViewEntry{bs[i], _rng(), 0};
 	}
+
+	//PUSH BYZANTIN
 	void Node::push(NodeId dest){
 		net::Message req(net::PUSH_REQ);
-		Array<NodeId> candidates(_view.size());
+		Array<NodeId> candidates(_friends.size());
 		std::random_device rng;
 		std::sample(_friends.begin(), _friends.end(), candidates.begin(), candidates.size(), rng);
 		req << _id;
@@ -136,11 +145,14 @@ namespace Basalt
 		std::cout << "Attempting push to " << dest.to_string() << '\n';
 		asio::error_code err = net::send_request(ep, req);
 		if(err){
-			std::cerr << "Coudln't send request: " << err.message() << '\n';
+			std::cerr << "Couldn't send request 3: " << err.message() << '\n';
 		}
 	}
 
 	#endif
+
+	#if IS_BYZANTINE==0
+
 	NodeId Node::selectPeer(){
 		uint32_t p=0;
 		for(uint32_t i=1; i<_view.size(); ++i)
@@ -148,14 +160,27 @@ namespace Basalt
 		_view[p].hits++;
 		return _view[p].id;
 	}
+
+	#else
+
+	NodeId Node::selectPeer(){
+		uint32_t p = rand() % _view.size();
+		return _view[p].id;
+	}
+
+	#endif
+
 	void Node::update() {
-		NodeId p = selectPeer();
 		#if IS_BYZANTINE==0
+		NodeId p = selectPeer();
 		NodeId q = selectPeer();
 		pull(p);
 		push(q);
 		#else
-		push(p);
+		for (size_t spam = 0; spam < 1; spam++) {
+			NodeId p = selectPeer();
+			push(p);
+		}
 		#endif
 		_iter++;
 	}
@@ -166,6 +191,7 @@ namespace Basalt
 		req >> sender;
 		// put our view in the response
 		req << _id;
+
 		for(const ViewEntry& e: _view)
 			req << e.id;
 		// add our own id
@@ -179,7 +205,7 @@ namespace Basalt
 		std::cout << "Received pull from " << sender.to_string() << '\n';
 		// add our own id
 		req << _id;
-		Array<NodeId> candidates(_view.size());
+		Array<NodeId> candidates(_friends.size());
 		std::random_device rng;
 		std::sample(_friends.begin(), _friends.end(), candidates.begin(), candidates.size(), rng);
 		// put our view in the response

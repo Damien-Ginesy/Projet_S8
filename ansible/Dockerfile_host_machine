@@ -26,7 +26,7 @@ rm password.txt;
 RUN apt-get update > /dev/null; apt-get upgrade -y > /dev/null;
 
 # --- basic tools
-RUN apt-get install -y build-essential python3 python curl grep net-tools iputils-ping zip > /dev/null;
+RUN apt-get install -y build-essential python3 curl grep net-tools iputils-ping zip > /dev/null;
 
 # --- pip
 RUN \
@@ -34,6 +34,22 @@ apt-get install -y python3-pip;
 
 # --- ssh server
 RUN apt-get install -y openssh-server > /dev/null;
+
+# --- Libstdc++6
+RUN \
+apt-get install -y libstdc++6;
+
+# setting root password
+RUN \
+    echo "basalt" > password; \
+    echo "basalt" >> password; \
+    passwd root < password;
+
+# add in host launcher
+ADD ./find_free_port.sh /home/peer/find_free_port.sh
+
+# add find free port script
+ADD ./in_host_launcher.sh /home/peer/in_host_launcher.sh
 
 # CMD is the default command that is going to be executed in the startup of every exection.
 # Only the last one is considered. So use it once.

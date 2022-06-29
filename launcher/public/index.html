@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css"
+    href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap');
+
+    body {
+      background-color: #f0f5ff;
+      font-family: 'Jost', sans-serif;
+      color: #fff;
+    }
+
+    .wrapper {
+      width: 400px;
+      margin: 40px auto;
+      padding: 10px;
+      border-radius: 5px;
+      background: white;
+      box-shadow: 0px 10px 40px 0px rgba(47, 47, 47, .1);
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      margin: 10px auto;
+      display: block;
+      border-radius: 5px;
+      border: 1px solid lightgrey;
+      background: none;
+      width: 274px;
+      color: black;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+    }
+
+    .controls {
+      width: 294px;
+      margin: 15px auto;
+    }
+
+    #remove_fields {
+      float: right;
+    }
+
+    #remove_fields2 {
+      float: right;
+    }
+
+    .controls a i.fa-minus {
+      margin-right: 5px;
+    }
+
+    a {
+      color: black;
+      text-decoration: none;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      color: #232c3d;
+    }
+
+    .collapsible {
+      background-color: #777;
+      color: white;
+      cursor: pointer;
+      padding: 18px;
+      width: 100%;
+      border: none;
+      text-align: left;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .active,
+    .collapsible:hover {
+      background-color: #555;
+    }
+
+    .collapsible:after {
+      content: '\002B';
+      color: white;
+      font-weight: bold;
+      float: right;
+      margin-left: 5px;
+    }
+
+    .active:after {
+      content: "\2212";
+    }
+
+    .content {
+      padding: 0 18px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.2s ease-out;
+      background-color: #f1f1f1;
+    }
+
+    .scroller {
+      width: 400px;
+      height: 250px;
+      overflow-y: scroll;
+      scrollbar-color: rebeccapurple green;
+      scrollbar-width: thin;
+    }
+
+    /* form style  */
+    body {
+      background: #b4b4b4;
+    }
+    #button{
+      font-family: 'Open Sans Condensed', sans-serif;
+      text-transform: uppercase;
+      outline: none;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      box-sizing: border-box;
+      width: 100%;
+      background-color: #f00606;
+      padding: 10px;
+      color: white;
+      border: 1px solid #db3434;
+      border-radius: 3px;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: -75px;
+      cursor: pointer;
+      position: relative;
+      
+    }
+    #registration-form {
+      font-family: 'Open Sans Condensed', sans-serif;
+      width: 1200px;
+      min-width: 250px;
+      margin: 20px auto;
+      position: relative;
+    }
+
+    #registration-form .fieldset {
+      background-color: #d5d5d5;
+
+      border-radius: 3px;
+
+    }
+
+    #registration-form legend {
+      text-align: center;
+      background: #364351;
+      width: 100%;
+      padding: 30px 0;
+      border-radius: 3px 3px 0 0;
+      color: white;
+      font-size: 2em;
+    }
+
+    .fieldset form {
+      margin: 0 auto;
+      display: block;
+      width: 100%;
+      padding: 30px 20px;
+      box-sizing: border-box;
+      border-radius: 0 0 3px 3px;
+    }
+
+    .placeholder #registration-form label {
+      display: none;
+    }
+
+    .no-placeholder #registration-form label {
+      margin-left: 5px;
+      position: relative;
+      display: block;
+      color: grey;
+      text-shadow: 0 1px white;
+      font-weight: bold;
+    }
+
+    /* all */
+    ::-webkit-input-placeholder {
+      text-shadow: 1px 1px 1px white;
+      font-weight: bold;
+    }
+
+    ::-moz-placeholder {
+      text-shadow: 0 1px 1px white;
+      font-weight: bold;
+    }
+
+    /* firefox 19+ */
+    :-ms-input-placeholder {
+      text-shadow: 0 1px 1px white;
+      font-weight: bold;
+    }
+
+    /* ie */
+    #registration-form input[type=text] {
+      padding: 15px 20px;
+      border-radius: 1px;
+      margin: 5px auto;
+      background-color: #f7f7f7;
+      border: 1px solid silver;
+
+      -webkit-box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.2), 0 1px rgba(255, 255, 255, .8);
+      width: 90%;
+
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      box-sizing: border-box;
+      -webkit-transition: background-color .5s ease;
+      -moz-transition: background-color .5s ease;
+      -o-transition: background-color .5s ease;
+      -ms-transition: background-color .5s ease;
+      transition: background-color .5s ease;
+    }
+
+    .no-placeholder #registration-form input[type=text] {
+      padding: 15px 20px;
+    }
+
+    #registration-form input[type=text]:active,
+    .placeholder #registration-form input[type=text]:focus {
+      outline: none;
+      border-color: silver;
+      background-color: white;
+    }
+
+    #registration-form input[type=submit] {
+      font-family: 'Open Sans Condensed', sans-serif;
+      text-transform: uppercase;
+      outline: none;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -ms-box-sizing: border-box;
+      box-sizing: border-box;
+      width: 100%;
+      background-color: #5C8CA7;
+      padding: 10px;
+      color: white;
+      border: 1px solid #3498db;
+      border-radius: 3px;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-top: 5px;
+      cursor: pointer;
+      position: relative;
+      top: 0;
+    }
+    
+    #registration-form input[type=submit]:hover {
+      background-color: #2980b9;
+    }
+
+    #registration-form input[type=submit]:active {
+      background: #5C8CA7;
+    }
+
+
+    .parsley-error-list {
+      background-color: #C34343;
+      padding: 5px 11px;
+      margin: 0;
+      list-style: none;
+      border-radius: 0 0 3px 3px;
+      margin-top: -5px;
+      margin-bottom: 5px;
+      color: white;
+      border: 1px solid #870d0d;
+      border-top: none;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+      position: relative;
+      top: -1px;
+      text-shadow: 0px 1px 1px #460909;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .parsley-error {
+      border-color: #870d0d !important;
+      border-bottom: none;
+    }
+
+    #registration-form select {
+      width: 100%;
+      padding: 10px;
+    }
+
+    ::-moz-focus-inner {
+      border: 0;
+    }
+  </style>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BASALT</title>
+
+</head>
+
+<body>
+
+  <div id="registration-form">
+    <div class='fieldset'>
+      <legend>Parameters</legend>
+      <form action="bootstrap" method="POST" data-validate="parsley">
+        <button type="button" class="collapsible">paramétre des machines : </button>
+        <div class="content">
+          <div class="wrapper">
+            <div class="scroller">
+
+              <div id="survey_options1">
+                <h1 class="survey_options1">machine :</h1>
+                <input type="text" name="survey_options1" class="survey_options1" size="50" placeholder="Host Name">
+                <input type="text" name="survey_options1" class="survey_options1" size="50" placeholder="Adresse IP">
+                <input type="text" name="survey_options1" class="survey_options1" size="50"
+                  placeholder="Nombre des neouds">
+              </div>
+              <div class="controls">
+                <a href="#" id="add_more_fields1"><i class="fa fa-plus "></i>Add More</a>
+                <a href="#" id="remove_fields"><i class="fa fa-trash "></i> Remove </a>
+
+              </div>
+              <input type="text" name="ip" class="survey_options" size="50" placeholder="bootstrap_ip">
+              <input type="text" name="port" class="survey_options" size="50" placeholder="bootstrap_port">
+
+            </div>
+          </div>
+        </div>
+        <button type="button" class="collapsible">paramétre des machines malicious : </button>
+        <div class="content">
+          <div class="wrapper">
+            <div class="scroller">
+
+              <div id="survey_options2">
+                <h1 class="survey_options2">machine malicious :</h1>
+
+                <select id="select" onchange="changeFunc();" name="survey_options2" class="survey_options2">
+                  <option value="eclipse">eclipse </option>
+                  <option value="inst">inst</option>
+                </select>
+                <input type="text" name="survey_options2" class="survey_options2" size="50" placeholder="Attack_id">
+                <input type="text" name="survey_options2" class="survey_options2" size="50"
+                  placeholder="Nombre des neouds">
+                <input type="hidden" id="1" name="survey_options2" class="survey_options2" size="50" placeholder="mask">
+              </div>
+              <div class="controls">
+                <a href="#" id="add_more_fields2"><i class="fa fa-plus "></i>Add More</a>
+                <a href="#" id="remove_fields2"><i class="fa fa-trash "></i> Remove </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="collapsible">paramétre BASALT : </button>
+        <div class="content">
+          <div class="wrapper">
+            <div class="scroller">
+              <h1 class="survey_options2">parametre BASALT :</h1>
+              <div class='row'>
+                <input type=text name="info" placeholder="Taille des vues">
+              </div>
+              <div class='row'>
+                <input type=text name="info" placeholder="Nb de cycles avant reset">
+              </div>
+              <div class='row'>
+                <input type=text name="info" placeholder="Nb de reset/vue ">
+              </div>
+              <div class='row'>
+                <input type=text name="info" placeholder="Nb de cycles par seconde">
+              </div>
+              <div class='row'>
+                <input type=text name="info" placeholder="Log server hostname">
+              </div>
+              <div class='row'>
+                <input type=text name="info" placeholder="Log server port">
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="submit" value="START">
+      </form>
+      <form action="stop" method="post">
+        <button id ="button"  >STOP</button>
+      </form>
+
+    </div>
+  </div>
+
+
+  <script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+    var survey_options1 = document.getElementById('survey_options1');
+    var add_more_fields1 = document.getElementById('add_more_fields1');
+    var survey_options2 = document.getElementById('survey_options2');
+    var add_more_fields2 = document.getElementById('add_more_fields2');
+    var remove_fields = document.getElementById('remove_fields');
+    var remove_fields2 = document.getElementById('remove_fields2');
+
+    add_more_fields1.onclick = function () {
+      var newField = document.createElement('h1');
+      newField.setAttribute('name', 'survey_options1');
+      newField.setAttribute('class', 'survey_options1');
+      var t = document.createTextNode("machine :");
+      newField.appendChild(t);
+      survey_options1.appendChild(newField);
+      var newField1 = document.createElement('input');
+      newField1.setAttribute('type', 'text');
+      newField1.setAttribute('name', 'survey_options1');
+      newField1.setAttribute('class', 'survey_options1');
+      newField1.setAttribute('size', 50);
+      newField1.setAttribute('placeholder', 'Adresse IP');
+      survey_options1.appendChild(newField1);
+      var newField11 = document.createElement('input');
+      newField11.setAttribute('type', 'text');
+      newField11.setAttribute('name', 'survey_options1');
+      newField11.setAttribute('class', 'survey_options1');
+      newField11.setAttribute('size', 50);
+      newField11.setAttribute('placeholder', 'Host Name');
+      survey_options1.appendChild(newField11);
+
+      survey_options1.appendChild(newField1);
+
+      var newField2 = document.createElement('input');
+      newField2.setAttribute('type', 'text');
+      newField2.setAttribute('name', 'survey_options1');
+      newField2.setAttribute('class', 'survey_options1');
+      newField2.setAttribute('size', 50);
+      newField2.setAttribute('placeholder', 'Nombre des neouds');
+      survey_options1.appendChild(newField2);
+    }
+    add_more_fields2.onclick = function () {
+      var newField = document.createElement('h1');
+      newField.setAttribute('name', 'survey_options2');
+      newField.setAttribute('class', 'survey_options2');
+      var t = document.createTextNode("machine malicious:");
+      newField.appendChild(t);
+      survey_options2.appendChild(newField);
+      var newField1 = document.createElement('input');
+      newField1.setAttribute('type', 'text');
+      newField1.setAttribute('name', 'survey_options2');
+      newField1.setAttribute('class', 'survey_options2');
+      newField1.setAttribute('siz', 50);
+      newField1.setAttribute('placeholder', 'Attack_id');
+      var newField2 = document.createElement('input');
+      newField2.setAttribute('type', 'text');
+      newField2.setAttribute('name', 'survey_options2');
+      newField2.setAttribute('class', 'survey_options2');
+      newField2.setAttribute('size', 50);
+      newField2.setAttribute('placeholder', 'Nombre des neouds');
+      var newField3 = document.createElement('input');
+      newField3.setAttribute('type', 'hidden');
+      newField3.setAttribute('name', 'survey_options2');
+      newField3.setAttribute('id', '2');
+
+      newField3.setAttribute('class', 'survey_options2');
+      newField3.setAttribute('size', 50);
+      newField3.setAttribute('placeholder', 'mask');
+      var sel = document.createElement("select");
+      sel.setAttribute('name', 'survey_options2');
+      sel.setAttribute('class', 'survey_options2');
+
+      var opt1 = document.createElement("option");
+      var opt2 = document.createElement("option");
+
+      opt1.value = "eclipse";
+      opt1.text = "eclipse";
+
+      opt2.value = "inst";
+      opt2.text = "inst";
+      sel.add(opt1, null);
+      sel.add(opt2, null);
+      sel.onchange = function () {
+        var selectedValue = sel.options[sel.selectedIndex].value;
+        if (selectedValue == "inst") {
+          console.log("aaaaaaaa");
+          newField3.setAttribute("type", "text");
+        }
+        else {
+          newField3.setAttribute("type", "hidden");
+
+        }
+
+      };;
+      survey_options2.appendChild(sel);
+      survey_options2.appendChild(newField1);
+      survey_options2.appendChild(newField2);
+      survey_options2.appendChild(newField3);
+
+    }
+
+    remove_fields.onclick = function () {
+      var input_tags = survey_options1.getElementsByClassName('survey_options1');
+
+      if (input_tags.length > 4) {
+        survey_options1.removeChild(input_tags[(input_tags.length) - 1]);
+        survey_options1.removeChild(input_tags[(input_tags.length) - 1]);
+        survey_options1.removeChild(input_tags[(input_tags.length) - 1]);
+        survey_options1.removeChild(input_tags[(input_tags.length) - 1]);
+
+
+
+      }
+    }
+    remove_fields2.onclick = function () {
+      var input_tags = survey_options2.getElementsByClassName('survey_options2');
+
+      if (input_tags.length > 4) {
+        survey_options2.removeChild(input_tags[(input_tags.length) - 1]);
+        survey_options2.removeChild(input_tags[(input_tags.length) - 1]);
+        survey_options2.removeChild(input_tags[(input_tags.length) - 1]);
+        survey_options2.removeChild(input_tags[(input_tags.length) - 1]);
+        survey_options2.removeChild(input_tags[(input_tags.length) - 1]);
+
+
+      }
+    }
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function () {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+      });
+    }
+
+
+    function changeFunc() {
+      var selectBox = document.getElementById("select");
+      var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+      if (selectedValue == "inst") {
+        console.log("test");
+        var input = document.getElementById("1");
+        input.setAttribute("type", "text");
+      }
+      else {
+        var input = document.getElementById("1");
+        input.setAttribute("type", "hidden");
+      }
+    }
+  </script>
+</body>
+
+</html>

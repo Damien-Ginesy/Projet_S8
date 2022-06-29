@@ -49,7 +49,7 @@ namespace Basalt
             return *this;
         }
         Message& Message::operator>>(Array<byte>& out){
-            _header.size -= out.size();
+            _header.size -= (uint32_t)out.size();
             for(size_t i=0; i<out.size(); i++)
                 out[i] = _payload[_header.size+i];
             _payload.resize(_header.size);

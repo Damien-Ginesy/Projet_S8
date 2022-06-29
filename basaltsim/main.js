@@ -19,6 +19,7 @@ let canvas_width; // real with
 
 //Mise a jour interface parametres
 setParamHTML();
+let globalInfectionRate;
 
 //Lancement de la simulation
 start();
@@ -59,10 +60,22 @@ function start(){
     simulationAgeHTML.textContent = Peer.peers[target].t.toString()+" cycles";
     targetViewInfection = Peer.peers[target].getMaliciousCountInView()/viewSize;
     targetViewInfectionHTML.textContent = parseInt(100*targetViewInfection) + "%";
-    if(targetViewInfection == 1){pause();}
+    //if(targetViewInfection == 1){pause();}
     sampledInfection = Peer.getSamplesInfection();
     samplesInfectionHTML.textContent = parseInt(100*sampledInfection) + "%";
     sampleLengthHTML.textContent = parseInt(samples.length/resetNumber) + " / " + samples.length;
+
+
+    globalInfectionRate = 0;
+    let nbS=0;
+    for (let p of Peer.peers) {
+      if(!infectedNode.includes(p.identifier)){
+        nbS++;
+        globalInfectionRate += p.getMaliciousCountInView()/viewSize;
+      }
+    }
+    globalInfectionRate = globalInfectionRate/nbS;
+    console.log(globalInfectionRate);
 
 
     let t1 = getMs();
